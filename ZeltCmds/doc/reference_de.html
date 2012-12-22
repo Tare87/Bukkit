@@ -1,0 +1,646 @@
+<p>v1.4.0</p>
+<p><b>1 Allgemein</b></p>
+<p><b>1.1 Casesensivity</b><br/>
+<b>1.1.1 Befehle</b><br/>
+Casesensitiv</p>
+<p><b>1.1.2 Kategorien, Typen</b><br/>
+Caseinsensitiv</p>
+<p><b>1.2 Optionen  in config.yml</b>
+<table>
+<tr>
+<th>Option</th>
+<th>Beschreibung</th>
+<th>Standardwert</th>
+</tr><tr>
+<td>lang</td>
+<td>Verwendetes Sprachschema. Implementiert sind en und de</td>
+<td>en</td>
+</tr><tr>
+<td>logAlias</td>
+<td>Legt fest, ob von Spielern verwendete Aliase auf der Konsole angezeigt werden</td>
+<td>true</td>
+</tr><tr>
+<td>logCmd</td>
+<td>Legt fest, ob von Spielern verwendete Befehle auf der Konsole angezeigt werden</td>
+<td>true</td>
+</tr><tr>
+<td>pageentries</td>
+<td>Anzahl der Einträge pro Seite für Befehlsliste und Aliasliste</td>
+<td>5</td>
+</tr><tr>
+<td>version</td>
+<td>Für Updates. Diesen Wert nicht ändern</td>
+<td>[Aktuelle Version]</td>
+</tr>
+</table>
+</p>
+<br />
+
+<p><b>2 Permanenter Befehl</b>
+<table>
+<tr>
+<th>Befehl</th>
+<th>Beschreibung</th>
+</tr><tr>
+<td>/zeltcmds</td>
+<td>Zeigt Informationen und Hilfe</td>
+</tr><tr>
+<td>/zeltcmds add &lt;Befehl&gt; &lt;Kategorie&gt; &lt;Typ/Parameter&gt; &lt;Defaultpermission&gt; [Nachricht]</td>
+<td>Fügt einen neuen Befehl hinzu</td>
+</tr><tr>
+<td>/zeltcmds addalias &lt;Alias&gt; &lt;Befehl&gt; [Parameter]*</td>
+<td>Fügt einen neuen Alias hinzu</td>
+</tr><tr>
+<td>/zeltcmds examples</td>
+<td>Fügt einige vordefinierte Befehle hinzu. Überschreibt keine existierenden Befehle</td>
+</tr><tr>
+<td>/zeltcmds list [Seite]</td>
+<td>Listet definierte Befehle auf</td>
+</tr><tr>
+<td>/zeltcmds listalias [Seite]</td>
+<td>Listet definierte Aliase auf</td>
+</tr><tr>
+<td>/zeltcmds reload</td>
+<td>Lädt Konfiguration und Befehle neu</td>
+</tr><tr>
+<td>/zeltcmds remove &lt;Befehl&gt;</td>
+<td>Entfernt einen Befehl</td>
+</tr><tr>
+<td>/zeltcmds removealias &lt;Alias&gt;</td>
+<td>Entfernt einen Befehl</td>
+</tr>
+</table>
+</p>
+<p><b>2.1 Information</b><br />
+'/zeltcmds add', '/zeltcmds addalias', '/zeltcmds remove' und '/zeltcmds removealias' ändern sofort die config.yml, womit '/zeltcmds reload' keine Änderungen rückgängig machen kann!</p>
+<p><b>2.2 Permission</b><br />
+zeltcmds.manage</p>
+<p><b>2.3 Defaultpermission</b><br />
+OP</p>
+<br />
+
+<p><b>3 Kategorien</b></p>
+<p><b>3.1 mode</b><br />
+<b>3.1.1 Typen</b>
+<table>
+<tr>
+<th>Typ</th>
+<th>Beschreibung</th>
+</tr><tr>
+<td>adventure</td>
+<td>Setz den Gamemode auf adventure</td>
+</tr><tr>
+<td>adventure_creative</td>
+<td>Wechselt den Gamemode zwischen adventure und creative</td>
+</tr><tr>
+<td>adventure_survival</td>
+<td>Wechselt den Gamemode adventure und survival</td>
+</tr><tr>
+<td>adventure_creative_survival</td>
+<td>Ändert den Gamemode. adventure > creative > survival</td>
+</tr><tr>
+<td>adventure_survival_creative</td>
+<td>Ändert den Gamemode. adventure > survival > creative</td>
+</tr><tr>
+<td>creative</td>
+<td>Setzt den Gamemode auf creative</td>
+</tr><tr>
+<td>creative_adventure</td>
+<td>Wechselt den Gamemode zwischen creative und adventure</td>
+</tr><tr>
+<td>creative_survival</td>
+<td>Wechselt den Gamemode zwischen creative und survival</td>
+</tr><tr>
+<td>creative_adventure_survival</td>
+<td>Ändert den Gamemode. creative > adventure > survival</td>
+</tr><tr>
+<td>creative_survival_adventure</td>
+<td>Ändert den Gamemode. creative > survival > adventure</td>
+</tr><tr>
+<td>survival</td>
+<td>Setzt den Gamemode auf survival</td>
+</tr><tr>
+<td>survival_adventure</td>
+<td>Wechselt den Gamemode zwischen survival und adventure</td>
+</tr><tr>
+<td>survival_creative</td>
+<td>Wechselt den Gamemode zwischen survuval und creative</td>
+</tr><tr>
+<td>survival_adventure_creative</td>
+<td>Ändert den Gamemode. survival > adventure > creative</td>
+</tr><tr>
+<td>survival_creative_adventure</td>
+<td>Ändert den Gamemode. survival > creative > adventure</td>
+</tr>
+</table>
+</p>
+<p><b>3.1.2 Aliase</b>
+<ul>
+<li>a =&gt; adventure</li>
+<li>ac =&gt; adventure_creative</li>
+<li>as =&gt; adventure_survival</li>
+<li>acs =&gt; adventure_creative_survival</li>
+<li>asc =&gt; adventure_survivial_creative</li>
+<li>c =&gt; creative</li>
+<li>ca =&gt; creative_adventure</li>
+<li>cs =&gt; creative_survival</li>
+<li>cas =&gt; creative_adventure_survival</li>
+<li>csa =&gt; creative_survival_adventure</li>
+<li>s =&gt; survival</li>
+<li>sa =&gt; survival_adventure</li>
+<li>sc =&gt; survival_creative</li>
+<li>sac =&gt; survival_adventure_creative</li>
+<li>sca =&gt; survival_creative_adventure</li>
+</ul>
+</p>
+<p><b>3.1.3 Parameter</b><br />
+<b>3.1.3.1 für Spieler</b><br />
+[Spieler]</p>
+<p><b>3.1.2.2 für Konsole</b><br />
+&lt;Spieler&gt;</p>
+<p><b>3.1.4 Permissions</b><br />
+Für sich selbst: zeltcmds.cmd.&lt;Befehl&gt;<br />
+Fü andere Spieler: zeltcmds.cmd.&lt;Befehl&gt;.player</p>
+<p><b>3.1.5 Nachricht</b><br />
+Wird an betroffenen Spieler gesendet</p>
+<br />
+
+<p><b>3.2 player</b><br />
+<b>3.2.1 Typen</b>
+<table>
+<tr>
+<th>Typ</th>
+<th>Beschreibung</th>
+</tr><tr>
+<td>clear</td>
+<td>Leert das Inventar eines Spielers</td>
+</tr><tr>
+<td>direction</td>
+<td>Zeigt die Himmelsrichtung in die ein Spieler blickt</td>
+</tr><tr>
+<td>feed</td>
+<td>Macht einen Spieler satt</td>
+</tr><tr>
+<td>heal</td>
+<td>Heilt einen Spieler</td>
+</tr><tr>
+<td>info</td>
+<td>Zeigt detaillierte Informationen über einen Spieler</td>
+</tr><tr>
+<td>kill</td>
+<td>Tötet einen Spieler</td>
+</tr><tr>
+<td>position</td>
+<td>Zeigt die Position eines Spielers</td>
+</tr><tr>
+<td>seen</td>
+<td>Zeigt wann eni Spieler das letzte mal online war</td>
+</tr>
+</table>
+</p>
+<p><b>3.2.2 Aliase</b>
+<ul>
+<li>dir =&gt; direction</li>
+<li>pos =&gt; position</li>
+</ul>
+</p>
+<p><b>3.2.3 Parameter</b><br />
+<b>3.2.3.1 für Spieler</b><br />
+[Spieler]</p>
+<p><b>3.2.3.2 für Konsole</b><br />
+&lt;Spieler&gt;</p>
+<p><b>3.2.4 Permissions</b><br />
+<b>3.2.4.1 clear, feed, heal, kill</b><br />
+Für sich selbst: zeltcmds.cmd.&lt;Befehl&gt;<br />
+Für andere Spieler: zeltcmds.cmd.&lt;Befehl&gt;.player</p>
+<p><b>3.2.4.2 direction, info, position, seen</b><br />
+Für beides: zeltcmds.cmd.&lt;command&gt;</p>
+<p><b>3.2.5 Nachricht</b><br />
+<b>3.2.5.1 clear, feed, heal, kill</b><br />
+Wird an betroffenen Spieler gesendet</p>
+<p><b>3.2.5.2 direction, info, position, seen</b><br />
+Es wird keine Nachricht verwendet</p>
+<br />
+
+<p><b>3.3 serverinfo</b><br />
+<b>3.3.1 Typen</b>
+<table>
+<tr>
+<th>Typ</th>
+<th>Beschreibung</th>
+</tr><tr>
+<td>blacklist</td>
+<td>Zeigt die Blacklist</td>
+</tr><tr>
+<td>info</td>
+<td>Zeigt verschiedene serverbezogene Informationen</td>
+</tr><tr>
+<td>onlinelist</td>
+<td>Zeigt eine Liste der Onlinespieler</td>
+</tr><tr>
+<td>oplist</td>
+<td>Zeigt eine Liste der OPs</td>
+</tr><tr>
+<td>whitelist</td>
+<td>Zeigt die Whitelist</td>
+</tr><tr>
+<td>worldlist</td>
+<td>Zeigt eine Liste der Welten</td>
+</tr>
+</table>
+</p>
+<p><b>3.3.2 Aliase</b>
+<ul>
+<li>banlist =&gt; blacklist</li>
+<li>information =&gt; info</li>
+<li>online =&gt; onlinelist</li>
+<li>ops =&gt; oplist</li>
+<li>worlds =&gt; worldlist</li>
+</ul>
+</p>
+<p><b>3.3.3 Parameter</b><br />
+Keine Parameter</p>
+<p><b>3.3.4 Permissions</b><br />
+zeltcmds.cmd.&lt;Befehl&gt;</p>
+<p><b>3.3.5 Nachricht</b><br />
+Es wird keine Nachricht verwendet</p>
+<br />
+
+<p><b>3.4 teleport</b><br />
+<b>3.4.1 Typen</b>
+<table>
+<tr>
+<th>Typ</th>
+<th>Beschreibung</th>
+<th>Parameter</th>
+<th>Konsole</th>
+</tr><tr>
+<td>a2m</td>
+<td>Teleportiert alle Spieler zum Spieler</td>
+<td></td>
+<td>false</td>
+</tr><tr>
+<td>a2p</td>
+<td>Teleportiert alle Spieler zu einem bestimmten Spieler</td>
+<td>&lt;Spieler&gt;</td>
+<td>true</td>
+</tr><tr>
+<td>a2w</td>
+<td>Teleportiert aller Spieler zum Spawn einer bestimmten Welt</td>
+<td>&lt;Welt&gt;</td>
+<td>true</td>
+</tr><tr>
+<td>m2b</td>
+<td>Teleportiert den Spieler zum Bedspawn eines bestimmten Spielers</td>
+<td>&lt;Spieler&gt;</td>
+<td>false</td>
+</tr><tr>
+<td>m2c</td>
+<td>Teleportiert den Spieler zum höchsten Block an den Koordinaten</td>
+<td>&lt;x&gt; &lt;z&gt;</td>
+<td>false</td>
+</tr><tr>
+<td>m2e</td>
+<td>Teleportiert den Spieler zur exakten Position</td>
+<td>&lt;x&gt; &lt;y&gt; &lt;z&gt;</td>
+<td>false</td>
+</tr><tr>
+<td>m2h</td>
+<td>Teleportiert den Spieler zu seinem Bedspawn</td>
+<td></td>
+<td>false</td>
+</tr><tr>
+<td>m2p</td>
+<td>Teleportiert den Spieler zu einem bestimmten Spieler</td>
+<td>&lt;Spieler&gt;</td>
+<td>false</td>
+</tr><tr>
+<td>m2s</td>
+<td>Teleportiert den Spieler zum Spawn</td>
+<td></td>
+<td>false</td>
+</tr><tr>
+<td>m2w</td>
+<td>Teleportiert den Spieler zum Spawn einer bestimmten Welt</td>
+<td>&lt;Welt&gt;</td>
+<td>false</td>
+</tr><tr>
+<td>m2wc</td>
+<td>Teleportiert den Spieler zum höchsten Block an den Koordinaten einer gegebenen Welt</td>
+<td>&lt;Welt&gt; &lt;x&gt; &lt;z&gt;</td>
+<td>false</td>
+</tr><tr>
+<td>m2we</td>
+<td>Teleportiert den Spieler zur exakten Position einer gegebenen Welt</td>
+<td>&lt;Welt&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt;</td>
+<td>false</td>
+</tr><tr>
+<td>p2b</td>
+<td>Teleportiert einen bestimmten Spieler zum Bedspawn eines bestimmten Spielers</td>
+<td>&lt;Spieler&gt; &lt;Spieler&gt;</td>
+<td>true</td>
+</tr><tr>
+<td>p2c</td>
+<td>Teleportiert einen bestimmten Spieler zum höchsten Block an den Koordinaten</td>
+<td>&lt;Spieler&gt; &lt;x&gt; &lt;z&gt;</td>
+<td>true</td>
+</tr><tr>
+<td>p2e</td>
+<td>Teleportiert einen Spieler zur exakten Position</td>
+<td>&lt;Spieler&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt;</td>
+<td>true</td>
+</tr><tr>
+<td>p2h</td>
+<td>Teleportiert einen bestimmten Spieler zu seinem Bedspawn</td>
+<td>&lt;Spieler&gt;</td>
+<td>true</td>
+</tr><tr>
+<td>p2m</td>
+<td>Teleportiert einen bestimmten Spieler zum Spieler</td>
+<td>&lt;Spieler&gt;</td>
+<td>false</td>
+</tr><tr>
+<td>p2p</td>
+<td>Teleportiert einen bestimmten Spieler zu seinem bestimmten Spieler</td>
+<td>&lt;Spieler&gt; &lt;Spieler&gt;</td>
+<td>true</td>
+</tr><tr>
+<td>p2s</td>
+<td>Teleportiert einen bestimmten Spieler zum Spawn</td>
+<td>&lt;Spieler&gt;</td>
+<td>true</td>
+</tr><tr>
+<td>p2w</td>
+<td>Teleportiert einen bestimmten Spieler zum Spawn einer bestimmten Welt</td>
+<td>&lt;Spieler&gt; &lt;Welt&gt;</td>
+<td>true</td>
+</tr><tr>
+<td>p2wc</td>
+<td>Teleportiert einen bestimmten Spieler zum höchsten Block an den Koordinaten einer gegebenen Welt</td>
+<td>&lt;Spieler&gt; &lt;Welt&gt; &lt;x&gt; &lt;z&gt;</td>
+<td>true</td>
+</tr><tr>
+<td>p2we</td>
+<td>Teleportiert einen Spieler zur exakten Position einer gegebenen Welt</td>
+<td>&lt;Spieler&gt; &lt;Welt&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt;</td>
+<td>true</td>
+</tr><tr>
+<td>w2m</td>
+<td>Teleportiert Spieler einer bestimmten Welt zum Spieler</td>
+<td>&lt;Welt&gt;</td>
+<td>false</td>
+</tr><tr>
+<td>w2p</td>
+<td>Teleportiert Spieler einer bestimmten Welt zu einem bestimmten Spieler</td>
+<td>&lt;Welt&gt; &lt;Spieler&gt;</td>
+<td>true</td>
+</tr><tr>
+<td>w2s</td>
+<td>Teleportiert Spieler einer bestimmten Welt zum Spawn</td>
+<td>&lt;Welt&gt;</td>
+<td>true</td>
+</tr><tr>
+<td>w2w</td>
+<td>Teleportiert Spieler einer bestimmten Welt zum Spawn einer bestimmten Welt</td>
+<td>&lt;Welt&gt; &lt;Welt&gt;</td>
+<td>true</td>
+</tr>
+</table>
+</p>
+<p><b>3.4.2 Aliase</b>
+<ul>
+<li>port =&gt; teleport</li>
+</ul>
+</p>
+<p><b>3.4.3 Permissions</b><br />
+zeltcmds.cmd.&lt;Befehl&gt;</p>
+<p><b>3.4.4 Nachricht</b><br />
+Wird an teleportierte Spieler gesendet</p>
+<br />
+
+<p><b>3.5 set</b><br />
+<b>3.5.1 Typen</b>
+<table>
+<tr>
+<th>Typ</th>
+<th>Beschreibung</th>
+<th>Parameter</th>
+<th>Konsole</th>
+</tr><tr>
+<td>bedspawn</td>
+<td>Setzt den Bedspawn für einen Spieler</td>
+<td>[Spieler]</td>
+<td>false</td>
+</tr><tr>
+<td>spawn</td>
+<td>Setzt den Spawn für eine Welt</td>
+<td></td>
+<td>false</td>
+</tr>
+</table>
+</p>
+<p><b>3.5.2 Aliase</b>
+<ul>
+<li>home =&gt; bedspawn</li>
+</ul>
+</p>
+<p><b>3.5.3 Permissions</b><br />
+<b>3.5.3.1 bedspawn</b><br />
+Für sich selbst: zeltcmds.cmd.&lt;Befehl&gt;<br />
+Für andere Spieler: zeltcmds.cmd.&lt;Befehl&gt;.player</p>
+<p><b>3.5.3.2 spawn</b><br />
+zeltcmds.cmd.&lt;Befehl&gt;</p>
+<p><b>3.5.4 Nachricht</b><br />
+<b>3.5.4.1 bedspawn</b><br />
+Wird an betroffenen Spieler gesendet</p>
+<p><b>3.5.4.2 spawn</b><br />
+Wird an den Spieler gesendet der den Befehl ausgeführt hat</p>
+<br />
+
+<p><b>3.6 servertime</b><br />
+<b>3.6.1 Parameter für Erstellung</b><br />
+Integer/Ganze Zahl. Als Referenzen, 0 setzt den Mond an den höchsten Punkt (Mitternacht) und 12000 setzt die Sonne an ihren höchsten Punkt (Highnoon). In etwa Stunde*1000</p>
+<p><b>3.6.2 Parameter für Verwendung</b><br />
+Kein Parameter</p>
+<p><b>3.6.3 Aliase</b>
+<ul>
+<li>stime =&gt; servertime</li>
+</ul>
+</p>
+<p><b>3.6.4 Permissions</b><br />
+zeltcmds.cmd.&lt;Befehl&gt;</p>
+<p><b>3.6.5 Nachricht</b><br />
+Wird an jeden Spieler gesendet</p>
+<br />
+
+<p><b>3.7 serverweather</b><br />
+<b>3.7.1 Typen</b>
+<table>
+<tr>
+<th>Typ</th>
+<th>Beschreibung</th>
+</tr><tr>
+<td>rain</td>
+<td>Setzt Wetter auf Regen</td>
+</tr><tr>
+<td>storm</td>
+<td>Setzt Wetter auf Sturm</td>
+</tr><tr>
+<td>sun</td>
+<td>Setzt Wetter auf Sonne</td>
+</tr>
+</table>
+</p>
+<p><b>3.7.2 Parameter</b><br />
+Kein Parameter</p>
+<p><b>3.7.3 Aliase</b>
+<ul>
+<li>sweather =&gt; serverweather</li>
+</ul>
+</p>
+<p><b>3.7.4 Permissions</b><br />
+zeltcmds.cmd.&lt;Befehl&gt;</p>
+<p><b>3.7.5 Nachricht</b><br />
+Wird an jeden Spieler gesendet</p>
+<br />
+
+<p><b>3.8 spawn</b><br />
+<b>3.8.1 Typen</b>
+<table>
+<tr>
+<th>Typ</th>
+<th>Beschreibung</th>
+</tr><tr>
+<td>cursor</td>
+<td>Spawnt Entität an Cursorposition</td>
+</tr><tr>
+<td>player</td>
+<td>Spawnt Entität an Spielerposition</td>
+</tr>
+</table>
+</p>
+<p><b>3.8.2 Parameter</b><br />
+<b>3.8.2.1 cursor</b><br />
+<b>3.8.2.1.1 für Konsole</b><br />
+keine Verwendung</p>
+<p><b>3.8.2.1.2 für Spieler</b><br />
+&lt;Mob&gt;</p>
+<p><b>3.8.2.2 player</b><br />
+<b>3.8.2.2.1 für Konsole</b><br />
+&lt;Mob&gt; &lt;Spieler&gt;</p>
+<p><b>3.8.2.2.2 für Spieler</b><br />
+&lt;Mob&gt; [Spieler]</p>
+<p><b>3.8.3 Permissions</b><br />
+<b>3.8.3.1 cursor</b><br />
+zeltcmds.cmd.&lt;command&gt;</p>
+<p><b>3.8.3.2 player</b><br />
+Für sich selbst: zeltcmds.cmd.&lt;Befehl&gt;<br />
+Für andere Spieler: zeltcmds.cmd.&lt;Befehl&gt;.player</p>
+<p><b>3.8.4 msg</b><br />
+<b>3.8.4.1 cursor</b><br />
+Wird an Spieler gesendet der Entität spawnt</p>
+<p><b>3.8.4.2 player</b><br />
+Wird an Spieler gesendet bei dem die Entität gespawnt wird</p>
+<br />
+
+<p><b>3.9 worldtime</b><br />
+<b>3.9.1 Parameter für Erstellung</b><br />
+Integer/Ganze Zahl. Als Referenzen, 0 setzt den Mond an den höchsten Punkt (Mitternacht) und 12000 setzt die Sonne an ihren höchsten Punkt (Highnoon). In etwa Stunde*1000</p>
+<p><b>3.9.2 Parameter für Verwendung</b><br />
+<b>3.9.2.1 für Spieler</b><br />
+[Welt]</p>
+<p><b>3.9.2.2 für Konsole</b><br />
+&lt;Welt&gt;</p>
+<p><b>3.9.3 Aliase</b>
+<ul>
+<li>time =&gt; worldtime</li>
+<li>wtime =&gt; worldtime</li>
+</ul>
+</p>
+<p><b>3.9.4 Permissions</b><br />
+Für die Welt auf welcher der Spieler ist: zeltcmds.cmd.&lt;Befehl&gt;<br />
+Für eine andere Welt: zeltcmds.cmd.&lt;Befehl&gt;.world</p>
+<p><b>3.9.5 msg</b><br />
+Wird an jeden Spieler der betroffenen Welt gesendet</p>
+<br />
+
+<p><b>3.10 worldweather</b><br />
+<b>3.10.1 Typen</b>
+<table>
+<tr>
+<th>Typ</th>
+<th>Beschreibung</th>
+</tr><tr>
+<td>rain</td>
+<td>Setzt Wetter einer Welt auf Regen</td>
+</tr><tr>
+<td>storm</td>
+<td>Setzt Wetter einer Welt auf Sturm</td>
+</tr><tr>
+<td>sun</td>
+<td>Setzt Wetter einer Welt auf Sonne</td>
+</tr>
+</table>
+</p>
+<p><b>3.10.2 Parameter</b><br />
+<b>3.10.2.1 für Spieler</b><br />
+[Welt]</p>
+<p></b>3.10.2.2 für Konsole</b><br />
+&lt;Welt&gt;</p>
+<p><b>3.10.3 Aliase</b>
+<ul>
+<li>weather =&gt; worldweather</li>
+<li>wweather =&gt; worldweather</li>
+</ul>
+</p>
+<p><b>3.10.4 Permissions</b><br />
+Für die Welt auf welcher der Spieler ist: zeltcmds.cmd.&lt;Befehl&gt;<br />
+Für eine andere Welt: zeltcmds.cmd.&lt;Befehl&gt;.world</p>
+<p><b>3.10.5 Nachricht</b><br />
+Wird an jeden Spieler der betroffenen Welt gesendet</p>
+<br />
+
+<p><b>4 Defaultpermissions</b>
+<table>
+<tr>
+<th>Defaultpermission</th>
+<th>Beschreibung</th>
+</tr><tr>
+<td>false</td>
+<td>Kein Spieler kann diesen Befehl standardmäßig verwenden</td>
+</tr><tr>
+<td>notop</td>
+<td>Nur Spieler die kein OP sind können diesen Befehl standardmäßig verwenden</td>
+</tr><tr>
+<td>op</td>
+<td>Nur Spieler die OP sind können diesen Befehl standardmäßig verwenden</td>
+</tr><tr>
+<td>true</td>
+<td>Jeder Spieler kann diesen Befehl standardmäßig verwenden</td>
+</tr>
+</table>
+</p>
+
+<p><b>5 Aliase</b></p>
+<p>Beispiel 1: (Einfacher Alias für Befehl)<br />
+/zeltcmds addalias zc zeltcmds<br />
+> zc ist Alias für zeltcmdsm, womit man /zc [...] anstelle von /zeltcmds [...] verwenden kann</p>
+<p>Beispiel 2: (Erweiterter Alias mit konstanten Parametern)<br />
+/zeltcmds add m2c port m2c true Woosh!<br />
+> Befehl wird für Beispiel verwendet<br />
+/zeltcmds addalias zero m2c 0 0<br />
+> zero ist ein Teleport für den Spieler zu Position x=0;z=0 ohne weitere Parameter</p>
+<p>Beispiel 3: (Erweiterter Alias mit konstanten Parametern und einem dynamischen)<br />
+/zeltcmds add m2wc port m2wc true Woosh!<br />
+> Befehl wird für Beispiel verwendet<br />
+/zeltcmds addalias zerow m2wc &lt;param&gt; 0 0<br />
+> zerow ist ein Teleport für den Spieler zu Position x=0;z=0 auf einer Welt die angegeben werden muss<br />
+/zerow test<br />
+> Teleportiert den Spieler zur Welt 'test' an Position x=0;z=0</p>
+<p>Beispiel 4: (Ein weiterer erweiterter Alias)<br />
+/zeltcmds add p2e port p2e op Woosh!<br />
+> Befehl wird für Beispiel verwendet<br />
+/zeltcmds addalias skyfall p2e &lt;param&gt; &lt;param&gt; 256<br />
+> skyfall ist ein Teleport für einen bestimmten Spieler zu einer gegebenen Position mit y=256<br />
+/skyfall notch -1 38<br />
+> Teleportiert den Spieler 'notch' zur Position x=-1;y=256;z=38</p>

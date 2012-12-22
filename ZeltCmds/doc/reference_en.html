@@ -1,0 +1,646 @@
+<p>v1.4.0</p>
+<p><b>1 General</b></p>
+<p><b>1.1 Casesensivity</b><br/>
+<b>1.1.1 Commands</b><br/>
+Casesensitiv</p>
+<p><b>1.1.2 Categories, types</b><br/>
+Caseinsensitiv</p>
+<p><b>1.2 Options in config.yml</b>
+<table>
+<tr>
+<th>Option</th>
+<th>Description</th>
+<th>Default</th>
+</tr><tr>
+<td>lang</td>
+<td>Localization to use. Implemented are en and de</td>
+<td>en</td>
+</tr><tr>
+<td>logAlias</td>
+<td>Wether usage of aliases by players are logged to console or not</td>
+<td>true</td>
+</tr><tr>
+<td>logCmd</td>
+<td>Wether usage of commands by players are logged to console or not</td>
+<td>true</td>
+</tr><tr>
+<td>pageentries</td>
+<td>Number of entries per page in commandlist and aliaslist</td>
+<td>5</td>
+</tr><tr>
+<td>version</td>
+<td>For updates. Dont change this value</td>
+<td>[current version]</td>
+</tr>
+</table>
+</p>
+<br />
+
+<p><b>2 Permanent command</b>
+<table>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr><tr>
+<td>/zeltcmds</td>
+<td>Shows information and help</td>
+</tr><tr>
+<td>/zeltcmds add &lt;command&gt; &lt;category&gt; &lt;type/parameter&gt; &lt;defaultpermission&gt; [msg]</td>
+<td>Adds a new command</td>
+</tr><tr>
+<td>/zeltcmds addalias &lt;alias&gt; &lt;command&gt; [parameter]*</td>
+<td>Adds a new alias</td>
+</tr><tr>
+<td>/zeltcmds examples</td>
+<td>Adds some predefined commands. Will not overwrite existing commands</td>
+</tr><tr>
+<td>/zeltcmds list [page]</td>
+<td>Lists defined commands</td>
+</tr><tr>
+<td>/zeltcmds listalias [page]</td>
+<td>Lists defined aliases</td>
+</tr><tr>
+<td>/zeltcmds reload</td>
+<td>Reloads configuration and commands</td>
+</tr><tr>
+<td>/zeltcmds remove &lt;command&gt;</td>
+<td>Removes a command</td>
+</tr><tr>
+<td>/zeltcmds removealias &lt;alias&gt;</td>
+<td>Removes an alias</td>
+</tr>
+</table>
+</p>
+<p><b>2.1 Information</b><br />
+'/zeltcmds add', '/zeltcmds addalias', '/zeltcmds remove' and '/zeltcmds removealias' instantly change the config.yml, so reload will not undo changes from commands or aliases!</p>
+<p><b>2.2 Permission</b><br />
+zeltcmds.manage</p>
+<p><b>2.3 Defaultpermission</b><br />
+OP</p>
+<br />
+
+<p><b>3 Categories</b></p>
+<p><b>3.1 mode</b><br />
+<b>3.1.1 Types</b>
+<table>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr><tr>
+<td>adventure</td>
+<td>Set gamemode to adventure</td>
+</tr><tr>
+<td>adventure_creative</td>
+<td>Toggles gamemode between adventure and creative</td>
+</tr><tr>
+<td>adventure_survival</td>
+<td>Toggles gamemode between adventure and survival</td>
+</tr><tr>
+<td>adventure_creative_survival</td>
+<td>Rotates gamemode. adventure > creative > survival</td>
+</tr><tr>
+<td>adventure_survival_creative</td>
+<td>Rotates gamemode. adventure > survival > creative</td>
+</tr><tr>
+<td>creative</td>
+<td>Sets gamemode to creative</td>
+</tr><tr>
+<td>creative_adventure</td>
+<td>Toggles gamemode between creative and adventure</td>
+</tr><tr>
+<td>creative_survival</td>
+<td>Toggles gamemode between creative and survival</td>
+</tr><tr>
+<td>creative_adventure_survival</td>
+<td>Rotates gamemode. creative > adventure > survival</td>
+</tr><tr>
+<td>creative_survival_adventure</td>
+<td>Rotates gamemode. creative > survival > adventure</td>
+</tr><tr>
+<td>survival</td>
+<td>Sets gamemode to survival</td>
+</tr><tr>
+<td>survival_adventure</td>
+<td>Toggles gamemode between survival and adventure</td>
+</tr><tr>
+<td>survival_creative</td>
+<td>Toggles gamemode between survuval and creative</td>
+</tr><tr>
+<td>survival_adventure_creative</td>
+<td>Rotates gamemode. survival > adventure > creative</td>
+</tr><tr>
+<td>survival_creative_adventure</td>
+<td>Rotates gamemode. survival > creative > adventure</td>
+</tr>
+</table>
+</p>
+<p><b>3.1.2 Aliases</b>
+<ul>
+<li>a =&gt; adventure</li>
+<li>ac =&gt; adventure_creative</li>
+<li>as =&gt; adventure_survival</li>
+<li>acs =&gt; adventure_creative_survival</li>
+<li>asc =&gt; adventure_survivial_creative</li>
+<li>c =&gt; creative</li>
+<li>ca =&gt; creative_adventure</li>
+<li>cs =&gt; creative_survival</li>
+<li>cas =&gt; creative_adventure_survival</li>
+<li>csa =&gt; creative_survival_adventure</li>
+<li>s =&gt; survival</li>
+<li>sa =&gt; survival_adventure</li>
+<li>sc =&gt; survival_creative</li>
+<li>sac =&gt; survival_adventure_creative</li>
+<li>sca =&gt; survival_creative_adventure</li>
+</ul>
+</p>
+<p><b>3.1.3 Parameter</b><br />
+<b>3.1.3.1 by Player</b><br />
+[player]</p>
+<p><b>3.1.2.2 by Console</b><br />
+&lt;player&gt;</p>
+<p><b>3.1.4 Permissions</b><br />
+For self: zeltcmds.cmd.&lt;command&gt;<br />
+For other player: zeltcmds.cmd.&lt;command&gt;.player</p>
+<p><b>3.1.5 msg</b><br />
+Send to the affected player</p>
+<br />
+
+<p><b>3.2 player</b><br />
+<b>3.2.1 Types</b>
+<table>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr><tr>
+<td>clear</td>
+<td>Clears the inventory of a choosen player</td>
+</tr><tr>
+<td>direction</td>
+<td>Shows the direction a choosen player ist looking</td>
+</tr><tr>
+<td>feed</td>
+<td>Feeds a choosen player</td>
+</tr><tr>
+<td>heal</td>
+<td>Heals a choosen player</td>
+</tr><tr>
+<td>info</td>
+<td>Shows detailed information about a choosen player</td>
+</tr><tr>
+<td>kill</td>
+<td>Kills a choosen player</td>
+</tr><tr>
+<td>position</td>
+<td>Shows the position of a choosen player</td>
+</tr><tr>
+<td>seen</td>
+<td>Shows when a choosen player was last time online</td>
+</tr>
+</table>
+</p>
+<p><b>3.2.2 Aliases</b>
+<ul>
+<li>dir =&gt; direction</li>
+<li>pos =&gt; position</li>
+</ul>
+</p>
+<p><b>3.2.3 Parameter</b><br />
+<b>3.2.3.1 by Player</b><br />
+[player]</p>
+<p><b>3.2.3.2 by Console</b><br />
+&lt;player&gt;</p>
+<p><b>3.2.4 Permissions</b><br />
+<b>3.2.4.1 clear, feed, heal, kill</b><br />
+For self: zeltcmds.cmd.&lt;command&gt;<br />
+For other player: zeltcmds.cmd.&lt;command&gt;.player</p>
+<p><b>3.2.4.2 direction, info, position, seen</b><br />
+For both: zeltcmds.cmd.&lt;command&gt;</p>
+<p><b>3.2.5 msg</b><br />
+<b>3.2.5.1 clear, feed, heal, kill</b><br />
+Send to the affected player</p>
+<p><b>3.2.5.2 direction, info, position, seen</b><br />
+msg is not used by this types</p>
+<br />
+
+<p><b>3.3 serverinfo</b><br />
+<b>3.3.1 Types</b>
+<table>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr><tr>
+<td>blacklist</td>
+<td>Shows the blacklist</td>
+</tr><tr>
+<td>info</td>
+<td>Shows informations of server</td>
+</tr><tr>
+<td>onlinelist</td>
+<td>Shows list of onlineplayers</td>
+</tr><tr>
+<td>oplist</td>
+<td>Shows list of ops</td>
+</tr><tr>
+<td>whitelist</td>
+<td>Shows the whitelist</td>
+</tr><tr>
+<td>worldlist</td>
+<td>Shows list of worlds</td>
+</tr>
+</table>
+</p>
+<p><b>3.3.2 Aliases</b>
+<ul>
+<li>banlist =&gt; blacklist</li>
+<li>information =&gt; info</li>
+<li>online=&gt; onlinelist</li>
+<li>ops =&gt; oplist</li>
+<li>worlds =&gt; worldlist</li>
+</ul>
+</p>
+<p><b>3.3.3 Parameter</b><br />
+no parameter</p>
+<p><b>3.3.4 Permissions</b><br />
+zeltcmds.cmd.&lt;command&gt;</p>
+<p><b>3.3.5 msg</b><br />
+msg is not used by this category</p>
+<br />
+
+<p><b>3.4 teleport</b><br />
+<b>3.4.1 Types</b>
+<table>
+<tr>
+<th>Type</th>
+<th>Description</th>
+<th>Parameter</th>
+<th>Console</th>
+</tr><tr>
+<td>a2m</td>
+<td>Teleports all players to the player</td>
+<td></td>
+<td>false</td>
+</tr><tr>
+<td>a2p</td>
+<td>Teleports all players to a choosen player</td>
+<td>&lt;player&gt;</td>
+<td>true</td>
+</tr><tr>
+<td>a2w</td>
+<td>Teleports all players to spawn of a world</td>
+<td>&lt;world&gt;</td>
+<td>true</td>
+</tr><tr>
+<td>m2b</td>
+<td>Teleports the player to bedspawn of a player</td>
+<td>&lt;player&gt;</td>
+<td>false</td>
+</tr><tr>
+<td>m2c</td>
+<td>Teleports the player to the highest block at coordinates</td>
+<td>&lt;x&gt; &lt;z&gt;</td>
+<td>false</td>
+</tr><tr>
+<td>m2e</td>
+<td>Teleports the player to exact position</td>
+<td>&lt;x&gt; &lt;y&gt; &lt;z&gt;</td>
+<td>false</td>
+</tr><tr>
+<td>m2h</td>
+<td>Teleports the player to bedspawn</td>
+<td></td>
+<td>false</td>
+</tr><tr>
+<td>m2p</td>
+<td>Teleports the player to a choosen player</td>
+<td>&lt;player&gt;</td>
+<td>false</td>
+</tr><tr>
+<td>m2s</td>
+<td>Teleports the player to spawn</td>
+<td></td>
+<td>false</td>
+</tr><tr>
+<td>m2w</td>
+<td>Teleports the player to spawn of a world</td>
+<td>&lt;world&gt;</td>
+<td>false</td>
+</tr><tr>
+<td>m2wc</td>
+<td>Teleports the player to the highest block at coordinates on given world</td>
+<td>&lt;world&gt; &lt;x&gt; &lt;z&gt;</td>
+<td>false</td>
+</tr><tr>
+<td>m2we</td>
+<td>Teleports the player to exact position on given world</td>
+<td>&lt;world&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt;</td>
+<td>false</td>
+</tr><tr>
+<td>p2b</td>
+<td>Teleports a player to bedspawn of a player</td>
+<td>&lt;player&gt; &lt;player&gt;</td>
+<td>true</td>
+</tr><tr>
+<td>p2c</td>
+<td>Teleports a player to the highest block at coordinates</td>
+<td>&lt;player&gt; &lt;x&gt; &lt;z&gt;</td>
+<td>true</td>
+</tr><tr>
+<td>p2e</td>
+<td>Teleports a player to exact position</td>
+<td>&lt;player&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt;</td>
+<td>true</td>
+</tr><tr>
+<td>p2h</td>
+<td>Teleports a player to bedspawn</td>
+<td>&lt;player&gt;</td>
+<td>true</td>
+</tr><tr>
+<td>p2m</td>
+<td>Teleports a player to the player</td>
+<td>&lt;player&gt;</td>
+<td>false</td>
+</tr><tr>
+<td>p2p</td>
+<td>Teleports a player to a choosen player</td>
+<td>&lt;player&gt; &lt;player&gt;</td>
+<td>true</td>
+</tr><tr>
+<td>p2s</td>
+<td>Teleports a player to spawn</td>
+<td>&lt;player&gt;</td>
+<td>true</td>
+</tr><tr>
+<td>p2w</td>
+<td>Teleports a player to spawn of a world</td>
+<td>&lt;player&gt; &lt;world&gt;</td>
+<td>true</td>
+</tr><tr>
+<td>p2wc</td>
+<td>Teleports a player to the highest block at coordinates on given world</td>
+<td>&lt;player&gt; &lt;world&gt; &lt;x&gt; &lt;z&gt;</td>
+<td>true</td>
+</tr><tr>
+<td>p2we</td>
+<td>Teleports a player to exact position on given world</td>
+<td>&lt;player&gt; &lt;world&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt;</td>
+<td>true</td>
+</tr><tr>
+<td>w2m</td>
+<td>Teleports players of a world to the player</td>
+<td>&lt;world&gt;</td>
+<td>false</td>
+</tr><tr>
+<td>w2p</td>
+<td>Teleports players of a world to a choosen player</td>
+<td>&lt;world&gt; &lt;player&gt;</td>
+<td>true</td>
+</tr><tr>
+<td>w2s</td>
+<td>Teleports players of a world to spawn</td>
+<td>&lt;world&gt;</td>
+<td>true</td>
+</tr><tr>
+<td>w2w</td>
+<td>Teleports players of a world to spawn of a world</td>
+<td>&lt;world&gt; &lt;world&gt;</td>
+<td>true</td>
+</tr>
+</table>
+</p>
+<p><b>3.4.2 Aliases</b>
+<ul>
+<li>port =&gt; teleport</li>
+</ul>
+</p>
+<p><b>3.4.3 Permissions</b><br />
+zeltcmds.cmd.&lt;command&gt;</p>
+<p><b>3.4.4 msg</b><br />
+Send to teleported players</p>
+<br />
+
+<p><b>3.5 set</b><br />
+<b>3.5.1 Types</b>
+<table>
+<tr>
+<th>Type</th>
+<th>Description</th>
+<th>Parameter</th>
+<th>Console</th>
+</tr><tr>
+<td>bedspawn</td>
+<td>Sets the bedspawn for a player</td>
+<td>[player]</td>
+<td>false</td>
+</tr><tr>
+<td>spawn</td>
+<td>Sets the spawn for the world</td>
+<td></td>
+<td>false</td>
+</tr>
+</table>
+</p>
+<p><b>3.5.2 Aliases</b>
+<ul>
+<li>home =&gt; bedspawn</li>
+</ul>
+</p>
+<p><b>3.5.3 Permissions</b><br />
+<b>3.5.3.1 bedspawn</b><br />
+For self: zeltcmds.cmd.&lt;command&gt;<br />
+For other player: zeltcmds.cmd.&lt;command&gt;.player</p>
+<p><b>3.5.3.2 spawn</b><br />
+zeltcmds.cmd.&lt;command&gt;</p>
+<p><b>3.5.4 msg</b><br />
+<b>3.5.4.1 bedspawn</b><br />
+Send to affected player</p>
+<p><b>3.5.4.2 spawn</b><br />
+Send to player using command</p>
+<br />
+
+<p><b>3.6 servertime</b><br />
+<b>3.6.1 Parameter for creation</b><br />
+Integer. As references, 0 sets the moon to its highest point (midnight) and 12000 sets the sun to its highest point (highnoon). Its a bit like hour*1000</p>
+<p><b>3.6.2 Parameter for use</b><br />
+no paramter</p>
+<p><b>3.6.3 Aliases</b>
+<ul>
+<li>stime =&gt; servertime</li>
+</ul>
+</p>
+<p><b>3.6.4 Permissions</b><br />
+zeltcmds.cmd.&lt;command&gt;</p>
+<p><b>3.6.5 msg</b><br />
+Send to every player</p>
+<br />
+
+<p><b>3.7 serverweather</b><br />
+<b>3.7.1 Types</b>
+<table>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr><tr>
+<td>rain</td>
+<td>Sets weather to rain</td>
+</tr><tr>
+<td>storm</td>
+<td>Sets weather to rain and thunder</td>
+</tr><tr>
+<td>sun</td>
+<td>Sets weather to sun</td>
+</tr>
+</table>
+</p>
+<p><b>3.7.2 Parameter</b><br />
+no parameter</p>
+<p><b>3.7.3 Aliases</b>
+<ul>
+<li>sweather =&gt; serverweather</li>
+</ul>
+</p>
+<p><b>3.7.4 Permissions</b><br />
+zeltcmds.cmd.&lt;command&gt;</p>
+<p><b>3.7.5 msg</b><br />
+Send to every player</p>
+<br />
+
+<p><b>3.8 spawn</b><br />
+<b>3.8.1 Types</b>
+<table>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr><tr>
+<td>cursor</td>
+<td>Spawns entity at position of cursor</td>
+</tr><tr>
+<td>player</td>
+<td>Spawns entity at position of player</td>
+</tr>
+</table>
+</p>
+<p><b>3.8.2 Parameter</b><br />
+<b>3.8.2.1 cursor</b><br />
+<b>3.8.2.1.1 by Console</b><br />
+no usage</p>
+<p><b>3.8.2.1.2 by Player</b><br />
+&lt;mob&gt;</p>
+<p><b>3.8.2.2 player</b><br />
+<b>3.8.2.2.1 by Console</b><br />
+&lt;mob&gt; &lt;player&gt;</p>
+<p><b>3.8.2.2.2 by Player</b><br />
+&lt;mob&gt; [player]</p>
+<p><b>3.8.3 Permissions</b><br />
+<b>3.8.3.1 cursor</b><br />
+zeltcmds.cmd.&lt;command&gt;</p>
+<p><b>3.8.3.2 player</b><br />
+For self: zeltcmds.cmd.&lt;command&gt;<br />
+For other player: zeltcmds.cmd.&lt;command&gt;.player</p>
+<p><b>3.8.4 msg</b><br />
+<b>3.8.4.1 cursor</b><br />
+Send to player spawning entity</p>
+<p><b>3.8.4.2 player</b><br />
+Send to player at which position the entity is spawned</p>
+<br />
+
+<p><b>3.9 worldtime</b><br />
+<b>3.9.1 Parameter for creation</b><br />
+Integer. As references, 0 sets the moon to its highest point (midnight) and 12000 sets the sun to its highest point (highnoon). Its a bit like hour*1000</p>
+<p><b>3.9.2 Parameter for use</b><br />
+<b>3.9.2.1 by Player</b><br />
+[world]</p>
+<p><b>3.9.2.2 by Console</b><br />
+&lt;world&gt;</p>
+<p><b>3.9.3 Aliases</b>
+<ul>
+<li>time =&gt; worldtime</li>
+<li>wtime =&gt; worldtime</li>
+</ul>
+</p>
+<p><b>3.9.4 Permissions</b><br />
+For the world the player stands: zeltcmds.cmd.&lt;command&gt;<br />
+For an other world: zeltcmds.cmd.&lt;command&gt;.world</p>
+<p><b>3.9.5 msg</b><br />
+Send to every player on affected world</p>
+<br />
+
+<p><b>3.10 worldweather</b><br />
+<b>3.10.1 Types</b>
+<table>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr><tr>
+<td>rain</td>
+<td>Sets weather of a world to rain</td>
+</tr><tr>
+<td>storm</td>
+<td>Sets weather of a world to rain and thunder</td>
+</tr><tr>
+<td>sun</td>
+<td>Sets weather of a world to sun</td>
+</tr>
+</table>
+</p>
+<p><b>3.10.2 Parameter</b><br />
+<b>3.10.2.1 by Player</b><br />
+[world]</p>
+<p></b>3.10.2.2 by Console</b><br />
+&lt;world&gt;</p>
+<p><b>3.10.3 Aliases</b>
+<ul>
+<li>weather =&gt; worldweather</li>
+<li>wweather =&gt; worldweather</li>
+</ul>
+</p>
+<p><b>3.10.4 Permissions</b><br />
+For the world the player stands: zeltcmds.cmd.&lt;command&gt;<br />
+For an other world: zeltcmds.cmd.&lt;command&gt;.world</p>
+<p><b>3.10.5 msg</b><br />
+Send to every player on affected world</p>
+<br />
+
+<p><b>4 Defaultpermissions</b>
+<table>
+<tr>
+<th>Defaultpermission</th>
+<th>Description</th>
+</tr><tr>
+<td>false</td>
+<td>No player can use the command by default</td>
+</tr><tr>
+<td>notop</td>
+<td>Only players that are not OP can use the command by default</td>
+</tr><tr>
+<td>op</td>
+<td>Only players that are OP can use the command by default</td>
+</tr><tr>
+<td>true</td>
+<td>Every player can use the command by default</td>
+</tr>
+</table>
+</p>
+
+<p><b>5 Aliases</b></p>
+<p>Example 1: (Basic alias for command)<br />
+/zeltcmds addalias zc zeltcmds<br />
+> zc is alias for zeltcmds so now you can use /zc [...] instead of /zeltcmds [...]</p>
+<p>Example 2: (Advanced alias with constant parameters)<br />
+/zeltcmds add m2c port m2c true Woosh!<br />
+> Command used for the example<br />
+/zeltcmds addalias zero m2c 0 0<br />
+> zero is a teleport for the player to position x=0;z=0 without any additional parameter needed</p>
+<p>Example 3: (Advanced alias with constant parameters and one dynamic)<br />
+/zeltcmds add m2wc port m2wc true Woosh!<br />
+> Command used for the example<br />
+/zeltcmds addalias zerow m2wc &lt;param&gt; 0 0<br />
+> zerow is a teleport for the player to position x=0;z=0 on a world that has to be given<br />
+/zerow test<br />
+> Teleports the player to world 'test' to position x=0;z=0</p>
+<p>Example 4: (Another advanced alias)<br />
+/zeltcmds add p2e port p2e op Woosh!<br />
+> Command used for the example<br />
+/zeltcmds addalias skyfall p2e &lt;param&gt; &lt;param&gt; 256<br />
+> skyfall is a teleport for a given player to a given coordiante at y=256<br />
+/skyfall notch -1 38<br />
+> Teleports the player 'notch' to position x=-1;y=256;z=38</p>
