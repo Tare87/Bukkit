@@ -5,7 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 
-import de.zeltclan.tare.bukkitutils.Msg;
+import de.zeltclan.tare.bukkitutils.MessageUtils;
 import de.zeltclan.tare.zeltcmds.CmdParent;
 import de.zeltclan.tare.zeltcmds.ZeltCmds;
 
@@ -26,23 +26,23 @@ public final class CmdWorldTime extends CmdParent {
 	protected void executeConsole(CommandSender p_sender, String p_cmd, String[] p_args) {
 		switch (p_args.length) {
 		case 0:
-			Msg.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
-			Msg.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage_World", new Object[] {p_cmd}));
+			MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
+			MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage_World", new Object[] {p_cmd}));
 			break;
 		case 1:
 			final World world = p_sender.getServer().getWorld(p_args[0]);
 			if (world == null) {
-				Msg.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("world_not_found", new Object[] {p_args[0]}));
+				MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("world_not_found", new Object[] {p_args[0]}));
 				break;
 			}
 			world.setTime(time);
 			if (msg != null) {
-				Msg.broadcast(world, msg);
+				MessageUtils.broadcast(world, msg);
 			}
 			break;
 		default:
-			Msg.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_too_many"));
-			Msg.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage_World", new Object[] {p_cmd}));
+			MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_too_many"));
+			MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage_World", new Object[] {p_cmd}));
 			break;
 		}
 	}
@@ -56,7 +56,7 @@ public final class CmdWorldTime extends CmdParent {
 					world = p_player.getWorld();
 					world.setTime(time);
 					if (msg != null) {
-						Msg.broadcast(world, msg);
+						MessageUtils.broadcast(world, msg);
 					}
 					return ZeltCmds.getLanguage().getString("log_worldtime", new Object[] {rel_time, p_player.getDisplayName(), world.getName()});
 				}
@@ -65,19 +65,19 @@ public final class CmdWorldTime extends CmdParent {
 				if (this.checkPerm(p_player, true)) {
 					world = p_player.getServer().getWorld(p_args[0]);
 					if (world == null) {
-						Msg.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("world_not_found", new Object[] {p_args[0]}));
+						MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("world_not_found", new Object[] {p_args[0]}));
 						break;
 					}
 					world.setTime(time);
 					if (msg != null) {
-						Msg.broadcast(world, msg);
+						MessageUtils.broadcast(world, msg);
 					}
 					return ZeltCmds.getLanguage().getString("log_worldtime", new Object[] {rel_time, p_player.getDisplayName(), world.getName()});
 				}
 				break;
 			default:
-				Msg.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_too_many"));
-				Msg.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage_world", new Object[] {"/" + p_cmd}));
+				MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_too_many"));
+				MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage_world", new Object[] {"/" + p_cmd}));
 				break;
 		}
 		return null;

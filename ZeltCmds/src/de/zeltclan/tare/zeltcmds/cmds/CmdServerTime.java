@@ -5,7 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 
-import de.zeltclan.tare.bukkitutils.Msg;
+import de.zeltclan.tare.bukkitutils.MessageUtils;
 import de.zeltclan.tare.zeltcmds.CmdParent;
 import de.zeltclan.tare.zeltcmds.ZeltCmds;
 
@@ -29,13 +29,13 @@ public final class CmdServerTime extends CmdParent {
 			for (World world : p_sender.getServer().getWorlds()) {
 				world.setTime(time);
 				if (msg != null) {
-					Msg.broadcast(world, msg);
+					MessageUtils.broadcast(world, msg);
 				}
 			}
 			break;
 		default:
-			Msg.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_too_many"));
-			Msg.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage", new Object[] {p_cmd}));
+			MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_too_many"));
+			MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage", new Object[] {p_cmd}));
 			break;
 		}
 	}
@@ -48,15 +48,15 @@ public final class CmdServerTime extends CmdParent {
 					for (World world : p_player.getServer().getWorlds()) {
 						world.setTime(time);
 						if (msg != null) {
-							Msg.broadcast(world, msg);
+							MessageUtils.broadcast(world, msg);
 						}
 					}
 					return ZeltCmds.getLanguage().getString("log_servertime", new Object[] {rel_time, p_player.getDisplayName()});
 				}
 				break;
 			default:
-				Msg.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_too_many"));
-				Msg.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage", new Object[] {"/" + p_cmd}));
+				MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_too_many"));
+				MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage", new Object[] {"/" + p_cmd}));
 				break;
 		}
 		return null;

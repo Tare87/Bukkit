@@ -9,8 +9,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 
-import de.zeltclan.tare.bukkitutils.Log;
-import de.zeltclan.tare.bukkitutils.Msg;
+import de.zeltclan.tare.bukkitutils.LogUtils;
+import de.zeltclan.tare.bukkitutils.MessageUtils;
 
 class CmdExecutor implements Listener {
 	
@@ -88,7 +88,7 @@ class CmdExecutor implements Listener {
 				if (replaceindex < args.length) {
 					event_message = event_message.replaceFirst("<param>", args[replaceindex++]);
 				} else {
-					Msg.msg(p_event.getPlayer(), ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
+					MessageUtils.msg(p_event.getPlayer(), ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
 					p_event.setCancelled(true);
 					return;
 				}
@@ -97,7 +97,7 @@ class CmdExecutor implements Listener {
 				event_message += " " + args[i];
 			}
 			if (logAlias) {
-				Log.info(ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("log_alias", new Object[] {p_event.getPlayer().getDisplayName(), p_event.getMessage(), event_message}));
+				LogUtils.info(ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("log_alias", new Object[] {p_event.getPlayer().getDisplayName(), p_event.getMessage(), event_message}));
 			}
 			// Handle alias
 			String[] cmds = event_message.split("<cmd>");
@@ -119,7 +119,7 @@ class CmdExecutor implements Listener {
 		if (cmdMap.containsKey(cmd)) {
 			String logEntry = cmdMap.get(cmd).executePlayer(p_event.getPlayer(), cmd, args);
 			if (logCmd && logEntry != null) {
-				Log.info(ZeltCmds.getLanguage().getString("prefix") + " " + logEntry);
+				LogUtils.info(ZeltCmds.getLanguage().getString("prefix") + " " + logEntry);
 			}
 			p_event.setCancelled(true);
 		}
@@ -147,7 +147,7 @@ class CmdExecutor implements Listener {
 				if (replaceindex < args.length) {
 					event_message = event_message.replaceFirst("<param>", args[replaceindex++]);
 				} else {
-					Log.warning(ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
+					LogUtils.warning(ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
 					p_event.setCommand("zeltcmds dummy");
 					return;
 				}

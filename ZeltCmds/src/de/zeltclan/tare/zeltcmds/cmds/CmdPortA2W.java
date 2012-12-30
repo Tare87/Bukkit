@@ -7,7 +7,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.permissions.Permission;
 
-import de.zeltclan.tare.bukkitutils.Msg;
+import de.zeltclan.tare.bukkitutils.LocationUtils;
+import de.zeltclan.tare.bukkitutils.MessageUtils;
 import de.zeltclan.tare.zeltcmds.CmdParent;
 import de.zeltclan.tare.zeltcmds.ZeltCmds;
 
@@ -24,19 +25,27 @@ private final String msg;
 	protected void executeConsole(CommandSender p_sender, String p_cmd, String[] p_args) {
 		switch (p_args.length) {
 			case 0:
-				Msg.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
-				Msg.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage_World", new Object[] {p_cmd}));
+				MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
+				MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage_World", new Object[] {p_cmd}));
 				break;
 			case 1:
 				final World world = p_sender.getServer().getWorld(p_args[0]);
 				if (world == null) {
-					Msg.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("world_not_found", new Object[] {p_args[0]}));
+					MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("world_not_found", new Object[] {p_args[0]}));
 					break;
 				}
-				final Location spawn = world.getSpawnLocation();
-				if (!world.getChunkAt(spawn).isLoaded()) {
-					if (!world.getChunkAt(spawn).load(false)) {
-						Msg.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("chunk_not_load"));
+				if (world.getSpawnLocation() == null) {
+					MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("no_spawn"));
+					break;
+				}
+				final Location spawn = LocationUtils.getSafeLocation(world.getSpawnLocation());
+				if (spawn == null) {
+					MessageUtils.warning(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("teleport_bad_location"));
+					break;
+				}
+				if (!spawn.getChunk().isLoaded()) {
+					if (!spawn.getChunk().load(true)) {
+						MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("chunk_not_load"));
 						break;
 					}
 				}
@@ -44,14 +53,14 @@ private final String msg;
 					if (player.isOnline()) {
 						player.teleport(spawn, TeleportCause.COMMAND);
 						if (msg != null) {
-							Msg.info(player, msg);
+							MessageUtils.info(player, msg);
 						}
 					}
 				}
 				break;
 			default:
-				Msg.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_too_many"));
-				Msg.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage_World", new Object[] {p_cmd}));
+				MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_too_many"));
+				MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage_World", new Object[] {p_cmd}));
 				break;
 		}
 	}
@@ -60,27 +69,35 @@ private final String msg;
 	protected String executePlayer(Player p_player, String p_cmd, String[] p_args) {
 		switch (p_args.length) {
 			case 0:
-				Msg.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
-				Msg.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage_World", new Object[] {"/" + p_cmd}));
+				MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
+				MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage_World", new Object[] {"/" + p_cmd}));
 				break;
 			case 1:
 				if (this.checkPerm(p_player, false)) {
 					final World world = p_player.getServer().getWorld(p_args[0]);
 					if (world == null) {
-						Msg.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("world_not_found", new Object[] {p_args[0]}));
+						MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("world_not_found", new Object[] {p_args[0]}));
 						break;
 					}
-					if (!world.getChunkAt(world.getSpawnLocation()).isLoaded()) {
-						if (!world.getChunkAt(world.getSpawnLocation()).load(false)) {
-							Msg.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("chunk_not_load"));
+					if (world.getSpawnLocation() == null) {
+						MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("no_spawn"));
+					}
+					final Location spawn = LocationUtils.getSafeLocation(world.getSpawnLocation());
+					if (spawn == null) {
+						MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("teleport_bad_location"));
+						break;
+					}
+					if (!spawn.getChunk().isLoaded()) {
+						if (!spawn.getChunk().load(true)) {
+							MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("chunk_not_load"));
 							break;
 						}
 					}
 					for (Player player : world.getPlayers()) {
 						if (player.isOnline()) {
-							player.teleport(world.getSpawnLocation(), TeleportCause.COMMAND);
+							player.teleport(spawn, TeleportCause.COMMAND);
 							if (msg != null) {
-								Msg.info(player, msg);
+								MessageUtils.info(player, msg);
 							}
 						}
 					}
@@ -88,8 +105,8 @@ private final String msg;
 				}
 				break;
 			default:
-				Msg.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_too_many"));
-				Msg.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage_World", new Object[] {"/" + p_cmd}));
+				MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_too_many"));
+				MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage_World", new Object[] {"/" + p_cmd}));
 				break;
 		}
 		return null;

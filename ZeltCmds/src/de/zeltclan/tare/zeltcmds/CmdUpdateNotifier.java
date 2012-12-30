@@ -11,8 +11,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import de.zeltclan.tare.bukkitutils.FileFeedReader;
-import de.zeltclan.tare.bukkitutils.Log;
-import de.zeltclan.tare.bukkitutils.Msg;
+import de.zeltclan.tare.bukkitutils.LogUtils;
+import de.zeltclan.tare.bukkitutils.MessageUtils;
 
 class CmdUpdateNotifier implements Listener {
 	
@@ -24,7 +24,7 @@ class CmdUpdateNotifier implements Listener {
 		try {
 			temp = new URL(p_url);
 		} catch (MalformedURLException e) {
-			Log.warning(ZeltCmds.getLanguage().getString("prefix"), e);
+			LogUtils.warning(ZeltCmds.getLanguage().getString("prefix"), e);
 			temp = null;
 		}
 		fileFeed = temp;
@@ -41,13 +41,13 @@ class CmdUpdateNotifier implements Listener {
 		if (player.isOp()) {
 			HashMap<String,String> result = FileFeedReader.checkUpdate(fileFeed, version);
 			if (result.containsKey("error")) {
-				Log.warning(ZeltCmds.getLanguage().getString("prefix") + " " + result.get("error"));
+				LogUtils.warning(ZeltCmds.getLanguage().getString("prefix") + " " + result.get("error"));
 				return;
 			}
 			if (result.containsKey("link")) {
-				Msg.info(player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("update_version", new Object[]{result.get("version")}));
-				Msg.info(player, ZeltCmds.getLanguage().getString("update_changelog", new Object[]{result.get("link")}));
-				Msg.info(player, ZeltCmds.getLanguage().getString("update_download", new Object[]{result.get("jarLink")}));
+				MessageUtils.info(player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("update_version", new Object[]{result.get("version")}));
+				MessageUtils.info(player, ZeltCmds.getLanguage().getString("update_changelog", new Object[]{result.get("link")}));
+				MessageUtils.info(player, ZeltCmds.getLanguage().getString("update_download", new Object[]{result.get("jarLink")}));
 			}
 		}
 	}

@@ -5,7 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 
-import de.zeltclan.tare.bukkitutils.Msg;
+import de.zeltclan.tare.bukkitutils.MessageUtils;
 import de.zeltclan.tare.zeltcmds.CmdParent;
 import de.zeltclan.tare.zeltcmds.ZeltCmds;
 import de.zeltclan.tare.zeltcmds.enums.Type;
@@ -34,8 +34,8 @@ public final class CmdServerWeather extends CmdParent {
 			}
 			break;
 		default:
-			Msg.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_too_many"));
-			Msg.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage", new Object[] {p_cmd}));
+			MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_too_many"));
+			MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage", new Object[] {p_cmd}));
 			break;
 		}
 	}
@@ -52,8 +52,8 @@ public final class CmdServerWeather extends CmdParent {
 				}
 				break;
 			default:
-				Msg.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_too_many"));
-				Msg.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage", new Object[] {"/" + p_cmd}));
+				MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_too_many"));
+				MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage", new Object[] {"/" + p_cmd}));
 				break;
 		}
 		return null;
@@ -78,7 +78,7 @@ public final class CmdServerWeather extends CmdParent {
 		}
 		p_world.setWeatherDuration(24000);
 		if (msg != null) {
-			Msg.broadcast(p_world, msg);
+			MessageUtils.broadcast(p_world, msg);
 		}
 	}
 

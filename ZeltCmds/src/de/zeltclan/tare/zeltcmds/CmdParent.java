@@ -5,7 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 
-import de.zeltclan.tare.bukkitutils.Msg;
+import de.zeltclan.tare.bukkitutils.MessageUtils;
 
 public abstract class CmdParent {
 
@@ -34,7 +34,7 @@ public abstract class CmdParent {
 			return true;
 		}
 		// Send message to CommandSender that permission is denied
-		Msg.warning(p_sender, ZeltCmds.getLanguage().getString("permission_deny"));
+		MessageUtils.warning(p_sender, ZeltCmds.getLanguage().getString("permission_deny"));
 		return false;
 	}
 	
