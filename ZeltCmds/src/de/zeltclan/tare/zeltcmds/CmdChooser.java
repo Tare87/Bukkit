@@ -7,6 +7,7 @@ import de.zeltclan.tare.zeltcmds.cmds.CmdLocation;
 import de.zeltclan.tare.zeltcmds.cmds.CmdMode;
 import de.zeltclan.tare.zeltcmds.cmds.CmdPlayer;
 import de.zeltclan.tare.zeltcmds.cmds.CmdServerInfo;
+import de.zeltclan.tare.zeltcmds.cmds.CmdServerWeather;
 import de.zeltclan.tare.zeltcmds.cmds.CmdSpawn;
 import de.zeltclan.tare.zeltcmds.cmds.CmdWorldWeather;
 import de.zeltclan.tare.zeltcmds.enums.*;
@@ -177,11 +178,11 @@ class CmdChooser {
 			return Default.NOCHANGE;
 		case SERVERWEATHER:
 			if (p_type.equalsIgnoreCase("rain")) {
-				return CmdWorldWeather.Types.RAIN;
+				return CmdServerWeather.Types.RAIN;
 			} else if (p_type.equalsIgnoreCase("storm")) {
-				return CmdWorldWeather.Types.STORM;
+				return CmdServerWeather.Types.STORM;
 			} else if (p_type.equalsIgnoreCase("sun")) {
-				return CmdWorldWeather.Types.SUN;
+				return CmdServerWeather.Types.SUN;
 			}
 			break;
 		case SET:
