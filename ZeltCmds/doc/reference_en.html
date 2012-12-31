@@ -1,4 +1,4 @@
-<p>v1.4.0</p>
+<p>v1.5.0</p>
 <p><b>1 General</b></p>
 <p><b>1.1 Casesensivity</b><br/>
 <b>1.1.1 Commands</b><br/>
@@ -195,6 +195,9 @@ Send to the affected player</p>
 </tr><tr>
 <td>seen</td>
 <td>Shows when a choosen player was last time online</td>
+</tr><tr>
+<td>time</td>
+<td>Shows ingame-time of a choosen player</td>
 </tr>
 </table>
 </p>
@@ -213,12 +216,12 @@ Send to the affected player</p>
 <b>3.2.4.1 clear, feed, heal, kill</b><br />
 For self: zeltcmds.cmd.&lt;command&gt;<br />
 For other player: zeltcmds.cmd.&lt;command&gt;.player</p>
-<p><b>3.2.4.2 direction, info, position, seen</b><br />
+<p><b>3.2.4.2 direction, info, position, seen, time</b><br />
 For both: zeltcmds.cmd.&lt;command&gt;</p>
 <p><b>3.2.5 msg</b><br />
 <b>3.2.5.1 clear, feed, heal, kill</b><br />
 Send to the affected player</p>
-<p><b>3.2.5.2 direction, info, position, seen</b><br />
+<p><b>3.2.5.2 direction, info, position, seen, time</b><br />
 msg is not used by this types</p>
 <br />
 
@@ -644,3 +647,17 @@ Send to every player on affected world</p>
 > skyfall is a teleport for a given player to a given coordiante at y=256<br />
 /skyfall notch -1 38<br />
 > Teleports the player 'notch' to position x=-1;y=256;z=38</p>
+<p>Example 5: (Alias combining two commands)<br />
+/zeltcmds add day servertime 7000 op Good Morning<br />
+/zeltcmds add sun serverweather sun op The sun is shining<br />
+> Commands used for the example<br />
+/zeltcmds addalias niceday day &lt;cmd&gt; sun<br />
+> niceday sets the time of the server to 7:00 and the weather to sun</p>
+<p>Example 6: (Alias combining two commands with one dynamic parameter)<br />
+/zeltcmds add toworld port m2w true<br />
+/zeltcmds add home port m2h true Home sweet home!<br />
+> Commands used for the example<br />
+/zeltcmds addalias worldhome toworld &lt;param&gt; &lt;cmd&gt; home<br />
+> worldhome teleports the player to the spawn of a choosen world and from there to its bedspawn<br />
+/worldhome Pangea<br />
+> Teleports the player to his bedspawn on world Pangea</p>

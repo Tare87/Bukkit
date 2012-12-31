@@ -1,4 +1,4 @@
-<p>v1.4.0</p>
+<p>v1.5.0</p>
 <p><b>1 Allgemein</b></p>
 <p><b>1.1 Casesensivity</b><br/>
 <b>1.1.1 Befehle</b><br/>
@@ -11,6 +11,10 @@ Caseinsensitiv</p>
 <th>Option</th>
 <th>Beschreibung</th>
 <th>Standardwert</th>
+</tr><tr>
+<td>checkUpdate</td>
+<td>Legt fest, ob nach Updates geprüft werden soll.</td>
+<td>true</td>
 </tr><tr>
 <td>lang</td>
 <td>Verwendetes Sprachschema. Implementiert sind en und de</td>
@@ -194,7 +198,10 @@ Wird an betroffenen Spieler gesendet</p>
 <td>Zeigt die Position eines Spielers</td>
 </tr><tr>
 <td>seen</td>
-<td>Zeigt wann eni Spieler das letzte mal online war</td>
+<td>Zeigt wann ein Spieler das letzte mal online war</td>
+</tr><tr>
+<td>time</td>
+<td>Zeigt die Spieluhrzeit eines Spielers</td>
 </tr>
 </table>
 </p>
@@ -213,12 +220,12 @@ Wird an betroffenen Spieler gesendet</p>
 <b>3.2.4.1 clear, feed, heal, kill</b><br />
 Für sich selbst: zeltcmds.cmd.&lt;Befehl&gt;<br />
 Für andere Spieler: zeltcmds.cmd.&lt;Befehl&gt;.player</p>
-<p><b>3.2.4.2 direction, info, position, seen</b><br />
+<p><b>3.2.4.2 direction, info, position, seen, time</b><br />
 Für beides: zeltcmds.cmd.&lt;command&gt;</p>
 <p><b>3.2.5 Nachricht</b><br />
 <b>3.2.5.1 clear, feed, heal, kill</b><br />
 Wird an betroffenen Spieler gesendet</p>
-<p><b>3.2.5.2 direction, info, position, seen</b><br />
+<p><b>3.2.5.2 direction, info, position, seen, time</b><br />
 Es wird keine Nachricht verwendet</p>
 <br />
 
@@ -644,3 +651,17 @@ Wird an jeden Spieler der betroffenen Welt gesendet</p>
 > skyfall ist ein Teleport für einen bestimmten Spieler zu einer gegebenen Position mit y=256<br />
 /skyfall notch -1 38<br />
 > Teleportiert den Spieler 'notch' zur Position x=-1;y=256;z=38</p>
+<p>Beispiel 5: (Ein Alias aus zwei Befehlen)<br />
+/zeltcmds add day servertime 7000 op Guten Morgen<br />
+/zeltcmds add sun serverweather sun op Die Sonne scheint<br />
+> Befehle werden für Beispiel verwendet<br />
+/zeltcmds addalias niceday day &lt;cmd&gt; sun<br />
+> niceday stellt die Spielzeit auf dem Server auf 7:00 und stellt das Wetter auf Sonne</p>
+<p>Beispiel 6: (Ein Alias aus zwei Befehlen mit einem dynamischen Parameter)<br />
+/zeltcmds add toworld port m2w true<br />
+/zeltcmds add home port m2h true Home sweet home!<br />
+> Befehle werden für Beispiel verwendet<br />
+/zeltcmds addalias worldhome toworld &lt;param&gt; &lt;cmd&gt; home<br />
+> worldhome teleportiert den Spieler zum Spawn einer bestimmten Welt und von da zu seinem Bedspawn<br />
+/worldhome Pangea<br />
+> Teleportiert den Spieler zu seinen Bedspawn auf der Welt Pangea</p>
