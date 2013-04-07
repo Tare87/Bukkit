@@ -8,20 +8,32 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.server.ServerCommandEvent;
+import org.bukkit.plugin.Plugin;
 
 import de.zeltclan.tare.bukkitutils.LogUtils;
 import de.zeltclan.tare.bukkitutils.MessageUtils;
+import de.zeltclan.tare.zeltcmds.cmds.CmdPortM2D;
+import de.zeltclan.tare.zeltcmds.cmds.CmdPortM2L;
+import de.zeltclan.tare.zeltcmds.cmds.CmdPortP2D;
+import de.zeltclan.tare.zeltcmds.cmds.CmdPortP2L;
+import de.zeltclan.tare.zeltcmds.listener.*;
 
 class CmdExecutor implements Listener {
 	
-	private HashSet<String> cmdSet;
-	private TreeMap<String, CmdParent> cmdMap;
-	private TreeMap<String, String> aliasMap;
+	final private Plugin plugin;
+	
+	private Listener listenPort;
+	private Listener listenDeath;
+	
+	final private HashSet<String> cmdSet;
+	final private TreeMap<String, CmdParent> cmdMap;
+	final private TreeMap<String, String> aliasMap;
 
 	final private Boolean logCmd;
 	final private Boolean logAlias;
+	final private Boolean casesensitive;
 
-	CmdExecutor(Boolean p_logCmd, Boolean p_logAlias) {
+	CmdExecutor(final Plugin p_plugin, final Boolean p_logCmd, final Boolean p_logAlias, final Boolean p_casesensitive) {
 		cmdSet = new HashSet<String>();
 		cmdSet.add("ban");
 		cmdSet.add("ban-ip");
@@ -62,8 +74,12 @@ class CmdExecutor implements Listener {
 		cmdSet.add("xp");
 		cmdMap = new TreeMap<String, CmdParent>();
 		aliasMap = new TreeMap<String, String>();
+		plugin = p_plugin;
+		listenPort = null;
+		listenDeath = null;
 		logCmd = p_logCmd;
 		logAlias = p_logAlias;
+		casesensitive = p_casesensitive;
 	}
 	
 	@EventHandler(priority = EventPriority.LOWEST)
@@ -80,7 +96,7 @@ class CmdExecutor implements Listener {
 			args = new String[0];
 		}
 		// Check for alias
-		if (aliasMap.containsKey(cmd)) {
+		if ((casesensitive && aliasMap.containsKey(cmd)) || (!casesensitive && aliasMap.containsKey(cmd.toLowerCase()))) {
 			event_message = aliasMap.get(cmd);
 			//Replace parameters
 			int replaceindex = 0;
@@ -116,7 +132,7 @@ class CmdExecutor implements Listener {
 			args = new String[0];
 		}
 		// Execute command if exists
-		if (cmdMap.containsKey(cmd)) {
+		if ((casesensitive && cmdMap.containsKey(cmd)) || (!casesensitive && cmdMap.containsKey(cmd.toLowerCase()))) {
 			String logEntry = cmdMap.get(cmd).executePlayer(p_event.getPlayer(), cmd, args);
 			if (logCmd && logEntry != null) {
 				LogUtils.info(ZeltCmds.getLanguage().getString("prefix") + " " + logEntry);
@@ -139,7 +155,7 @@ class CmdExecutor implements Listener {
 			args = new String[0];
 		}
 		// Check for alias
-		if (aliasMap.containsKey(cmd)) {
+		if ((casesensitive && aliasMap.containsKey(cmd)) || (!casesensitive && aliasMap.containsKey(cmd.toLowerCase()))) {
 			event_message = aliasMap.get(cmd);
 			//Replace parameters
 			int replaceindex = 0;
@@ -172,7 +188,7 @@ class CmdExecutor implements Listener {
 			args = new String[0];
 		}
 		// Execute command if exists
-		if (cmdMap.containsKey(cmd)) {
+		if ((casesensitive && cmdMap.containsKey(cmd)) || (!casesensitive && cmdMap.containsKey(cmd.toLowerCase()))) {
 			cmdMap.get(cmd).executeConsole(p_event.getSender(), cmd, args);
 			p_event.setCommand("zeltcmds dummy");
 		}
@@ -181,25 +197,33 @@ class CmdExecutor implements Listener {
 	boolean checkEntry(String p_cmd) {
 		if (p_cmd.equalsIgnoreCase("zeltcmds")) {
 			return true;
-		} else if (cmdSet.contains(p_cmd)) {
+		} else if ((casesensitive && cmdSet.contains(p_cmd)) || (!casesensitive && cmdSet.contains(p_cmd.toLowerCase()))) {
 			return true;
-		} else if (cmdMap.containsKey(p_cmd)) {
+		} else if ((casesensitive && cmdMap.containsKey(p_cmd)) || (!casesensitive && cmdMap.containsKey(p_cmd.toLowerCase()))) {
 			return true;
 		} else {
-			return aliasMap.containsKey(p_cmd);
+			return (casesensitive && aliasMap.containsKey(p_cmd)) || (!casesensitive && aliasMap.containsKey(p_cmd.toLowerCase()));
 		}
 	}
 	
 	boolean existCommand(String p_cmd) {
-		return cmdMap.containsKey(p_cmd);
+		return (casesensitive && cmdMap.containsKey(p_cmd)) || (!casesensitive && cmdMap.containsKey(p_cmd.toLowerCase()));
 	}
 	
 	void addCommand(String p_cmdString, CmdParent p_cmd) {
-		cmdMap.put(p_cmdString, p_cmd);
+		cmdMap.put(casesensitive ? p_cmdString : p_cmdString.toLowerCase(), p_cmd);
+		if ((listenPort == null) && ((p_cmd instanceof CmdPortM2L) || (p_cmd instanceof CmdPortP2L))) {
+			listenPort = new PortListener(plugin);
+			plugin.getServer().getPluginManager().registerEvents(listenPort, plugin);
+		}
+		if ((listenDeath == null) && ((p_cmd instanceof CmdPortM2D) || (p_cmd instanceof CmdPortP2D))) {
+			listenDeath = new DeathListener(plugin);
+			plugin.getServer().getPluginManager().registerEvents(listenDeath, plugin);
+		}
 	}
 
 	void removeCommand(String p_cmd) {
-		CmdParent cmd = cmdMap.remove(p_cmd);
+		CmdParent cmd = cmdMap.remove(casesensitive ? p_cmd : p_cmd.toLowerCase());
 		cmd.removePermissions();
 	}
 	
@@ -214,19 +238,19 @@ class CmdExecutor implements Listener {
 	}
 	
 	String getCommandDescription(String p_cmd) {
-		return cmdMap.get(p_cmd).getDescription();
+		return cmdMap.get(casesensitive ? p_cmd : p_cmd.toLowerCase()).getDescription();
 	}
 	
 	boolean existAlias(String p_alias) {
-		return aliasMap.containsKey(p_alias);
+		return aliasMap.containsKey(casesensitive ? p_alias : p_alias.toLowerCase());
 	}
 	
 	void addAlias(String p_alias, String p_aliasParams) {
-		aliasMap.put(p_alias, p_aliasParams);
+		aliasMap.put(casesensitive ? p_alias : p_alias.toLowerCase(), p_aliasParams);
 	}
 
 	void removeAlias(String p_alias) {
-		aliasMap.remove(p_alias);
+		aliasMap.remove(casesensitive ? p_alias : p_alias.toLowerCase());
 	}
 	
 	String[] listAliases() {
@@ -240,6 +264,6 @@ class CmdExecutor implements Listener {
 	}
 	
 	String getAliasDescription(String p_alias) {
-		return aliasMap.get(p_alias);
+		return aliasMap.get(casesensitive ? p_alias : p_alias.toLowerCase());
 	}
 }

@@ -1,8 +1,8 @@
-<p>v1.5.0</p>
+<p>v1.6.0</p>
 <p><b>1 Allgemein</b></p>
 <p><b>1.1 Casesensivity</b><br/>
 <b>1.1.1 Befehle</b><br/>
-Casesensitiv</p>
+Konfigurierbar</p>
 <p><b>1.1.2 Kategorien, Typen</b><br/>
 Caseinsensitiv</p>
 <p><b>1.2 Optionen  in config.yml</b>
@@ -11,6 +11,10 @@ Caseinsensitiv</p>
 <th>Option</th>
 <th>Beschreibung</th>
 <th>Standardwert</th>
+</tr><tr>
+<td>casesensitive</td>
+<td>Legt fest, ob Groß-/Kleinschreibung bei Befehlen beachtet werden soll.</td>
+<td>true</td>
 </tr><tr>
 <td>checkUpdate</td>
 <td>Legt fest, ob nach Updates geprüft werden soll.</td>
@@ -307,6 +311,11 @@ Es wird keine Nachricht verwendet</p>
 <td>&lt;x&gt; &lt;z&gt;</td>
 <td>false</td>
 </tr><tr>
+<td>m2d</td>
+<td>Teleportiert den Spieler zurück zu seinem letzten Todesort</td>
+<td></td>
+<td>false</td>
+</tr><tr>
 <td>m2e</td>
 <td>Teleportiert den Spieler zur exakten Position</td>
 <td>&lt;x&gt; &lt;y&gt; &lt;z&gt;</td>
@@ -314,6 +323,11 @@ Es wird keine Nachricht verwendet</p>
 </tr><tr>
 <td>m2h</td>
 <td>Teleportiert den Spieler zu seinem Bedspawn</td>
+<td></td>
+<td>false</td>
+</tr><tr>
+<td>m2l</td>
+<td>Teleportiert den Spieler zurück zur letzten Position von der er teleportiert hat</td>
 <td></td>
 <td>false</td>
 </tr><tr>
@@ -342,6 +356,11 @@ Es wird keine Nachricht verwendet</p>
 <td>&lt;Welt&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt;</td>
 <td>false</td>
 </tr><tr>
+<td>mod</td>
+<td>Teleportiert den Spieler in Blickrichtung über eine gegebene Distanz</td>
+<td>&lt;Distanz&gt;</td>
+<td>false</td>
+</tr><tr>
 <td>p2b</td>
 <td>Teleportiert einen bestimmten Spieler zum Bedspawn eines bestimmten Spielers</td>
 <td>&lt;Spieler&gt; &lt;Spieler&gt;</td>
@@ -350,6 +369,11 @@ Es wird keine Nachricht verwendet</p>
 <td>p2c</td>
 <td>Teleportiert einen bestimmten Spieler zum höchsten Block an den Koordinaten</td>
 <td>&lt;Spieler&gt; &lt;x&gt; &lt;z&gt;</td>
+<td>true</td>
+</tr><tr>
+<td>p2d</td>
+<td>Teleportiert einen Spieler zurück zu seinem letzten Todesort</td>
+<td>&lt;Spieler&gt;</td>
 <td>true</td>
 </tr><tr>
 <td>p2e</td>
@@ -364,6 +388,11 @@ Es wird keine Nachricht verwendet</p>
 </tr><tr>
 <td>p2m</td>
 <td>Teleportiert einen bestimmten Spieler zum Spieler</td>
+<td>&lt;Spieler&gt;</td>
+<td>false</td>
+</tr><tr>
+<td>p2l</td>
+<td>Teleportiert einen Spieler zurück zur letzten Position von der er teleportiert hat</td>
 <td>&lt;Spieler&gt;</td>
 <td>false</td>
 </tr><tr>
@@ -416,6 +445,9 @@ Es wird keine Nachricht verwendet</p>
 </p>
 <p><b>3.4.2 Aliase</b>
 <ul>
+<li>back =&gt; m2l</li>
+<li>blink =&gt; mod</li>
+<li>death =&gt; m2d</li>
 <li>port =&gt; teleport</li>
 </ul>
 </p>

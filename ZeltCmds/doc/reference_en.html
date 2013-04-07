@@ -1,8 +1,8 @@
-<p>v1.5.0</p>
+<p>v1.6.0</p>
 <p><b>1 General</b></p>
 <p><b>1.1 Casesensivity</b><br/>
 <b>1.1.1 Commands</b><br/>
-Casesensitiv</p>
+Configurable</p>
 <p><b>1.1.2 Categories, types</b><br/>
 Caseinsensitiv</p>
 <p><b>1.2 Options in config.yml</b>
@@ -11,6 +11,10 @@ Caseinsensitiv</p>
 <th>Option</th>
 <th>Description</th>
 <th>Default</th>
+</tr><tr>
+<td>casesensitive</td>
+<td>Wether to handle commands casesensitive or not</td>
+<td>true</td>
 </tr><tr>
 <td>checkUpdate</td>
 <td>Wether check for updates is active or not</td>
@@ -307,6 +311,11 @@ msg is not used by this category</p>
 <td>&lt;x&gt; &lt;z&gt;</td>
 <td>false</td>
 </tr><tr>
+<td>m2d</td>
+<td>Teleports the player to the location of last death</td>
+<td></td>
+<td>false</td>
+</tr><tr>
 <td>m2e</td>
 <td>Teleports the player to exact position</td>
 <td>&lt;x&gt; &lt;y&gt; &lt;z&gt;</td>
@@ -314,6 +323,11 @@ msg is not used by this category</p>
 </tr><tr>
 <td>m2h</td>
 <td>Teleports the player to bedspawn</td>
+<td></td>
+<td>false</td>
+</tr><tr>
+<td>m2l</td>
+<td>Teleports the player back to the last location ported from</td>
 <td></td>
 <td>false</td>
 </tr><tr>
@@ -342,6 +356,11 @@ msg is not used by this category</p>
 <td>&lt;world&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt;</td>
 <td>false</td>
 </tr><tr>
+<td>mod</td>
+<td>Teleports the player forward over a given distance</td>
+<td>&lt;distance&gt;</td>
+<td>false</td>
+</tr><tr>
 <td>p2b</td>
 <td>Teleports a player to bedspawn of a player</td>
 <td>&lt;player&gt; &lt;player&gt;</td>
@@ -350,6 +369,11 @@ msg is not used by this category</p>
 <td>p2c</td>
 <td>Teleports a player to the highest block at coordinates</td>
 <td>&lt;player&gt; &lt;x&gt; &lt;z&gt;</td>
+<td>true</td>
+</tr><tr>
+<td>p2d</td>
+<td>Teleports a player to the location of last death</td>
+<td>&lt;player&gt;</td>
 <td>true</td>
 </tr><tr>
 <td>p2e</td>
@@ -361,6 +385,11 @@ msg is not used by this category</p>
 <td>Teleports a player to bedspawn</td>
 <td>&lt;player&gt;</td>
 <td>true</td>
+</tr><tr>
+<td>p2l</td>
+<td>Teleports a player back to the last location ported from</td>
+<td>&lt;player&gt;</td>
+<td>false</td>
 </tr><tr>
 <td>p2m</td>
 <td>Teleports a player to the player</td>
@@ -416,6 +445,9 @@ msg is not used by this category</p>
 </p>
 <p><b>3.4.2 Aliases</b>
 <ul>
+<li>back =&gt; m2l</li>
+<li>blink =&gt; mod</li>
+<li>death =&gt; m2d</li>
 <li>port =&gt; teleport</li>
 </ul>
 </p>

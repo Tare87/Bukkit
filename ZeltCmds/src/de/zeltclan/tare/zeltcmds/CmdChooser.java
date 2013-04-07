@@ -65,7 +65,7 @@ class CmdChooser {
 				return CmdMode.Types.CREATIVE;
 			} else if (p_type.equalsIgnoreCase("creative_adventure") || p_type.equalsIgnoreCase("ca")) {
 				return CmdMode.Types.CREATIVE_ADVENTURE;
-			} else if (p_type.equalsIgnoreCase("creative_SURVIVAL") || p_type.equalsIgnoreCase("cs")) {
+			} else if (p_type.equalsIgnoreCase("creative_survival") || p_type.equalsIgnoreCase("cs")) {
 				return CmdMode.Types.CREATIVE_SURVIVAL;
 			} else if (p_type.equalsIgnoreCase("creative_adventure_survival") || p_type.equalsIgnoreCase("cas")) {
 				return CmdMode.Types.CREATIVE_ADVENTURE_SURVIVAL;
@@ -115,10 +115,14 @@ class CmdChooser {
 				return Port.M2B;
 			} else if (p_type.equalsIgnoreCase("m2c")) {
 				return Port.M2C;
+			} else if (p_type.equalsIgnoreCase("m2d") || p_type.equalsIgnoreCase("death")) {
+				return Port.M2D;
 			} else if (p_type.equalsIgnoreCase("m2e")) {
 				return Port.M2E;
 			} else if (p_type.equalsIgnoreCase("m2h")) {
 				return Port.M2H;
+			} else if (p_type.equalsIgnoreCase("m2l") || p_type.equalsIgnoreCase("back")) {
+				return Port.M2L;
 			} else if (p_type.equalsIgnoreCase("m2p")) {
 				return Port.M2P;
 			} else if (p_type.equalsIgnoreCase("m2s")) {
@@ -129,14 +133,20 @@ class CmdChooser {
 				return Port.M2WC;
 			} else if (p_type.equalsIgnoreCase("m2we")) {
 				return Port.M2WE;
+			} else if (p_type.equalsIgnoreCase("mod") || p_type.equalsIgnoreCase("blink")) {
+				return Port.MoD;
 			} else if (p_type.equalsIgnoreCase("p2b")) {
 				return Port.P2B;
 			} else if (p_type.equalsIgnoreCase("p2c")) {
 				return Port.P2C;
+			} else if (p_type.equalsIgnoreCase("p2d")) {
+				return Port.P2D;
 			} else if (p_type.equalsIgnoreCase("p2e")) {
 				return Port.P2E;
 			} else if (p_type.equalsIgnoreCase("p2h")) {
 				return Port.P2H;
+			} else if (p_type.equalsIgnoreCase("p2l")) {
+				return Port.P2L;
 			} else if (p_type.equalsIgnoreCase("p2m")) {
 				return Port.P2M;
 			} else if (p_type.equalsIgnoreCase("p2p")) {

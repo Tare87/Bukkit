@@ -1,6 +1,9 @@
 package de.zeltclan.tare.zeltcmds;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.TreeSet;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -10,9 +13,18 @@ import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import de.zeltclan.tare.bukkitutils.*;
+import de.zeltclan.tare.zeltcmds.cmds.CmdLocation;
+import de.zeltclan.tare.zeltcmds.cmds.CmdMode;
+import de.zeltclan.tare.zeltcmds.cmds.CmdPlayer;
+import de.zeltclan.tare.zeltcmds.cmds.CmdPlayerInfo;
+import de.zeltclan.tare.zeltcmds.cmds.CmdServerInfo;
+import de.zeltclan.tare.zeltcmds.cmds.CmdServerWeather;
+import de.zeltclan.tare.zeltcmds.cmds.CmdSpawn;
+import de.zeltclan.tare.zeltcmds.cmds.CmdWorldWeather;
 import de.zeltclan.tare.zeltcmds.enums.Category;
 import de.zeltclan.tare.zeltcmds.enums.Default;
 import de.zeltclan.tare.zeltcmds.enums.MessageType;
+import de.zeltclan.tare.zeltcmds.enums.Port;
 import de.zeltclan.tare.zeltcmds.enums.Type;
 
 public class ZeltCmds extends JavaPlugin {
@@ -25,8 +37,16 @@ public class ZeltCmds extends JavaPlugin {
 	
 	private CmdUpdateNotifier cmdUpdateNotifier;
 	
+	private TreeSet<String> categorySet = null;
+	private TreeSet<String> functionSet = null;
+	private TreeSet<String> permissionSet = null;
+	
+	private HashMap<Category, TreeSet<String>> typeMap = null;
+	
 	@Override
 	public void onEnable() {
+		// Build Sets
+		this.buildSets();
 		this.enable();
 		// Log number of commands enabled
 		final int cmdCount = cmdExecutor.countCommands();
@@ -102,6 +122,12 @@ public class ZeltCmds extends JavaPlugin {
 			config.getConfigurationSection("General").set("checkUpdate", true);
 			LogUtils.info(this, lang.getString("option_not_set", new Object[] {"checkUpdate"}));
 		}
+		// Check if configurationSection "casesensitive" exists
+		if (config.getConfigurationSection("General").get("casesensitive") == null) {
+			// Set Default
+			config.getConfigurationSection("General").set("casesensitive", true);
+			LogUtils.info(this, lang.getString("option_not_set", new Object[] {"casesensitive"}));
+		}
 		// Check if ConfigurationSection "Commands" exists
 		if (config.getConfigurationSection("Commands") == null) {
 			config.createSection("Commands");
@@ -115,7 +141,7 @@ public class ZeltCmds extends JavaPlugin {
 		// Save configuration to config.yml for saving Defaults
 		this.saveConfig();
 		// Create manager
-		cmdExecutor = new CmdExecutor(config.getConfigurationSection("General").getBoolean("logCmd"), config.getConfigurationSection("General").getBoolean("logAlias"));
+		cmdExecutor = new CmdExecutor(this, config.getConfigurationSection("General").getBoolean("logCmd"), config.getConfigurationSection("General").getBoolean("logAlias"), config.getConfigurationSection("General").getBoolean("casesensitive"));
 		// Load commands
 		for (String cmd : config.getConfigurationSection("Commands").getKeys(false)) {
 			String msg = "";
@@ -203,6 +229,254 @@ public class ZeltCmds extends JavaPlugin {
 		// Set cmdExecutor to null
 		cmdExecutor = null;
 		cmdUpdateNotifier = null;
+	}
+	
+	private void buildSets() {
+		// functionSet
+		if (functionSet == null) {
+			functionSet = new TreeSet<String>();
+			functionSet.add("add");
+			functionSet.add("addalias");
+			functionSet.add("examples");
+			functionSet.add("list");
+			functionSet.add("listalias");
+			functionSet.add("reload");
+			functionSet.add("remove");
+			functionSet.add("removealias");
+		}
+		// categorySet
+		if (categorySet == null) {
+			categorySet = new TreeSet<String>();
+			for (Category category : Category.values()) {
+				final String name = category.name().toLowerCase();
+				if (!name.equals("nocmd")) {
+					categorySet.add(name);
+				}
+			}
+			categorySet.add("teleport");
+			categorySet.add("stime");
+			categorySet.add("sweather");
+			categorySet.add("wtime");
+			categorySet.add("time");
+			categorySet.add("wweather");
+			categorySet.add("weather");
+		}
+		// typeMap
+		if (typeMap == null) {
+			typeMap = new HashMap<Category, TreeSet<String>>();
+			// typeMap category: MODE
+			final TreeSet<String> modeSet = new TreeSet<String>();
+			for (CmdMode.Types type : CmdMode.Types.values()) {
+				final String name = type.name().toLowerCase();
+				modeSet.add(name);
+			}
+			modeSet.add("a");
+			modeSet.add("ac");
+			modeSet.add("as");
+			modeSet.add("acs");
+			modeSet.add("asc");
+			modeSet.add("c");
+			modeSet.add("ca");
+			modeSet.add("cs");
+			modeSet.add("cas");
+			modeSet.add("csa");
+			modeSet.add("s");
+			modeSet.add("sa");
+			modeSet.add("sc");
+			modeSet.add("sac");
+			modeSet.add("sca");
+			typeMap.put(Category.MODE, modeSet);
+			// typeMap category: PLAYER
+			final TreeSet<String> playerSet = new TreeSet<String>();
+			for (CmdPlayer.Types type : CmdPlayer.Types.values()) {
+				final String name = type.name().toLowerCase();
+				playerSet.add(name);
+			}
+			for (CmdPlayerInfo.Types type : CmdPlayerInfo.Types.values()) {
+				final String name = type.name().toLowerCase();
+				playerSet.add(name);
+			}
+			playerSet.add("dir");
+			playerSet.add("pos");
+			typeMap.put(Category.PLAYER, playerSet);
+			// typeMap category: PORT
+			final TreeSet<String> portSet = new TreeSet<String>();
+			for (Port type : Port.values()) {
+				final String name = type.name().toLowerCase();
+				portSet.add(name);
+			}
+			portSet.add("death");
+			portSet.add("back");
+			portSet.add("blink");
+			typeMap.put(Category.PORT, portSet);
+			// typeMap category: SERVERINFO
+			final TreeSet<String> serverinfoSet = new TreeSet<String>();
+			for (CmdServerInfo.Types type : CmdServerInfo.Types.values()) {
+				final String name = type.name().toLowerCase();
+				serverinfoSet.add(name);
+			}
+			serverinfoSet.add("banlist");
+			serverinfoSet.add("information");
+			serverinfoSet.add("online");
+			serverinfoSet.add("ops");
+			serverinfoSet.add("worlds");
+			typeMap.put(Category.SERVERINFO, serverinfoSet);
+			// typeMap category: SERVERWEATHER
+			final TreeSet<String> serverweatherSet = new TreeSet<String>();
+			for (CmdServerWeather.Types type : CmdServerWeather.Types.values()) {
+				final String name = type.name().toLowerCase();
+				serverweatherSet.add(name);
+			}
+			typeMap.put(Category.SERVERWEATHER, serverweatherSet);
+			// typeMap category: SET
+			final TreeSet<String> setSet = new TreeSet<String>();
+			for (CmdLocation.Types type : CmdLocation.Types.values()) {
+				final String name = type.name().toLowerCase();
+				setSet.add(name);
+			}
+			setSet.add("home");
+			typeMap.put(Category.SET, setSet);
+			// typeMap category: SPAWN
+			final TreeSet<String> spawnSet = new TreeSet<String>();
+			for (CmdSpawn.Types type : CmdSpawn.Types.values()) {
+				final String name = type.name().toLowerCase();
+				spawnSet.add(name);
+			}
+			typeMap.put(Category.SPAWN, spawnSet);
+			// typeMap category: WORLDWEATHER
+			final TreeSet<String> worldweatherSet = new TreeSet<String>();
+			for (CmdWorldWeather.Types type : CmdWorldWeather.Types.values()) {
+				final String name = type.name().toLowerCase();
+				worldweatherSet.add(name);
+			}
+			typeMap.put(Category.WORLDWEATHER, worldweatherSet);
+		}
+		// permissionSet
+		if (permissionSet == null) {
+			permissionSet = new TreeSet<String>();
+			for (PermissionDefault permission : PermissionDefault.values()) {
+				permissionSet.add(permission.name().toLowerCase());
+			}
+			permissionSet.add("notop");
+		}
+	}
+	
+	@Override
+	public List<String> onTabComplete(CommandSender p_sender, Command p_command, String p_alias, String[] p_args) {
+		List<String> result = new ArrayList<String>();
+		switch (p_args.length) {
+			case 1:
+				for (String funct : functionSet) {
+					if (funct.startsWith(p_args[0].toLowerCase())) {
+						result.add(funct);
+					}
+				}
+				break;
+			case 2:
+				if (p_args[0].equalsIgnoreCase("list")) {
+					final int cmdCount = cmdExecutor.countCommands();
+					final int pageEntries = this.getConfig().getConfigurationSection("General").getInt("pageentries");
+					int pageCount;
+					if (cmdCount == 0) {
+						pageCount = 1;
+					} else {
+						pageCount = ((cmdCount - (cmdCount % pageEntries)) / pageEntries);
+						if ((cmdCount % pageEntries) != 0) {
+							pageCount++;
+						}
+					}
+					for (int i = 1; i <= pageCount; i++) {
+						if (String.valueOf(i).startsWith(p_args[1].toLowerCase())) {
+							result.add(String.valueOf(i));
+						}
+					}
+				} else if (p_args[0].equalsIgnoreCase("listalias")) {
+					final int aliasCount = cmdExecutor.countAliases();
+					final int pageEntries = this.getConfig().getConfigurationSection("General").getInt("pageentries");
+					int pageCount;
+					if (aliasCount == 0) {
+						pageCount = 1;
+					} else {
+						pageCount = ((aliasCount - (aliasCount % pageEntries)) / pageEntries);
+						if ((aliasCount % pageEntries) != 0) {
+							pageCount++;
+						}
+					}
+					for (int i = 1; i <= pageCount; i++) {
+						if (String.valueOf(i).startsWith(p_args[1].toLowerCase())) {
+							result.add(String.valueOf(i));
+						}
+					}
+				} else if (p_args[0].equalsIgnoreCase("remove")) {
+					final String[] cmdList = cmdExecutor.listCommands();
+					for (String cmd : cmdList) {
+						if (cmd.startsWith(p_args[1].toLowerCase())) {
+							result.add(cmd);
+						}
+					}
+				} else if (p_args[0].equalsIgnoreCase("removealias")) {
+					final String[] aliasList = cmdExecutor.listAliases();
+					for (String alias : aliasList) {
+						if (alias.startsWith(p_args[1].toLowerCase())) {
+							result.add(alias);
+						}
+					}
+				}
+				break;
+			case 3:
+				if (p_args[0].equalsIgnoreCase("add")) {
+					for (String category : categorySet) {
+						if (category.startsWith(p_args[2].toLowerCase())) {
+							result.add(category);
+						}
+					}
+				}
+				break;
+			case 4:
+				if (p_args[0].equalsIgnoreCase("add")) {
+					Category category = CmdChooser.getCategory(p_args[2]);
+					if (typeMap.containsKey(category)) {
+						TreeSet<String> typeSet = typeMap.get(category);
+						for (String type : typeSet) {
+							if (type.startsWith(p_args[3].toLowerCase())) {
+								result.add(type);
+							}
+						}
+					} else {
+						switch (category) {
+							case SERVERTIME:
+							case WORLDTIME:
+								for (String permission : permissionSet) {
+									if (permission.startsWith(p_args[3].toLowerCase())) {
+										result.add(permission);
+									}
+								}
+								break;
+							default:
+								break;
+						}
+					}
+				}
+				break;
+			case 5:
+				if (p_args[0].equalsIgnoreCase("add")) {
+					Category category = CmdChooser.getCategory(p_args[2]);
+					if (typeMap.containsKey(category)) {
+						TreeSet<String> typeSet = typeMap.get(category);
+						if (typeSet.contains(p_args[3].toLowerCase())) {
+							for (String permission : permissionSet) {
+								if (permission.startsWith(p_args[4].toLowerCase())) {
+									result.add(permission);
+								}
+							}
+						}
+					}
+				}
+				break;
+			default:
+				break;
+		}
+		return result;
 	}
 	
 	@Override
@@ -650,5 +924,4 @@ public class ZeltCmds extends JavaPlugin {
 	public static LanguageUtils getLanguage() {
 		return lang;
 	}
-	
 }

@@ -47,10 +47,14 @@ public class CmdBuilder {
 				return new CmdPortM2B(permission, permissionExtended, p_msg);
 			case M2C:
 				return new CmdPortM2C(permission, permissionExtended, p_msg);
+			case M2D:
+				return new CmdPortM2D(permission, permissionExtended, p_msg);
 			case M2E:
 				return new CmdPortM2E(permission, permissionExtended, p_msg);
 			case M2H:
 				return new CmdPortM2H(permission, permissionExtended, p_msg);
+			case M2L:
+				return new CmdPortM2L(permission, permissionExtended, p_msg);
 			case M2P:
 				return new CmdPortM2P(permission, permissionExtended, p_msg);
 			case M2S:
@@ -61,14 +65,20 @@ public class CmdBuilder {
 				return new CmdPortM2WC(permission, permissionExtended, p_msg);
 			case M2WE:
 				return new CmdPortM2WE(permission, permissionExtended, p_msg);
+			case MoD:
+				return new CmdPortMoD(permission, permissionExtended, p_msg);
 			case P2B:
 				return new CmdPortP2B(permission, permissionExtended, p_msg);
 			case P2C:
 				return new CmdPortP2C(permission, permissionExtended, p_msg);
+			case P2D:
+				return new CmdPortP2D(permission, permissionExtended, p_msg);
 			case P2E:
 				return new CmdPortP2E(permission, permissionExtended, p_msg);
 			case P2H:
 				return new CmdPortP2H(permission, permissionExtended, p_msg);
+			case P2L:
+				return new CmdPortP2L(permission, permissionExtended, p_msg);
 			case P2M:
 				return new CmdPortP2M(permission, permissionExtended, p_msg);
 			case P2P:
