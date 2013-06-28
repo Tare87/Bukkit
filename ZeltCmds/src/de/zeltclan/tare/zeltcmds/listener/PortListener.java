@@ -20,7 +20,7 @@ public class PortListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerTeleport(PlayerTeleportEvent p_event) {
-		if (p_event.getCause().equals(TeleportCause.COMMAND)) {
+		if (!p_event.isCancelled() && p_event.getCause().equals(TeleportCause.COMMAND)) {
 			final Location from = p_event.getFrom();
 			final Player player = p_event.getPlayer();
 			player.setMetadata("ZeltCmds_Port_Last_x", new FixedMetadataValue(plugin, String.valueOf(from.getBlockX())));

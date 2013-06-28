@@ -1,4 +1,67 @@
 <h1>Changelog</h1>
+<h3>1.7.0</h3>
+<ul>
+<li>Kompiliert für Craftbukkit 1.5.2-R1.0</li>
+<li>Konfiguration für Update-Check separiert</li>
+<li>Berücksichtig andere Plugins bezüglich reservierter Befehle</li>
+<li>Verfügbare Parameter zum Aliassystem hinzugefügt:</li>
+<ul>
+<li>&lt;paramX&gt; - Der Xte übergebene Parameter</li>
+<li>&lt;param?&gt; - Ein optionaler Parameter</li>
+<li>&lt;param*&gt; - Alle übergebenen Parameter die noch keiner Position zugewiesen bekommen haben</li>
+<li>&lt;player_name&gt; - Name des ausführenden Spielers</li>
+<li>&lt;player_nick&gt; - Anzeigename des ausführenden Spielers</li>
+<li>&lt;player_world&gt; - Weltname des ausführenden Spielers</li>
+<li>&lt;player_x&gt; - x-Koordinate des ausführenden Spielers</li>
+<li>&lt;player_y&gt; - y-Koordinate des ausführenden Spielers</li>
+<li>&lt;player_z&gt; - z-Koordinate des ausführenden Spielers</li>
+<li>&lt;item_name&gt; - Name des Gegenstandes in der Hand des ausführenden Spielers</li>
+<li>&lt;item_id&gt; - ID des Gegenstandes in der Hand des ausführenden Spielers</li>
+<li>&lt;item_data&gt; - Data des Gegenstandes in der Hand des ausführenden Spielers</li>
+<li>&lt;waitX&gt; - Warte X Ticks vor der Ausführung des Befehls</li>
+</ul>
+<li>Neue Befehle in Kategorie player:</li>
+<ul>
+<li>alwaysfly > Lässt einen Spieler fliegen, ohne landen</li>
+<li>build > Lässt einen Spieler bauen, ohne Interaktionen</li>
+<li>cleanchat > Säuber den Chat eines Spielers</li>
+<li>enchanting > Öffnet ein Enchantingfenster für einen Spieler</li>
+<li>enderchest > Öffnet die Enderchest für einen Spieler</li>
+<li>fly > Lässt einen Spieler fliegen</li>
+<li>freeze > Friert einen Spieler ein</li>
+<li>ip > Zeigt die IP eines Spielers</li>
+<li>item > Zeigt Informationen über das Item in der Hand des Spielers</li>
+<li>leveldown > Senkt das Level eines Spielers um eins</li>
+<li>levelreset > Setzt das Level eines Spielers auf null</li>
+<li>levelup > Erhöht das Level eines Spielers um eins</li>
+<li>mute > Lässt einen Spieler verstummen</li>
+<li>starve > Lässt einen Spieler hungern</li>
+<li>workbench > Öffnet eine Werkbank für einen Spieler</li>
+</ul>
+<li>Neuer Befehl in Kategorie serverinfo:</li>
+<ul>
+<li>ram > Zeigt Informationen über den RAM des Servers</li>
+</ul>
+<li>Neue Kategorie give mit Befehlen:</li>
+<ul>
+<li>chest > Gibt Items die eine Anzahl von Truhen füllen</li>
+<li>item > Gibt eine bestimmte Menge von einem Item</li>
+<li>stack > Gibt eine bestimmte Menge Stacks von einem Item</li>
+</ul>
+<li>Neue Kategorie sudo mit Befehlen:</li>
+<ul>
+<li>all > Lässt alle Onlinespieler einen gegebenen Befehl ausführen</li>
+<li>console > Führt einen gegebenen Befehl auf der Konsole aus</li>
+<li>player > Lässt einen gegebenen Spieler einen gegebenen Befehl ausführen</li>
+<li>world > Lässt alle Onlinespieler einer gegebenen Welt einen gegebenen Befehl ausführen</li>
+</ul>
+<li>Informationen zu Kategorie player, Typ info hinzugefügt</li>
+<li>Verschiedene interne Änderungen</li>
+</ul>
+<h3>1.6.1</h3>
+<ul>
+<li>Kompiliert für Craftbukkit 1.5.1-R0.2</li>
+</ul>
 <h3>1.6.0</h3>
 <ul>
 <li>Kompiliert für Craftbukkit 1.5.1-R0.1</li>

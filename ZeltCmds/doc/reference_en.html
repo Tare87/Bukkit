@@ -1,11 +1,12 @@
-<p>v1.6.0</p>
+<p>v1.7.0</p>
 <p><b>1 General</b></p>
 <p><b>1.1 Casesensivity</b><br/>
 <b>1.1.1 Commands</b><br/>
 Configurable</p>
 <p><b>1.1.2 Categories, types</b><br/>
 Caseinsensitiv</p>
-<p><b>1.2 Options in config.yml</b>
+<p><b>1.2 Options in config.yml</b><br/>
+<p><b>1.2.1 Section General</b>
 <table>
 <tr>
 <th>Option</th>
@@ -14,10 +15,6 @@ Caseinsensitiv</p>
 </tr><tr>
 <td>casesensitive</td>
 <td>Wether to handle commands casesensitive or not</td>
-<td>true</td>
-</tr><tr>
-<td>checkUpdate</td>
-<td>Wether check for updates is active or not</td>
 <td>true</td>
 </tr><tr>
 <td>lang</td>
@@ -41,6 +38,29 @@ Caseinsensitiv</p>
 <td>[current version]</td>
 </tr>
 </table>
+</p>
+<p><b>1.2.2 Section Update</b>
+<table>
+<tr>
+<th>Option</th>
+<th>Description</th>
+<th>Default</th>
+</tr><tr>
+<td>check</td>
+<td>Wether to check for updates or not</td>
+<td>true</td>
+</tr><tr>
+<td>notifyOP</td>
+<td>Wether to notify OPs about updates on login or not. Only works if 'check' is true</td>
+<td>true</td>
+</tr>
+</table>
+</p>
+<p><b>1.2.3 Section Commands</b><br/>
+Definitions of created commands. Dont change this values
+</p>
+<p><b>1.2.4 Section Aliases</b><br/>
+Definitions of created aliases. Dont change this values
 </p>
 <br />
 
@@ -88,8 +108,47 @@ OP</p>
 <br />
 
 <p><b>3 Categories</b></p>
-<p><b>3.1 mode</b><br />
+<p><b>3.1 give</b><br />
 <b>3.1.1 Types</b>
+<table>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr><tr>
+<td>chest</td>
+<td>Gives items filling an amount of chests</td>
+</tr><tr>
+<td>item</td>
+<td>Gives an amount of an item</td>
+</tr><tr>
+<td>stack</td>
+<td>Gives an amount of stacks of an item</td>
+</tr>
+</table>
+</p>
+<p><b>3.1.2 Aliases</b><br />
+none
+</p>
+<p><b>3.1.3 Parameter</b><br />
+<b>3.1.3.1 by Player</b><br />
+[player] &lt;item&gt; &lt;amount&gt;</p>
+<p><b>3.1.2.2 by Console</b><br />
+&lt;player&gt; &lt;item&gt; &lt;amount&gt;</p>
+<p><b>3.1.4 Permissions</b><br />
+For self: zeltcmds.cmd.&lt;command&gt;<br />
+For other player: zeltcmds.cmd.&lt;command&gt;.player</p>
+<p><b>3.1.5 Message</b><br />
+Send to the affected player</p>
+<p><b>3.1.6 Information</b>
+<ul>
+<li>&lt;item&gt; can be the name, the id or id and data in form 'id:data'</li>
+<li>Type 'chest' tries to creates many entities, maybe more then the server allows. Amounts greater 1 may not create the wanted amount. Same applies for type 'item' and 'stack' with corresponding amount</li>
+</ul>
+</p>
+<br />
+
+<p><b>3.2 mode</b><br />
+<b>3.2.1 Types</b>
 <table>
 <tr>
 <th>Type</th>
@@ -142,7 +201,7 @@ OP</p>
 </tr>
 </table>
 </p>
-<p><b>3.1.2 Aliases</b>
+<p><b>3.2.2 Aliases</b>
 <ul>
 <li>a =&gt; adventure</li>
 <li>ac =&gt; adventure_creative</li>
@@ -161,33 +220,54 @@ OP</p>
 <li>sca =&gt; survival_creative_adventure</li>
 </ul>
 </p>
-<p><b>3.1.3 Parameter</b><br />
-<b>3.1.3.1 by Player</b><br />
+<p><b>3.2.3 Parameter</b><br />
+<b>3.2.3.2 by Player</b><br />
 [player]</p>
-<p><b>3.1.2.2 by Console</b><br />
+<p><b>3.2.2.2 by Console</b><br />
 &lt;player&gt;</p>
-<p><b>3.1.4 Permissions</b><br />
+<p><b>3.2.4 Permissions</b><br />
 For self: zeltcmds.cmd.&lt;command&gt;<br />
 For other player: zeltcmds.cmd.&lt;command&gt;.player</p>
-<p><b>3.1.5 msg</b><br />
+<p><b>3.2.5 Message</b><br />
 Send to the affected player</p>
 <br />
 
-<p><b>3.2 player</b><br />
-<b>3.2.1 Types</b>
+<p><b>3.3 player</b><br />
+<b>3.3.1 Types</b>
 <table>
 <tr>
 <th>Type</th>
 <th>Description</th>
 </tr><tr>
-<td>clear</td>
+<td>alwaysfly</td>
+<td>Let a choosen player fly, without landing</td>
+</tr><tr>
+<td>build</td>
+<td>Let a choosen player build, without interactions</td>
+</tr><tr>
+<td>cleanchat</td>
+<td>Cleans chat of a choosen player</td>
+</tr><tr>
+<td>clearinventory</td>
 <td>Clears the inventory of a choosen player</td>
 </tr><tr>
 <td>direction</td>
 <td>Shows the direction a choosen player ist looking</td>
 </tr><tr>
+<td>enchanting</td>
+<td>Opens enchanting interface for a choosen player</td>
+</tr><tr>
+<td>enderchest</td>
+<td>Opens enderchest for a choosen player</td>
+</tr><tr>
 <td>feed</td>
 <td>Feeds a choosen player</td>
+</tr><tr>
+<td>fly</td>
+<td>Let a choosen player fly</td>
+</tr><tr>
+<td>freeze</td>
+<td>Freezes a choosen player</td>
 </tr><tr>
 <td>heal</td>
 <td>Heals a choosen player</td>
@@ -195,8 +275,26 @@ Send to the affected player</p>
 <td>info</td>
 <td>Shows detailed information about a choosen player</td>
 </tr><tr>
+<td>ip</td>
+<td>Shows ip of a choosen player</td>
+</tr><tr>
+<td>item</td>
+<td>Shows information about item in hand of a choosen player</td>
+</tr><tr>
 <td>kill</td>
 <td>Kills a choosen player</td>
+</tr><tr>
+<td>leveldown</td>
+<td>Decrements a choosen players level by one</td>
+</tr><tr>
+<td>levelreset</td>
+<td>Sets a choosen players level to zero</td>
+</tr><tr>
+<td>levelup</td>
+<td>Increments a choosen players level by one</td>
+</tr><tr>
+<td>mute</td>
+<td>Mutes a choosen player</td>
 </tr><tr>
 <td>position</td>
 <td>Shows the position of a choosen player</td>
@@ -204,37 +302,61 @@ Send to the affected player</p>
 <td>seen</td>
 <td>Shows when a choosen player was last time online</td>
 </tr><tr>
+<td>starve</td>
+<td>Starves a choosen player</td>
+</tr><tr>
 <td>time</td>
 <td>Shows ingame-time of a choosen player</td>
+</tr><tr>
+<td>workbench</td>
+<td>Opens workbench for a choosen player</td>
 </tr>
 </table>
 </p>
-<p><b>3.2.2 Aliases</b>
+<p><b>3.3.2 Aliases</b>
 <ul>
+<li>cc =&gt; cleanchat</li>
+<li>ci =&gt; clearinventory</li>
+<li>clean =&gt; cleanchat</li>
+<li>clear =&gt; clearinventory</li>
 <li>dir =&gt; direction</li>
+<li>enchantment =&gt; enchanting</li>
+<li>lvl0 =&gt; levelreset</li>
+<li>lvl+ =&gt; levelup</li>
+<li>lvl- =&gt; leveldown</li>
 <li>pos =&gt; position</li>
 </ul>
 </p>
-<p><b>3.2.3 Parameter</b><br />
-<b>3.2.3.1 by Player</b><br />
+<p><b>3.3.3 Parameter</b><br />
+<b>3.3.3.1 by Player</b><br />
 [player]</p>
-<p><b>3.2.3.2 by Console</b><br />
+<p><b>3.3.3.2 by Console</b><br />
 &lt;player&gt;</p>
-<p><b>3.2.4 Permissions</b><br />
-<b>3.2.4.1 clear, feed, heal, kill</b><br />
+<p><b>3.3.4 Permissions</b><br />
+<b>3.3.4.1 alwaysfly, build, cleanchat, clearinventory, enchanting, enderchest, feed, fly, freeze, heal, kill, leveldown, levelreset, levelup, mute, starve, workbench</b><br />
 For self: zeltcmds.cmd.&lt;command&gt;<br />
 For other player: zeltcmds.cmd.&lt;command&gt;.player</p>
-<p><b>3.2.4.2 direction, info, position, seen, time</b><br />
+<p><b>3.3.4.2 direction, info, ip, item, position, seen, time</b><br />
 For both: zeltcmds.cmd.&lt;command&gt;</p>
-<p><b>3.2.5 msg</b><br />
-<b>3.2.5.1 clear, feed, heal, kill</b><br />
+<p><b>3.3.5 Message</b><br />
+<b>3.3.5.1 alwaysfly, build, cleanchat, clearinventory, enchanting, enderchest, feed, fly, freeze, heal, kill, leveldown, levelreset, levelup, mute, starve, workbench</b><br />
 Send to the affected player</p>
-<p><b>3.2.5.2 direction, info, position, seen, time</b><br />
+<p><b>3.3.5.2 direction, info, ip, item, position, seen, time</b><br />
 msg is not used by this types</p>
+<p><b>3.3.6 Information</b>
+<ul>
+<li>alwaysfly, build, fly, freeze, mute</li>
+<ul>
+<li>Its possible to define separate messages for activation and deactivation using the form [Msg-On]\/[Msg-Off]</li>
+</ul>
+<li>build: Interactions are possible with no item in hand</li>
+<li>fly: No falldamage in this mode. Maybe fixed in upcoming release</li>
+</ul>
+</p>
 <br />
 
-<p><b>3.3 serverinfo</b><br />
-<b>3.3.1 Types</b>
+<p><b>3.4 serverinfo</b><br />
+<b>3.4.1 Types</b>
 <table>
 <tr>
 <th>Type</th>
@@ -252,6 +374,9 @@ msg is not used by this types</p>
 <td>oplist</td>
 <td>Shows list of ops</td>
 </tr><tr>
+<td>ram</td>
+<td>Shows information about ram of server</td>
+</tr><tr>
 <td>whitelist</td>
 <td>Shows the whitelist</td>
 </tr><tr>
@@ -260,7 +385,7 @@ msg is not used by this types</p>
 </tr>
 </table>
 </p>
-<p><b>3.3.2 Aliases</b>
+<p><b>3.4.2 Aliases</b>
 <ul>
 <li>banlist =&gt; blacklist</li>
 <li>information =&gt; info</li>
@@ -269,16 +394,183 @@ msg is not used by this types</p>
 <li>worlds =&gt; worldlist</li>
 </ul>
 </p>
-<p><b>3.3.3 Parameter</b><br />
+<p><b>3.4.3 Parameter</b><br />
 no parameter</p>
-<p><b>3.3.4 Permissions</b><br />
+<p><b>3.4.4 Permissions</b><br />
 zeltcmds.cmd.&lt;command&gt;</p>
-<p><b>3.3.5 msg</b><br />
+<p><b>3.4.5 Message</b><br />
 msg is not used by this category</p>
 <br />
 
-<p><b>3.4 teleport</b><br />
-<b>3.4.1 Types</b>
+<p><b>3.5 servertime</b><br />
+<b>3.5.1 Parameter for creation</b><br />
+Integer. As references, 0 sets the moon to its highest point (midnight) and 12000 sets the sun to its highest point (highnoon). Its a bit like hour*1000</p>
+<p><b>3.5.2 Parameter for use</b><br />
+no paramter</p>
+<p><b>3.5.3 Aliases</b>
+<ul>
+<li>stime =&gt; servertime</li>
+</ul>
+</p>
+<p><b>3.5.4 Permissions</b><br />
+zeltcmds.cmd.&lt;command&gt;</p>
+<p><b>3.5.5 Message</b><br />
+Send to every player</p>
+<br />
+
+<p><b>3.6 serverweather</b><br />
+<b>3.6.1 Types</b>
+<table>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr><tr>
+<td>rain</td>
+<td>Sets weather to rain</td>
+</tr><tr>
+<td>storm</td>
+<td>Sets weather to rain and thunder</td>
+</tr><tr>
+<td>sun</td>
+<td>Sets weather to sun</td>
+</tr>
+</table>
+</p>
+<p><b>3.6.2 Parameter</b><br />
+no parameter</p>
+<p><b>3.6.3 Aliases</b>
+<ul>
+<li>sweather =&gt; serverweather</li>
+</ul>
+</p>
+<p><b>3.6.4 Permissions</b><br />
+zeltcmds.cmd.&lt;command&gt;</p>
+<p><b>3.6.5 Message</b><br />
+Send to every player</p>
+<br />
+
+<p><b>3.7 set</b><br />
+<b>3.7.1 Types</b>
+<table>
+<tr>
+<th>Type</th>
+<th>Description</th>
+<th>Parameter</th>
+<th>Console</th>
+</tr><tr>
+<td>bedspawn</td>
+<td>Sets the bedspawn for a player</td>
+<td>[player]</td>
+<td>false</td>
+</tr><tr>
+<td>spawn</td>
+<td>Sets the spawn for the world</td>
+<td></td>
+<td>false</td>
+</tr>
+</table>
+</p>
+<p><b>3.7.2 Aliases</b>
+<ul>
+<li>home =&gt; bedspawn</li>
+</ul>
+</p>
+<p><b>3.7.3 Permissions</b><br />
+<b>3.7.3.1 bedspawn</b><br />
+For self: zeltcmds.cmd.&lt;command&gt;<br />
+For other player: zeltcmds.cmd.&lt;command&gt;.player</p>
+<p><b>3.7.3.2 spawn</b><br />
+zeltcmds.cmd.&lt;command&gt;</p>
+<p><b>3.7.4 Message</b><br />
+<b>3.7.4.1 bedspawn</b><br />
+Send to affected player</p>
+<p><b>3.7.4.2 spawn</b><br />
+Send to player using command</p>
+<br />
+
+<p><b>3.8 spawn</b><br />
+<b>3.8.1 Types</b>
+<table>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr><tr>
+<td>cursor</td>
+<td>Spawns entity at position of cursor</td>
+</tr><tr>
+<td>player</td>
+<td>Spawns entity at position of player</td>
+</tr>
+</table>
+</p>
+<p><b>3.8.2 Parameter</b><br />
+<b>3.8.2.1 cursor</b><br />
+<b>3.8.2.1.1 by Console</b><br />
+no usage</p>
+<p><b>3.8.2.1.2 by Player</b><br />
+&lt;mob&gt;</p>
+<p><b>3.8.2.2 player</b><br />
+<b>3.8.2.2.1 by Console</b><br />
+&lt;mob&gt; &lt;player&gt;</p>
+<p><b>3.8.2.2.2 by Player</b><br />
+&lt;mob&gt; [player]</p>
+<p><b>3.8.3 Permissions</b><br />
+<b>3.8.3.1 cursor</b><br />
+zeltcmds.cmd.&lt;command&gt;</p>
+<p><b>3.8.3.2 player</b><br />
+For self: zeltcmds.cmd.&lt;command&gt;<br />
+For other player: zeltcmds.cmd.&lt;command&gt;.player</p>
+<p><b>3.8.4 Message</b><br />
+<b>3.8.4.1 cursor</b><br />
+Send to player spawning entity</p>
+<p><b>3.8.4.2 player</b><br />
+Send to player at which position the entity is spawned</p>
+<br />
+
+<p><b>3.9 sudo</b><br />
+<b>3.9.1 Types</b>
+<table>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr><tr>
+<td>all</td>
+<td>Make all players online execute a given command</td>
+</tr><tr>
+<td>console</td>
+<td>Executes a given command from console</td>
+</tr><tr>
+<td>player</td>
+<td>Make a given player execute a given command</td>
+</tr><tr>
+<td>world</td>
+<td>Make all players online on a given world execute a given command</td>
+</tr>
+</table>
+</p>
+<p><b>3.9.2 Parameter</b><br />
+<b>3.9.2.1 all, console</b><br />
+&lt;command&gt; [parameter]*</p>
+<p><b>3.9.2.2 player</b><br />
+&lt;player&gt; &lt;command&gt; [parameter]*</p>
+<p><b>3.9.2.3 world</b><br />
+&lt;world&gt; &lt;command&gt; [parameter]*</p>
+<p><b>3.9.3 Permissions</b><br />
+zeltcmds.cmd.&lt;command&gt;</p>
+<p><b>3.9.4 Message</b><br />
+<b>3.9.4.1 all, player, world</b><br />
+Send to the affected player</p>
+<p><b>3.9.4.2 console</b><br />
+msg is not used by this types</p>
+<p><b>3.9.5 Information</b>
+<ul>
+<li>Output of commands is NOT redirected to player executing sudo</li>
+</ul>
+</p>
+<br />
+
+<p><b>3.10 teleport</b><br />
+<b>3.10.1 Types</b>
 <table>
 <tr>
 <th>Type</th>
@@ -443,7 +735,7 @@ msg is not used by this category</p>
 </tr>
 </table>
 </p>
-<p><b>3.4.2 Aliases</b>
+<p><b>3.10.2 Aliases</b>
 <ul>
 <li>back =&gt; m2l</li>
 <li>blink =&gt; mod</li>
@@ -451,160 +743,35 @@ msg is not used by this category</p>
 <li>port =&gt; teleport</li>
 </ul>
 </p>
-<p><b>3.4.3 Permissions</b><br />
+<p><b>3.10.3 Permissions</b><br />
 zeltcmds.cmd.&lt;command&gt;</p>
-<p><b>3.4.4 msg</b><br />
+<p><b>3.10.4 Message</b><br />
 Send to teleported players</p>
 <br />
 
-<p><b>3.5 set</b><br />
-<b>3.5.1 Types</b>
-<table>
-<tr>
-<th>Type</th>
-<th>Description</th>
-<th>Parameter</th>
-<th>Console</th>
-</tr><tr>
-<td>bedspawn</td>
-<td>Sets the bedspawn for a player</td>
-<td>[player]</td>
-<td>false</td>
-</tr><tr>
-<td>spawn</td>
-<td>Sets the spawn for the world</td>
-<td></td>
-<td>false</td>
-</tr>
-</table>
-</p>
-<p><b>3.5.2 Aliases</b>
-<ul>
-<li>home =&gt; bedspawn</li>
-</ul>
-</p>
-<p><b>3.5.3 Permissions</b><br />
-<b>3.5.3.1 bedspawn</b><br />
-For self: zeltcmds.cmd.&lt;command&gt;<br />
-For other player: zeltcmds.cmd.&lt;command&gt;.player</p>
-<p><b>3.5.3.2 spawn</b><br />
-zeltcmds.cmd.&lt;command&gt;</p>
-<p><b>3.5.4 msg</b><br />
-<b>3.5.4.1 bedspawn</b><br />
-Send to affected player</p>
-<p><b>3.5.4.2 spawn</b><br />
-Send to player using command</p>
-<br />
-
-<p><b>3.6 servertime</b><br />
-<b>3.6.1 Parameter for creation</b><br />
+<p><b>3.11 worldtime</b><br />
+<b>3.11.1 Parameter for creation</b><br />
 Integer. As references, 0 sets the moon to its highest point (midnight) and 12000 sets the sun to its highest point (highnoon). Its a bit like hour*1000</p>
-<p><b>3.6.2 Parameter for use</b><br />
-no paramter</p>
-<p><b>3.6.3 Aliases</b>
-<ul>
-<li>stime =&gt; servertime</li>
-</ul>
-</p>
-<p><b>3.6.4 Permissions</b><br />
-zeltcmds.cmd.&lt;command&gt;</p>
-<p><b>3.6.5 msg</b><br />
-Send to every player</p>
-<br />
-
-<p><b>3.7 serverweather</b><br />
-<b>3.7.1 Types</b>
-<table>
-<tr>
-<th>Type</th>
-<th>Description</th>
-</tr><tr>
-<td>rain</td>
-<td>Sets weather to rain</td>
-</tr><tr>
-<td>storm</td>
-<td>Sets weather to rain and thunder</td>
-</tr><tr>
-<td>sun</td>
-<td>Sets weather to sun</td>
-</tr>
-</table>
-</p>
-<p><b>3.7.2 Parameter</b><br />
-no parameter</p>
-<p><b>3.7.3 Aliases</b>
-<ul>
-<li>sweather =&gt; serverweather</li>
-</ul>
-</p>
-<p><b>3.7.4 Permissions</b><br />
-zeltcmds.cmd.&lt;command&gt;</p>
-<p><b>3.7.5 msg</b><br />
-Send to every player</p>
-<br />
-
-<p><b>3.8 spawn</b><br />
-<b>3.8.1 Types</b>
-<table>
-<tr>
-<th>Type</th>
-<th>Description</th>
-</tr><tr>
-<td>cursor</td>
-<td>Spawns entity at position of cursor</td>
-</tr><tr>
-<td>player</td>
-<td>Spawns entity at position of player</td>
-</tr>
-</table>
-</p>
-<p><b>3.8.2 Parameter</b><br />
-<b>3.8.2.1 cursor</b><br />
-<b>3.8.2.1.1 by Console</b><br />
-no usage</p>
-<p><b>3.8.2.1.2 by Player</b><br />
-&lt;mob&gt;</p>
-<p><b>3.8.2.2 player</b><br />
-<b>3.8.2.2.1 by Console</b><br />
-&lt;mob&gt; &lt;player&gt;</p>
-<p><b>3.8.2.2.2 by Player</b><br />
-&lt;mob&gt; [player]</p>
-<p><b>3.8.3 Permissions</b><br />
-<b>3.8.3.1 cursor</b><br />
-zeltcmds.cmd.&lt;command&gt;</p>
-<p><b>3.8.3.2 player</b><br />
-For self: zeltcmds.cmd.&lt;command&gt;<br />
-For other player: zeltcmds.cmd.&lt;command&gt;.player</p>
-<p><b>3.8.4 msg</b><br />
-<b>3.8.4.1 cursor</b><br />
-Send to player spawning entity</p>
-<p><b>3.8.4.2 player</b><br />
-Send to player at which position the entity is spawned</p>
-<br />
-
-<p><b>3.9 worldtime</b><br />
-<b>3.9.1 Parameter for creation</b><br />
-Integer. As references, 0 sets the moon to its highest point (midnight) and 12000 sets the sun to its highest point (highnoon). Its a bit like hour*1000</p>
-<p><b>3.9.2 Parameter for use</b><br />
-<b>3.9.2.1 by Player</b><br />
+<p><b>3.11.2 Parameter for use</b><br />
+<b>3.11.2.1 by Player</b><br />
 [world]</p>
-<p><b>3.9.2.2 by Console</b><br />
+<p><b>3.11.2.2 by Console</b><br />
 &lt;world&gt;</p>
-<p><b>3.9.3 Aliases</b>
+<p><b>3.11.3 Aliases</b>
 <ul>
 <li>time =&gt; worldtime</li>
 <li>wtime =&gt; worldtime</li>
 </ul>
 </p>
-<p><b>3.9.4 Permissions</b><br />
+<p><b>3.11.4 Permissions</b><br />
 For the world the player stands: zeltcmds.cmd.&lt;command&gt;<br />
 For an other world: zeltcmds.cmd.&lt;command&gt;.world</p>
-<p><b>3.9.5 msg</b><br />
+<p><b>3.11.5 Message</b><br />
 Send to every player on affected world</p>
 <br />
 
-<p><b>3.10 worldweather</b><br />
-<b>3.10.1 Types</b>
+<p><b>3.12 worldweather</b><br />
+<b>3.12.1 Types</b>
 <table>
 <tr>
 <th>Type</th>
@@ -621,21 +788,21 @@ Send to every player on affected world</p>
 </tr>
 </table>
 </p>
-<p><b>3.10.2 Parameter</b><br />
-<b>3.10.2.1 by Player</b><br />
+<p><b>3.12.2 Parameter</b><br />
+<b>3.12.2.1 by Player</b><br />
 [world]</p>
-<p></b>3.10.2.2 by Console</b><br />
+<p></b>3.12.2.2 by Console</b><br />
 &lt;world&gt;</p>
-<p><b>3.10.3 Aliases</b>
+<p><b>3.12.3 Aliases</b>
 <ul>
 <li>weather =&gt; worldweather</li>
 <li>wweather =&gt; worldweather</li>
 </ul>
 </p>
-<p><b>3.10.4 Permissions</b><br />
+<p><b>3.12.4 Permissions</b><br />
 For the world the player stands: zeltcmds.cmd.&lt;command&gt;<br />
 For an other world: zeltcmds.cmd.&lt;command&gt;.world</p>
-<p><b>3.10.5 msg</b><br />
+<p><b>3.12.5 Message</b><br />
 Send to every player on affected world</p>
 <br />
 
@@ -661,6 +828,26 @@ Send to every player on affected world</p>
 </p>
 
 <p><b>5 Aliases</b></p>
+<p><b>5.1 Parameters (Sorted in processing order)</b>
+<ul>
+<li>&lt;player_name&gt; - Name of executing player (player only)</li>
+<li>&lt;player_nick&gt; - Displayname of executing player (player only)</li>
+<li>&lt;player_x&gt; - x-coordinate of executing player (player only)</li>
+<li>&lt;player_y&gt; - y-coordinate of executing player (player only)</li>
+<li>&lt;player_z&gt; - z-coordinate of executing player (player only)</li>
+<li>&lt;player_world&gt; - worldname of executing player (player only)</li>
+<li>&lt;item_id&gt; - ID of item in hand of executing player (player only)</li>
+<li>&lt;item_data&gt; - Data of item in hand of executing player (player only)</li>
+<li>&lt;item_name&gt; - Name of item in hand of executing player (player only)</li>
+<li>&lt;paramX&gt; - The Xth commited parameter</li>
+<li>&lt;param&gt; - A mandatory parameter using first not assigned parameter</li>
+<li>&lt;param?&gt; - An optional parameter using first not assigned parameter</li>
+<li>&lt;param*&gt; - All commited parameters not assigned to a position</li>
+<li>&lt;cmd&gt; - Separates two commands from each other. Whitespaces are allowed before and after the parameter, but not needed</li>
+<li>&lt;waitX&gt; - Wait X ticks before executing command. Have to stand at the begin of a command</li>
+</ul>
+</p>
+<p><b>5.2 Examples</b><br />
 <p>Example 1: (Basic alias for command)<br />
 /zeltcmds addalias zc zeltcmds<br />
 > zc is alias for zeltcmds so now you can use /zc [...] instead of /zeltcmds [...]</p>
@@ -676,20 +863,7 @@ Send to every player on affected world</p>
 > zerow is a teleport for the player to position x=0;z=0 on a world that has to be given<br />
 /zerow test<br />
 > Teleports the player to world 'test' to position x=0;z=0</p>
-<p>Example 4: (Another advanced alias)<br />
-/zeltcmds add p2e port p2e op Woosh!<br />
-> Command used for the example<br />
-/zeltcmds addalias skyfall p2e &lt;param&gt; &lt;param&gt; 256<br />
-> skyfall is a teleport for a given player to a given coordiante at y=256<br />
-/skyfall notch -1 38<br />
-> Teleports the player 'notch' to position x=-1;y=256;z=38</p>
-<p>Example 5: (Alias combining two commands)<br />
-/zeltcmds add day servertime 7000 op Good Morning<br />
-/zeltcmds add sun serverweather sun op The sun is shining<br />
-> Commands used for the example<br />
-/zeltcmds addalias niceday day &lt;cmd&gt; sun<br />
-> niceday sets the time of the server to 7:00 and the weather to sun</p>
-<p>Example 6: (Alias combining two commands with one dynamic parameter)<br />
+<p>Example 4: (Alias combining two commands with one dynamic parameter)<br />
 /zeltcmds add toworld port m2w true<br />
 /zeltcmds add home port m2h true Home sweet home!<br />
 > Commands used for the example<br />
@@ -697,3 +871,16 @@ Send to every player on affected world</p>
 > worldhome teleports the player to the spawn of a choosen world and from there to its bedspawn<br />
 /worldhome Pangea<br />
 > Teleports the player to his bedspawn on world Pangea</p>
+<p>Example 5: (Alias to create useful aliases)<br />
+/zeltcmds add tocoord port m2we true<br />
+> Command used for the example<br />
+/zeltcmds addalias warpadd zeltcmds addalias &lt;param&gt; tocoord &lt;player_world&gt; &lt;player_x&gt; &lt;player_y&gt; &lt;player_z&gt;<br />
+> warpadd creates an alias with a given name that would teleport a player to the position where the alias was created (like warps)<br />
+<p>Example 6: (Countdown)<br />
+/zeltcmds addalias countdown say 3&lt;cmd&gt;&lt;wait20&gt;say 2&lt;cmd&gt;&lt;wait40&gt;say 1
+<p>Example 7: (Cloning items)<br />
+/zeltcmds add giveitem give item op<br />
+> Command used for the example<br />
+/zeltcmds addalias clone giveitem &lt;param?&gt; &lt;item_id&gt;:&lt;item_data&gt; &lt;param1&gt;<br />
+> giveitem clones the item in hand of the executing player, creating the amount given by first parameter and optional give them to a player given by second parameter</p>
+</p>

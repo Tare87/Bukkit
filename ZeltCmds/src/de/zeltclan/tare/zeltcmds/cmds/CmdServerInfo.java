@@ -13,17 +13,18 @@ import org.bukkit.permissions.Permission;
 import de.zeltclan.tare.bukkitutils.MessageUtils;
 import de.zeltclan.tare.zeltcmds.CmdParent;
 import de.zeltclan.tare.zeltcmds.ZeltCmds;
+import de.zeltclan.tare.zeltcmds.enums.RequireListener;
 import de.zeltclan.tare.zeltcmds.enums.Type;
 
 public class CmdServerInfo extends CmdParent {
 
 	public static enum Types implements Type {
-		BLACKLIST, INFO, ONLINELIST, OPLIST, WHITELIST, WORLDLIST;
+		BLACKLIST, INFO, ONLINELIST, OPLIST, RAM, WHITELIST, WORLDLIST;
 	}
 	private final Types type;
 	
-	public CmdServerInfo(Types p_type, Permission p_perm, Permission p_permExt) {
-		super(ZeltCmds.getLanguage().getString("description_serverinfo_" + p_type.name().toLowerCase()), p_perm, p_permExt);
+	public CmdServerInfo(Types p_type, Permission p_perm, Permission p_permExt, RequireListener p_listener) {
+		super(ZeltCmds.getLanguage().getString("description_serverinfo_" + p_type.name().toLowerCase()), p_perm, p_permExt, p_listener);
 		type = p_type;
 	}
 	
@@ -37,8 +38,8 @@ public class CmdServerInfo extends CmdParent {
 			}
 			break;
 		default:
-			MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_too_many"));
-			MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage", new Object[] {p_cmd}));
+			MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_too_many"));
+			MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage", new Object[] {p_cmd}));
 			break;
 		}
 	}
@@ -57,8 +58,8 @@ public class CmdServerInfo extends CmdParent {
 				}
 				break;
 			default:
-				MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_too_many"));
-				MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage", new Object[] {"/" + p_cmd}));
+				MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_too_many"));
+				MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage", new Object[] {"/" + p_cmd}));
 				break;
 		}
 		return null;
@@ -164,6 +165,18 @@ public class CmdServerInfo extends CmdParent {
 			result.add(ZeltCmds.getLanguage().getString("serverinfo_oplist", new Object[] {temp.size()}));
 			result.addAll(temp);
 			break;
+		case RAM:
+			final Runtime runtime = Runtime.getRuntime();
+			final int conversion = 1024 * 1024;
+			final int freeMem = ((int) (runtime.freeMemory() / conversion));
+			final int totalMem = ((int) (runtime.totalMemory() / conversion));
+			final int maxMem = ((int) (runtime.maxMemory() / conversion));
+			result.add(ZeltCmds.getLanguage().getString("serverinfo_memory"));
+			result.add(ZeltCmds.getLanguage().getString("serverinfo_memory_free", new Object[] {freeMem, ((int) (100 * freeMem / totalMem))}));
+			result.add(ZeltCmds.getLanguage().getString("serverinfo_memory_used", new Object[] {(totalMem - freeMem), ((int) (100 * (totalMem - freeMem) / totalMem))}));
+			result.add(ZeltCmds.getLanguage().getString("serverinfo_memory_total", new Object[] {totalMem}));
+			result.add(ZeltCmds.getLanguage().getString("serverinfo_memory_max", new Object[] {maxMem}));
+			break;
 		case WHITELIST:
 			temp.clear();
 			line = "";
@@ -195,8 +208,6 @@ public class CmdServerInfo extends CmdParent {
 				}
 			}
 			result.add(line);
-			break;
-		default:
 			break;
 		}
 		return result.toArray(new String[result.size()]);

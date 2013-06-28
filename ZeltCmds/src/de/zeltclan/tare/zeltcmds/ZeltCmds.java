@@ -1,30 +1,23 @@
 package de.zeltclan.tare.zeltcmds;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import de.zeltclan.tare.bukkitutils.*;
-import de.zeltclan.tare.zeltcmds.cmds.CmdLocation;
-import de.zeltclan.tare.zeltcmds.cmds.CmdMode;
-import de.zeltclan.tare.zeltcmds.cmds.CmdPlayer;
-import de.zeltclan.tare.zeltcmds.cmds.CmdPlayerInfo;
-import de.zeltclan.tare.zeltcmds.cmds.CmdServerInfo;
-import de.zeltclan.tare.zeltcmds.cmds.CmdServerWeather;
-import de.zeltclan.tare.zeltcmds.cmds.CmdSpawn;
-import de.zeltclan.tare.zeltcmds.cmds.CmdWorldWeather;
 import de.zeltclan.tare.zeltcmds.enums.Category;
 import de.zeltclan.tare.zeltcmds.enums.Default;
 import de.zeltclan.tare.zeltcmds.enums.MessageType;
-import de.zeltclan.tare.zeltcmds.enums.Port;
+import de.zeltclan.tare.zeltcmds.enums.RequireListener;
 import de.zeltclan.tare.zeltcmds.enums.Type;
 
 public class ZeltCmds extends JavaPlugin {
@@ -34,19 +27,16 @@ public class ZeltCmds extends JavaPlugin {
 	private FileConfiguration config;
 	
 	private CmdExecutor cmdExecutor;
-	
-	private CmdUpdateNotifier cmdUpdateNotifier;
-	
-	private TreeSet<String> categorySet = null;
+
 	private TreeSet<String> functionSet = null;
+	private TreeSet<String> parameterSet = null;
 	private TreeSet<String> permissionSet = null;
-	
-	private HashMap<Category, TreeSet<String>> typeMap = null;
 	
 	@Override
 	public void onEnable() {
 		// Build Sets
 		this.buildSets();
+		// Load configuration and enable plugin
 		this.enable();
 		// Log number of commands enabled
 		final int cmdCount = cmdExecutor.countCommands();
@@ -80,6 +70,18 @@ public class ZeltCmds extends JavaPlugin {
 		if (config.getConfigurationSection("General") == null) {
 			config.createSection("General");
 		}
+		// Check if ConfigurationSection "Update" exists
+		if (config.getConfigurationSection("Update") == null) {
+			config.createSection("Update");
+		}
+		// Check if ConfigurationSection "Commands" exists
+		if (config.getConfigurationSection("Commands") == null) {
+			config.createSection("Commands");
+		}
+		// Check if ConfigurationSection "Aliases" exists
+		if (config.getConfigurationSection("Aliases") == null) {
+			config.createSection("Aliases");
+		}
 		// Check if configuration "lang" exists
 		if (config.getConfigurationSection("General").get("lang") == null) {
 			// Set Default
@@ -92,6 +94,8 @@ public class ZeltCmds extends JavaPlugin {
 		}
 		// Log used Locale
 		LogUtils.info(this,lang.getString("plugin_local", new Object[] {lang.getLanguage()}));
+		// Update configfile to current version
+		updateConfig();
 		// Check if configuration "logCmd" exists
 		if (config.getConfigurationSection("General").get("logCmd") == null) {
 			// Set Default
@@ -110,34 +114,30 @@ public class ZeltCmds extends JavaPlugin {
 			config.getConfigurationSection("General").set("version", this.getDescription().getVersion());
 			LogUtils.info(this, lang.getString("option_not_set", new Object[] {"version"}));
 		}
-		// Check if configurationSection "pageentries" exists
+		// Check if configuration "pageentries" exists
 		if (config.getConfigurationSection("General").get("pageentries") == null) {
 			// Set Default
 			config.getConfigurationSection("General").set("pageentries", 5);
 			LogUtils.info(this, lang.getString("option_not_set", new Object[] {"pageentries"}));
 		}
-		// Check if configurationSection "checkUpdate" exists
-		if (config.getConfigurationSection("General").get("checkUpdate") == null) {
-			// Set Default
-			config.getConfigurationSection("General").set("checkUpdate", true);
-			LogUtils.info(this, lang.getString("option_not_set", new Object[] {"checkUpdate"}));
-		}
-		// Check if configurationSection "casesensitive" exists
+		// Check if configuration "casesensitive" exists
 		if (config.getConfigurationSection("General").get("casesensitive") == null) {
 			// Set Default
 			config.getConfigurationSection("General").set("casesensitive", true);
 			LogUtils.info(this, lang.getString("option_not_set", new Object[] {"casesensitive"}));
 		}
-		// Check if ConfigurationSection "Commands" exists
-		if (config.getConfigurationSection("Commands") == null) {
-			config.createSection("Commands");
+		// Check if configuration "check" exists
+		if (config.getConfigurationSection("Update").get("check") == null) {
+			// Set Default
+			config.getConfigurationSection("Update").set("check", true);
+			LogUtils.info(this, lang.getString("option_not_set", new Object[] {"check"}));
 		}
-		// Check if ConfigurationSection "Aliases" exists
-		if (config.getConfigurationSection("Aliases") == null) {
-			config.createSection("Aliases");
+		// Check if configuration "notifyOP" exists
+		if (config.getConfigurationSection("Update").get("notifyOP") == null) {
+			// Set Default
+			config.getConfigurationSection("Update").set("notifyOP", true);
+			LogUtils.info(this, lang.getString("option_not_set", new Object[] {"notifyOP"}));
 		}
-		// Update configfile to current version
-		updateConfig();
 		// Save configuration to config.yml for saving Defaults
 		this.saveConfig();
 		// Create manager
@@ -157,29 +157,13 @@ public class ZeltCmds extends JavaPlugin {
 			// Add alias
 			this.addConfigAlias(alias, config.getConfigurationSection("Aliases").getString(alias));
 		}
-		if (config.getConfigurationSection("General").getBoolean("checkUpdate")) {
-			cmdUpdateNotifier = new CmdUpdateNotifier("http://dev.bukkit.org/server-mods/zeltcmds/files.rss", this.getDescription().getVersion());
-			if (cmdUpdateNotifier.getFileFeed() != null) {
-				HashMap<String,String> result = FileFeedReader.checkUpdate(cmdUpdateNotifier.getFileFeed(), this.getDescription().getVersion());
-				if (result.containsKey("error")) {
-					LogUtils.warning(this, result.get("error"));
-					return;
-				}
-				if (result.containsKey("link")) {
-					LogUtils.info(this, ZeltCmds.getLanguage().getString("update_version", new Object[]{result.get("version")}));
-					LogUtils.info(this, ZeltCmds.getLanguage().getString("update_changelog", new Object[]{result.get("link")}));
-					LogUtils.info(this, ZeltCmds.getLanguage().getString("update_download", new Object[]{result.get("jarLink")}));
-				}
-				// Register Notifier
-				this.getServer().getPluginManager().registerEvents(cmdUpdateNotifier, this);
-			} else {
-				cmdUpdateNotifier = null;
-			}
+		if (config.getConfigurationSection("Update").getBoolean("check")) {
+			new UpdateNotifier(this, "http://dev.bukkit.org/server-mods/zeltcmds/files.rss", config.getConfigurationSection("Update").getBoolean("check"), config.getConfigurationSection("General").getString("lang"));
 		}
 	}
 	
 	private void updateConfig() {
-		if (needUpdateTo("1.0.0")) {
+		if (VersionUtils.isNewer(config.getConfigurationSection("General").getString("version"), "1.0.0")) {
 			for (String cmd : config.getConfigurationSection("Commands").getKeys(false)) {
 				if (config.getConfigurationSection("Commands").getConfigurationSection(cmd).getString("category").equalsIgnoreCase("time")) {
 					config.getConfigurationSection("Commands").getConfigurationSection(cmd).set("category", "WORLDTIME");
@@ -190,35 +174,26 @@ public class ZeltCmds extends JavaPlugin {
 			}
 			LogUtils.info(this, lang.getString("config_updated", new Object[] {"1.0.0"}));
 		}
-		if (needUpdateTo("1.4.0")) {
+		if (VersionUtils.isNewer(config.getConfigurationSection("General").getString("version"), "1.4.0")) {
 			if (config.getConfigurationSection("General").get("logMsg") != null) {
 				config.getConfigurationSection("General").set("logCmd", config.getConfigurationSection("General").getBoolean("logMsg"));
 				config.getConfigurationSection("General").set("logMsg", null);
-				LogUtils.info(this, lang.getString("config_updated", new Object[] {"1.4.0"}));
 			}
+			LogUtils.info(this, lang.getString("config_updated", new Object[] {"1.4.0"}));
+		}
+		if (VersionUtils.isNewer(config.getConfigurationSection("General").getString("version"), "1.7.0")) {
+			if (config.getConfigurationSection("General").get("checkUpdate") != null) {
+				config.getConfigurationSection("Update").set("check", config.getConfigurationSection("General").getBoolean("checkUpdate"));
+				config.getConfigurationSection("General").set("checkUpdate", null);
+			}
+			for (String cmd : config.getConfigurationSection("Commands").getKeys(false)) {
+				if (config.getConfigurationSection("Commands").getConfigurationSection(cmd).getString("category").equalsIgnoreCase("player") && config.getConfigurationSection("Commands").getConfigurationSection(cmd).getString("type").equalsIgnoreCase("clear")) {
+					config.getConfigurationSection("Commands").getConfigurationSection(cmd).set("type", "CLEARINVENTORY");
+				}
+			}
+			LogUtils.info(this, lang.getString("config_updated", new Object[] {"1.7.0"}));
 		}
 		config.getConfigurationSection("General").set("version", this.getDescription().getVersion());
-	}
-	
-	private boolean needUpdateTo(String p_version) {
-		String[] temp = config.getConfigurationSection("General").getString("version").split("\\.");
-		final int[] versionConfig = new int[temp.length];
-		for (int i = 0; i < temp.length; i++) {
-			versionConfig[i] = Integer.parseInt(temp[i]);
-		}
-		temp = p_version.split("\\.");
-		final int[] versionParameter = new int[temp.length];
-		for (int i = 0; i < temp.length; i++) {
-			versionParameter[i] = Integer.parseInt(temp[i]);
-		}
-		if (versionConfig[0] < versionParameter[0]) {
-			return true;
-		} else if (versionConfig[0] == versionParameter[0] && versionConfig[1] < versionParameter[1]) {
-			return true;
-		} else if (versionConfig[1] == versionParameter[1] && versionConfig[2] < versionParameter[2]) {
-			return true;
-		}
-		return false;
 	}
 	
 	private void disable() {
@@ -226,9 +201,10 @@ public class ZeltCmds extends JavaPlugin {
 		for (String cmd : cmdExecutor.listCommands()) {
 			cmdExecutor.removeCommand(cmd);
 		}
+		// Unregister all Listener
+		HandlerList.unregisterAll(this);
 		// Set cmdExecutor to null
 		cmdExecutor = null;
-		cmdUpdateNotifier = null;
 	}
 	
 	private void buildSets() {
@@ -244,112 +220,22 @@ public class ZeltCmds extends JavaPlugin {
 			functionSet.add("remove");
 			functionSet.add("removealias");
 		}
-		// categorySet
-		if (categorySet == null) {
-			categorySet = new TreeSet<String>();
-			for (Category category : Category.values()) {
-				final String name = category.name().toLowerCase();
-				if (!name.equals("nocmd")) {
-					categorySet.add(name);
-				}
-			}
-			categorySet.add("teleport");
-			categorySet.add("stime");
-			categorySet.add("sweather");
-			categorySet.add("wtime");
-			categorySet.add("time");
-			categorySet.add("wweather");
-			categorySet.add("weather");
-		}
-		// typeMap
-		if (typeMap == null) {
-			typeMap = new HashMap<Category, TreeSet<String>>();
-			// typeMap category: MODE
-			final TreeSet<String> modeSet = new TreeSet<String>();
-			for (CmdMode.Types type : CmdMode.Types.values()) {
-				final String name = type.name().toLowerCase();
-				modeSet.add(name);
-			}
-			modeSet.add("a");
-			modeSet.add("ac");
-			modeSet.add("as");
-			modeSet.add("acs");
-			modeSet.add("asc");
-			modeSet.add("c");
-			modeSet.add("ca");
-			modeSet.add("cs");
-			modeSet.add("cas");
-			modeSet.add("csa");
-			modeSet.add("s");
-			modeSet.add("sa");
-			modeSet.add("sc");
-			modeSet.add("sac");
-			modeSet.add("sca");
-			typeMap.put(Category.MODE, modeSet);
-			// typeMap category: PLAYER
-			final TreeSet<String> playerSet = new TreeSet<String>();
-			for (CmdPlayer.Types type : CmdPlayer.Types.values()) {
-				final String name = type.name().toLowerCase();
-				playerSet.add(name);
-			}
-			for (CmdPlayerInfo.Types type : CmdPlayerInfo.Types.values()) {
-				final String name = type.name().toLowerCase();
-				playerSet.add(name);
-			}
-			playerSet.add("dir");
-			playerSet.add("pos");
-			typeMap.put(Category.PLAYER, playerSet);
-			// typeMap category: PORT
-			final TreeSet<String> portSet = new TreeSet<String>();
-			for (Port type : Port.values()) {
-				final String name = type.name().toLowerCase();
-				portSet.add(name);
-			}
-			portSet.add("death");
-			portSet.add("back");
-			portSet.add("blink");
-			typeMap.put(Category.PORT, portSet);
-			// typeMap category: SERVERINFO
-			final TreeSet<String> serverinfoSet = new TreeSet<String>();
-			for (CmdServerInfo.Types type : CmdServerInfo.Types.values()) {
-				final String name = type.name().toLowerCase();
-				serverinfoSet.add(name);
-			}
-			serverinfoSet.add("banlist");
-			serverinfoSet.add("information");
-			serverinfoSet.add("online");
-			serverinfoSet.add("ops");
-			serverinfoSet.add("worlds");
-			typeMap.put(Category.SERVERINFO, serverinfoSet);
-			// typeMap category: SERVERWEATHER
-			final TreeSet<String> serverweatherSet = new TreeSet<String>();
-			for (CmdServerWeather.Types type : CmdServerWeather.Types.values()) {
-				final String name = type.name().toLowerCase();
-				serverweatherSet.add(name);
-			}
-			typeMap.put(Category.SERVERWEATHER, serverweatherSet);
-			// typeMap category: SET
-			final TreeSet<String> setSet = new TreeSet<String>();
-			for (CmdLocation.Types type : CmdLocation.Types.values()) {
-				final String name = type.name().toLowerCase();
-				setSet.add(name);
-			}
-			setSet.add("home");
-			typeMap.put(Category.SET, setSet);
-			// typeMap category: SPAWN
-			final TreeSet<String> spawnSet = new TreeSet<String>();
-			for (CmdSpawn.Types type : CmdSpawn.Types.values()) {
-				final String name = type.name().toLowerCase();
-				spawnSet.add(name);
-			}
-			typeMap.put(Category.SPAWN, spawnSet);
-			// typeMap category: WORLDWEATHER
-			final TreeSet<String> worldweatherSet = new TreeSet<String>();
-			for (CmdWorldWeather.Types type : CmdWorldWeather.Types.values()) {
-				final String name = type.name().toLowerCase();
-				worldweatherSet.add(name);
-			}
-			typeMap.put(Category.WORLDWEATHER, worldweatherSet);
+		// parameterSet
+		if (parameterSet == null) {
+			parameterSet = new TreeSet<String>();
+			parameterSet.add("<player_name>");
+			parameterSet.add("<player_nick>");
+			parameterSet.add("<player_x>");
+			parameterSet.add("<player_y>");
+			parameterSet.add("<player_z>");
+			parameterSet.add("<player_world>");
+			parameterSet.add("<item_name>");
+			parameterSet.add("<item_id>");
+			parameterSet.add("<item_data>");
+			parameterSet.add("<param>");
+			parameterSet.add("<param?>");
+			parameterSet.add("<param*>");
+			parameterSet.add("<cmd>");
 		}
 		// permissionSet
 		if (permissionSet == null) {
@@ -357,7 +243,6 @@ public class ZeltCmds extends JavaPlugin {
 			for (PermissionDefault permission : PermissionDefault.values()) {
 				permissionSet.add(permission.name().toLowerCase());
 			}
-			permissionSet.add("notop");
 		}
 	}
 	
@@ -425,9 +310,16 @@ public class ZeltCmds extends JavaPlugin {
 				break;
 			case 3:
 				if (p_args[0].equalsIgnoreCase("add")) {
-					for (String category : categorySet) {
+					for (String category : CmdChooser.listCategories()) {
 						if (category.startsWith(p_args[2].toLowerCase())) {
 							result.add(category);
+						}
+					}
+				}
+				if (p_args[0].equalsIgnoreCase("addalias")) {
+					for (String parameter : parameterSet) {
+						if (parameter.startsWith(p_args[2].toLowerCase())) {
+							result.add(parameter);
 						}
 					}
 				}
@@ -435,8 +327,8 @@ public class ZeltCmds extends JavaPlugin {
 			case 4:
 				if (p_args[0].equalsIgnoreCase("add")) {
 					Category category = CmdChooser.getCategory(p_args[2]);
-					if (typeMap.containsKey(category)) {
-						TreeSet<String> typeSet = typeMap.get(category);
+					Set<String> typeSet = CmdChooser.listTypes(category);
+					if (typeSet != null) {
 						for (String type : typeSet) {
 							if (type.startsWith(p_args[3].toLowerCase())) {
 								result.add(type);
@@ -457,12 +349,19 @@ public class ZeltCmds extends JavaPlugin {
 						}
 					}
 				}
+				if (p_args[0].equalsIgnoreCase("addalias")) {
+					for (String parameter : parameterSet) {
+						if (parameter.startsWith(p_args[3].toLowerCase())) {
+							result.add(parameter);
+						}
+					}
+				}
 				break;
 			case 5:
 				if (p_args[0].equalsIgnoreCase("add")) {
 					Category category = CmdChooser.getCategory(p_args[2]);
-					if (typeMap.containsKey(category)) {
-						TreeSet<String> typeSet = typeMap.get(category);
+					Set<String> typeSet = CmdChooser.listTypes(category);
+					if (typeSet != null) {
 						if (typeSet.contains(p_args[3].toLowerCase())) {
 							for (String permission : permissionSet) {
 								if (permission.startsWith(p_args[4].toLowerCase())) {
@@ -472,8 +371,22 @@ public class ZeltCmds extends JavaPlugin {
 						}
 					}
 				}
+				if (p_args[0].equalsIgnoreCase("addalias")) {
+					for (String parameter : parameterSet) {
+						if (parameter.startsWith(p_args[4].toLowerCase())) {
+							result.add(parameter);
+						}
+					}
+				}
 				break;
 			default:
+				if (p_args[0].equalsIgnoreCase("addalias")) {
+					for (String parameter : parameterSet) {
+						if (parameter.startsWith(p_args[p_args.length-1].toLowerCase())) {
+							result.add(parameter);
+						}
+					}
+				}
 				break;
 		}
 		return result;
@@ -512,7 +425,7 @@ public class ZeltCmds extends JavaPlugin {
 					// Add examples of commands
 					if (p_args[0].equalsIgnoreCase("examples")) {
 						this.addExamples();
-						MessageUtils.msg(p_sender, lang.getString("prefix") + " " + lang.getString("command_examples"));
+						MessageUtils.msg(p_sender, "[" + this.getName() + "] " + lang.getString("command_examples"));
 						if (p_sender instanceof Player) {
 							LogUtils.info(this, lang.getString("log_examples", new Object[] {((Player) p_sender).getDisplayName()}));
 						}
@@ -531,7 +444,7 @@ public class ZeltCmds extends JavaPlugin {
 								pages++;
 							}
 						}
-						MessageUtils.msg(p_sender, lang.getString("prefix") + " " + lang.getString("commands_list") + " (1/" + pages + ") [" + cmdcount + "]");
+						MessageUtils.msg(p_sender, "[" + this.getName() + "] " + " " + lang.getString("commands_list") + " (1/" + pages + ") [" + cmdcount + "]");
 						String[] cmdList = cmdExecutor.listCommands();
 						for (int i = 0; i < pageentries && i < cmdcount; i++) {
 							MessageUtils.msg(p_sender, cmdList[i] + " - " + cmdExecutor.getCommandDescription(cmdList[i]));
@@ -551,7 +464,7 @@ public class ZeltCmds extends JavaPlugin {
 								pages++;
 							}
 						}
-						MessageUtils.msg(p_sender, lang.getString("prefix") + " " + lang.getString("aliases_list") + " (1/" + pages + ") [" + aliascount + "]");
+						MessageUtils.msg(p_sender, "[" + this.getName() + "] " + " " + lang.getString("aliases_list") + " (1/" + pages + ") [" + aliascount + "]");
 						String[] aliasList = cmdExecutor.listAliases();
 						for (int i = 0; i < pageentries && i < aliascount; i++) {
 							MessageUtils.msg(p_sender, aliasList[i] + " > " + cmdExecutor.getAliasDescription(aliasList[i]));
@@ -576,7 +489,7 @@ public class ZeltCmds extends JavaPlugin {
 						LogUtils.info(this, lang.getString("aliases_enabled", new Object[] {aliasCount}));
 						// Register Listener
 						this.getServer().getPluginManager().registerEvents(cmdExecutor, this);
-						p_sender.sendMessage(lang.getString("prefix") + " " + lang.getString("command_reload"));
+						p_sender.sendMessage("[" + this.getName() + "] " + " " + lang.getString("command_reload"));
 						if (p_sender instanceof Player) {
 							LogUtils.info(this, lang.getString("log_reload", new Object[] {((Player) p_sender).getDisplayName()}));
 						}
@@ -590,7 +503,7 @@ public class ZeltCmds extends JavaPlugin {
 						try {
 							page = Integer.parseInt(p_args[1]);
 						} catch (NumberFormatException e) {
-							MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("not_number", new Object[] {p_args[1]}));
+							MessageUtils.msg(p_sender, "[" + this.getName() + "] " + ZeltCmds.getLanguage().getString("not_number", new Object[] {p_args[1]}));
 							return true;
 						}
 						final int cmdcount = cmdExecutor.countCommands();
@@ -605,10 +518,10 @@ public class ZeltCmds extends JavaPlugin {
 							}
 						}
 						if (page > pages) {
-							MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("max_page", new Object[] {pages}));
+							MessageUtils.msg(p_sender, "[" + this.getName() + "] " + ZeltCmds.getLanguage().getString("max_page", new Object[] {pages}));
 							return true;
 						}
-						MessageUtils.msg(p_sender, lang.getString("prefix") + " " + lang.getString("commands_list") + " (" + page + "/" + pages + ") [" + cmdcount + "]");
+						MessageUtils.msg(p_sender, "[" + this.getName() + "] " + lang.getString("commands_list") + " (" + page + "/" + pages + ") [" + cmdcount + "]");
 						String[] cmdList = cmdExecutor.listCommands();
 						int start = (page - 1) * pageentries;
 						for (int i = start; i < (start + pageentries) && i < cmdcount; i++) {
@@ -622,7 +535,7 @@ public class ZeltCmds extends JavaPlugin {
 						try {
 							page = Integer.parseInt(p_args[1]);
 						} catch (NumberFormatException e) {
-							MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("not_number", new Object[] {p_args[1]}));
+							MessageUtils.msg(p_sender, "[" + this.getName() + "] " + ZeltCmds.getLanguage().getString("not_number", new Object[] {p_args[1]}));
 							return true;
 						}
 						final int aliascount = cmdExecutor.countAliases();
@@ -637,10 +550,10 @@ public class ZeltCmds extends JavaPlugin {
 							}
 						}
 						if (page > pages) {
-							MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("max_page", new Object[] {pages}));
+							MessageUtils.msg(p_sender, "[" + this.getName() + "] " + ZeltCmds.getLanguage().getString("max_page", new Object[] {pages}));
 							return true;
 						}
-						MessageUtils.msg(p_sender, lang.getString("prefix") + " " + lang.getString("aliases_list") + " (" + page + "/" + pages + ") [" + aliascount + "]");
+						MessageUtils.msg(p_sender, "[" + this.getName() + "] " + lang.getString("aliases_list") + " (" + page + "/" + pages + ") [" + aliascount + "]");
 						String[] aliasList = cmdExecutor.listAliases();
 						final int start = (page - 1) * pageentries;
 						for (int i = start; i < (start + pageentries) && i < aliascount; i++) {
@@ -653,7 +566,7 @@ public class ZeltCmds extends JavaPlugin {
 						if (cmdExecutor.existCommand(p_args[1])) {
 							cmdExecutor.removeCommand(p_args[1]);
 							this.removeConfig(p_args[1]);
-							p_sender.sendMessage(lang.getString("prefix") + " " + lang.getString("command_remove", new Object[] {p_args[1]}));
+							p_sender.sendMessage("[" + this.getName() + "] " + lang.getString("command_remove", new Object[] {p_args[1]}));
 							if (p_sender instanceof Player) {
 								LogUtils.info(this, lang.getString("log_command_remove", new Object[] {((Player) p_sender).getDisplayName(), p_args[1]}));
 							}
@@ -667,7 +580,7 @@ public class ZeltCmds extends JavaPlugin {
 						if (cmdExecutor.existAlias(p_args[1])) {
 							cmdExecutor.removeAlias(p_args[1]);
 							this.removeAliasConfig(p_args[1]);
-							p_sender.sendMessage(lang.getString("prefix") + " " + lang.getString("alias_remove", new Object[] {p_args[1]}));
+							p_sender.sendMessage("[" + this.getName() + "] " + lang.getString("alias_remove", new Object[] {p_args[1]}));
 							if (p_sender instanceof Player) {
 								LogUtils.info(this, lang.getString("log_alias_remove", new Object[] {((Player) p_sender).getDisplayName(), p_args[1]}));
 							}
@@ -686,7 +599,7 @@ public class ZeltCmds extends JavaPlugin {
 							aliasparams += p_args[i] + (i+1 < p_args.length ? " " : "");
 						}
 						if (this.addSenderAlias(p_sender, p_args[1], aliasparams)) {
-							p_sender.sendMessage(lang.getString("prefix") + " " + lang.getString("alias_add"));
+							p_sender.sendMessage("[" + this.getName() + "] " + lang.getString("alias_add"));
 							if (p_sender instanceof Player) {
 								LogUtils.info(this, lang.getString("log_alias_add", new Object[] {((Player) p_sender).getDisplayName(), p_args[1], aliasparams}));
 							}
@@ -702,7 +615,7 @@ public class ZeltCmds extends JavaPlugin {
 							msg += p_args[i] + (i+1 < p_args.length ? " " : "");
 						}
 						if (this.addSenderCommand(p_sender, p_args[1], p_args[2], p_args[3], p_args[4], msg)) {
-							p_sender.sendMessage(lang.getString("prefix") + " " + lang.getString("command_add"));
+							p_sender.sendMessage("[" + this.getName() + "] " + lang.getString("command_add"));
 							if (p_sender instanceof Player) {
 								LogUtils.info(this, lang.getString("log_command_add", new Object[] {((Player) p_sender).getDisplayName(), p_args[1], p_args[2], p_args[3], p_args[4], msg}));
 							}
@@ -716,7 +629,7 @@ public class ZeltCmds extends JavaPlugin {
 							aliasparams += p_args[i] + (i+1 < p_args.length ? " " : "");
 						}
 						if (this.addSenderAlias(p_sender, p_args[1], aliasparams)) {
-							p_sender.sendMessage(lang.getString("prefix") + " " + lang.getString("alias_add"));
+							p_sender.sendMessage("[" + this.getName() + "] " + lang.getString("alias_add"));
 							if (p_sender instanceof Player) {
 								LogUtils.info(this, lang.getString("log_alias_add", new Object[] {((Player) p_sender).getDisplayName(), p_args[1], aliasparams}));
 							}
@@ -768,15 +681,12 @@ public class ZeltCmds extends JavaPlugin {
 			return;
 		}
 		PermissionDefault permissionDefault = CmdChooser.getDefaultPermission(p_dperm);
-		MessageType message = CmdChooser.getMessageType(category, type);
-		if (message == MessageType.NOMESSAGE) {
-			p_msg = null;
-		}
 		CmdParent cmd;
+		final RequireListener listener = CmdChooser.getListener(category, type);
 		if (type == Default.NOCHANGE) {
-			cmd = CmdBuilder.build(p_cmd, category, p_type, permissionDefault, p_msg);
+			cmd = CmdBuilder.build(p_cmd, category, p_type, permissionDefault, listener, p_msg);
 		} else {
-			cmd = CmdBuilder.build(p_cmd, category, type, permissionDefault, p_msg);
+			cmd = CmdBuilder.build(p_cmd, category, type, permissionDefault, listener, p_msg);
 		}
 		if (cmd != null) {
 			cmdExecutor.addCommand(p_cmd, cmd);
@@ -800,13 +710,10 @@ public class ZeltCmds extends JavaPlugin {
 			return;
 		}
 		PermissionDefault permissionDefault = CmdChooser.getDefaultPermission(p_dperm);
-		MessageType message = CmdChooser.getMessageType(category, type);
-		if (message == MessageType.NOMESSAGE) {
-			p_msg = null;
-		}
 		CmdParent cmd;
+		final RequireListener listener = CmdChooser.getListener(category, type);
 		if (type == Default.NOCHANGE) {
-			cmd = CmdBuilder.build(p_cmd, category, p_type, permissionDefault, p_msg);
+			cmd = CmdBuilder.build(p_cmd, category, p_type, permissionDefault, listener, p_msg);
 			if (cmd != null) {
 				this.addConfig(p_cmd, category.name(), p_type, permissionDefault.name(), p_msg);
 			} else {
@@ -814,7 +721,7 @@ public class ZeltCmds extends JavaPlugin {
 				return;
 			}
 		} else {
-			cmd = CmdBuilder.build(p_cmd, category, type, permissionDefault, p_msg);
+			cmd = CmdBuilder.build(p_cmd, category, type, permissionDefault, listener, p_msg);
 			if (cmd != null) {
 				this.addConfig(p_cmd, category.name(), type.name(), permissionDefault.name(), p_msg);
 			} else {
@@ -827,17 +734,17 @@ public class ZeltCmds extends JavaPlugin {
 	
 	private boolean addSenderCommand(CommandSender p_sender, String p_cmd, String p_category, String p_type, String p_dperm, String p_msg) {
 		if (cmdExecutor.checkEntry(p_cmd)) {
-			p_sender.sendMessage(lang.getString("prefix") + " " + lang.getString("entry_exists", new Object[] {p_cmd}));
+			p_sender.sendMessage("[" + this.getName() + "] " + lang.getString("entry_exists", new Object[] {p_cmd}));
 			return false;
 		}
 		Category category = CmdChooser.getCategory(p_category);
 		if (category == Category.NOCMD) {
-			p_sender.sendMessage(lang.getString("prefix") + " " + lang.getString("commands_no_category", new Object[] {p_category}));
+			p_sender.sendMessage("[" + this.getName() + "] " + lang.getString("commands_no_category", new Object[] {p_category}));
 			return false;
 		}
 		Type type = CmdChooser.getType(category, p_type);
 		if (type == Default.NOTYPE) {
-			p_sender.sendMessage(lang.getString("prefix") + " " + lang.getString("commands_no_type", new Object[] {p_type}));
+			p_sender.sendMessage("[" + this.getName() + "] " + lang.getString("commands_no_type", new Object[] {p_type}));
 			return false;
 		}
 		PermissionDefault permissionDefault = CmdChooser.getDefaultPermission(p_dperm);
@@ -846,8 +753,9 @@ public class ZeltCmds extends JavaPlugin {
 			p_msg = null;
 		}
 		CmdParent cmd;
+		final RequireListener listener = CmdChooser.getListener(category, type);
 		if (type == Default.NOCHANGE) {
-			cmd = CmdBuilder.build(p_cmd, category, p_type, permissionDefault, p_msg);
+			cmd = CmdBuilder.build(p_cmd, category, p_type, permissionDefault, listener, p_msg);
 			if (cmd != null) {
 				this.addConfig(p_cmd, category.name(), p_type, permissionDefault.name(), p_msg);
 			} else {
@@ -858,7 +766,7 @@ public class ZeltCmds extends JavaPlugin {
 				return false;
 			}
 		} else {
-			cmd = CmdBuilder.build(p_cmd, category, type, permissionDefault, p_msg);
+			cmd = CmdBuilder.build(p_cmd, category, type, permissionDefault, listener, p_msg);
 			if (cmd != null) {
 				this.addConfig(p_cmd, category.name(), type.name(), permissionDefault.name(), p_msg);
 			} else {
@@ -900,7 +808,7 @@ public class ZeltCmds extends JavaPlugin {
 	
 	private boolean addSenderAlias(CommandSender p_sender, String p_alias, String p_aliasParams) {
 		if (cmdExecutor.checkEntry(p_alias)) {
-			p_sender.sendMessage(lang.getString("prefix") + " " + lang.getString("entry_exists", new Object[] {p_alias}));
+			p_sender.sendMessage("[" + this.getName() + "] " + lang.getString("entry_exists", new Object[] {p_alias}));
 			return false;
 		}
 		this.addAliasConfig(p_alias, p_aliasParams);
@@ -916,8 +824,8 @@ public class ZeltCmds extends JavaPlugin {
 		this.saveConfig();
 	}
 	
-	private void removeAliasConfig(String p_cmd) {
-		config.getConfigurationSection("Aliases").set(p_cmd , null);
+	private void removeAliasConfig(String p_alias) {
+		config.getConfigurationSection("Aliases").set(p_alias , null);
 		this.saveConfig();
 	}
 	

@@ -10,19 +10,20 @@ import de.zeltclan.tare.bukkitutils.LocationUtils;
 import de.zeltclan.tare.bukkitutils.MessageUtils;
 import de.zeltclan.tare.zeltcmds.CmdParent;
 import de.zeltclan.tare.zeltcmds.ZeltCmds;
+import de.zeltclan.tare.zeltcmds.enums.RequireListener;
 
 public class CmdPortM2H extends CmdParent {
 
 	private final String msg;
 	
-	public CmdPortM2H(Permission p_perm, Permission p_permExt, String p_msg) {
-		super(ZeltCmds.getLanguage().getString("description_port_m2h"), p_perm, p_permExt);
+	public CmdPortM2H(Permission p_perm, Permission p_permExt, RequireListener p_listener, String p_msg) {
+		super(ZeltCmds.getLanguage().getString("description_port_m2h"), p_perm, p_permExt, p_listener);
 		msg = (p_msg.isEmpty() ? null : p_msg);
 	}
 	
 	@Override
 	protected void executeConsole(CommandSender p_sender, String p_cmd, String[] p_args) {
-		MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("command_console_no_use"));
+		MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("command_console_no_use"));
 	}
 
 	@Override
@@ -31,17 +32,17 @@ public class CmdPortM2H extends CmdParent {
 			case 0:
 				if (this.checkPerm(p_player, false)) {
 					if (p_player.getBedSpawnLocation() == null) {
-						MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("no_bedspawn"));
+						MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("no_bedspawn"));
 						break;
 					}
 					final Location home = LocationUtils.getSafeLocation(p_player.getBedSpawnLocation());
 					if (home == null) {
-						MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("teleport_bad_location"));
+						MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("teleport_bad_location"));
 						break;
 					}
 					if (!home.getChunk().isLoaded()) {
 						if (!home.getChunk().load(true)) {
-							MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("chunk_not_load"));
+							MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("chunk_not_load"));
 							break;
 						}
 					}
@@ -53,8 +54,8 @@ public class CmdPortM2H extends CmdParent {
 				}
 				break;
 			default:
-				MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_too_many"));
-				MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage", new Object[] {"/" + p_cmd}));
+				MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_too_many"));
+				MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage", new Object[] {"/" + p_cmd}));
 				break;
 		}
 		return null;

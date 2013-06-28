@@ -8,6 +8,7 @@ import org.bukkit.permissions.Permission;
 import de.zeltclan.tare.bukkitutils.MessageUtils;
 import de.zeltclan.tare.zeltcmds.CmdParent;
 import de.zeltclan.tare.zeltcmds.ZeltCmds;
+import de.zeltclan.tare.zeltcmds.enums.RequireListener;
 
 public final class CmdWorldTime extends CmdParent {
 	
@@ -15,8 +16,8 @@ public final class CmdWorldTime extends CmdParent {
 	private final long rel_time;
 	private final String msg;
 	
-	public CmdWorldTime(long p_time, Permission p_perm, Permission p_permExt, String p_msg) {
-		super(ZeltCmds.getLanguage().getString("description_worldtime", new Object[] {p_time}), p_perm, p_permExt);
+	public CmdWorldTime(long p_time, Permission p_perm, Permission p_permExt, RequireListener p_listener, String p_msg) {
+		super(ZeltCmds.getLanguage().getString("description_worldtime", new Object[] {p_time}), p_perm, p_permExt, p_listener);
 		rel_time = p_time;
 		time = p_time - (p_time < 6000 ? -18000 : 6000);
 		msg = (p_msg.isEmpty() ? null : p_msg);
@@ -26,13 +27,13 @@ public final class CmdWorldTime extends CmdParent {
 	protected void executeConsole(CommandSender p_sender, String p_cmd, String[] p_args) {
 		switch (p_args.length) {
 		case 0:
-			MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
-			MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage_World", new Object[] {p_cmd}));
+			MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
+			MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_World", new Object[] {p_cmd}));
 			break;
 		case 1:
 			final World world = p_sender.getServer().getWorld(p_args[0]);
 			if (world == null) {
-				MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("world_not_found", new Object[] {p_args[0]}));
+				MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("world_not_found", new Object[] {p_args[0]}));
 				break;
 			}
 			world.setTime(time);
@@ -41,8 +42,8 @@ public final class CmdWorldTime extends CmdParent {
 			}
 			break;
 		default:
-			MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_too_many"));
-			MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage_World", new Object[] {p_cmd}));
+			MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_too_many"));
+			MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_World", new Object[] {p_cmd}));
 			break;
 		}
 	}
@@ -65,7 +66,7 @@ public final class CmdWorldTime extends CmdParent {
 				if (this.checkPerm(p_player, true)) {
 					world = p_player.getServer().getWorld(p_args[0]);
 					if (world == null) {
-						MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("world_not_found", new Object[] {p_args[0]}));
+						MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("world_not_found", new Object[] {p_args[0]}));
 						break;
 					}
 					world.setTime(time);
@@ -76,8 +77,8 @@ public final class CmdWorldTime extends CmdParent {
 				}
 				break;
 			default:
-				MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_too_many"));
-				MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage_world", new Object[] {"/" + p_cmd}));
+				MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_too_many"));
+				MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_world", new Object[] {"/" + p_cmd}));
 				break;
 		}
 		return null;

@@ -8,19 +8,20 @@ import org.bukkit.permissions.Permission;
 import de.zeltclan.tare.bukkitutils.MessageUtils;
 import de.zeltclan.tare.zeltcmds.CmdParent;
 import de.zeltclan.tare.zeltcmds.ZeltCmds;
+import de.zeltclan.tare.zeltcmds.enums.RequireListener;
 import de.zeltclan.tare.zeltcmds.enums.Type;
 
 public final class CmdPlayer extends CmdParent {
 
 	public static enum Types implements Type {
-		CLEAR, FEED, HEAL, KILL;
+		CLEANCHAT, CLEARINVENTORY, ENCHANTING, ENDERCHEST, FEED, HEAL, KILL, LEVELDOWN, LEVELRESET, LEVELUP, STARVE, WORKBENCH;
 	}
 	
 	private final Types type;
 	private final String msg;
 	
-	public CmdPlayer(Types p_type, Permission p_perm, Permission p_permExt, String p_msg) {
-		super(ZeltCmds.getLanguage().getString("description_player_" + p_type.name().toLowerCase()), p_perm, p_permExt);
+	public CmdPlayer(Types p_type, Permission p_perm, Permission p_permExt, RequireListener p_listener, String p_msg) {
+		super(ZeltCmds.getLanguage().getString("description_player_" + p_type.name().toLowerCase()), p_perm, p_permExt, p_listener);
 		type = p_type;
 		msg = (!p_msg.isEmpty() ? p_msg : null);
 	}
@@ -29,8 +30,8 @@ public final class CmdPlayer extends CmdParent {
 	protected void executeConsole(CommandSender p_sender, String p_cmd, String[] p_args) {
 		switch (p_args.length) {
 		case 0:
-			MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
-			MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage_Player", new Object[] {p_cmd}));
+			MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
+			MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_Player", new Object[] {p_cmd}));
 			break;
 		case 1:
 			final OfflinePlayer off_player = p_sender.getServer().getOfflinePlayer(p_args[0]);
@@ -41,12 +42,12 @@ public final class CmdPlayer extends CmdParent {
 					MessageUtils.info(player, msg);
 				}
 			} else {
-				MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString((off_player.getFirstPlayed() != 0 ? "player_offline" : "player_not_found"), new Object[] {p_args[0]}));
+				MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString((off_player.getFirstPlayed() != 0 ? "player_offline" : "player_not_found"), new Object[] {p_args[0]}));
 			}
 			break;
 		default:
-			MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_too_many"));
-			MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage_Player", new Object[] {p_cmd}));
+			MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_too_many"));
+			MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_Player", new Object[] {p_cmd}));
 			break;
 		}
 	}
@@ -72,15 +73,15 @@ public final class CmdPlayer extends CmdParent {
 						if (msg != null) {
 							MessageUtils.info(player, msg);
 						}
-						return ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("log_player_player", new Object[] {type.name(), p_player.getDisplayName(), player.getDisplayName()});
+						return "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("log_player_player", new Object[] {type.name(), p_player.getDisplayName(), player.getDisplayName()});
 					} else {
-						MessageUtils.msg(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString((off_player.getFirstPlayed() != 0 ? "player_offline" : "player_not_found"), new Object[] {p_args[0]}));
+						MessageUtils.msg(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString((off_player.getFirstPlayed() != 0 ? "player_offline" : "player_not_found"), new Object[] {p_args[0]}));
 					}
 				}
 				break;
 			default:
-				MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_too_many"));
-				MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage_player", new Object[] {"/" + p_cmd}));
+				MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_too_many"));
+				MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_player", new Object[] {"/" + p_cmd}));
 				break;
 		}
 		return null;
@@ -88,9 +89,19 @@ public final class CmdPlayer extends CmdParent {
 	
 	private void action (Player p_player) {
 		switch (type) {
-			case CLEAR:
+			case CLEANCHAT:
+				for (int i = 0; i < 60; i++) {
+					p_player.sendRawMessage("");
+				}
+				break;
+			case CLEARINVENTORY:
 				p_player.getInventory().clear();
 				break;
+			case ENCHANTING:
+				p_player.openEnchanting(null, true);
+				break;
+			case ENDERCHEST:
+				p_player.openInventory(p_player.getEnderChest());
 			case FEED:
 				p_player.setFoodLevel(20);
 				p_player.setSaturation(10);
@@ -101,7 +112,22 @@ public final class CmdPlayer extends CmdParent {
 			case KILL:
 				p_player.setHealth(0);
 				break;
-			default:
+			case LEVELDOWN:
+				p_player.setLevel(p_player.getLevel()-1);
+				break;
+			case LEVELRESET:
+				p_player.setLevel(0);
+				p_player.setExp(0);
+				break;
+			case LEVELUP:
+				p_player.setLevel(p_player.getLevel()+1);
+				break;
+			case STARVE:
+				p_player.setFoodLevel(0);
+				p_player.setSaturation(0);
+				break;
+			case WORKBENCH:
+				p_player.openWorkbench(null, true);
 				break;
 		}
 	}

@@ -1,4 +1,67 @@
 <h1>Changelog</h1>
+<h3>1.7.0</h3>
+<ul>
+<li>Compiled for Craftbukkit 1.5.2-R1.0</li>
+<li>Separated configuration for update-check</li>
+<li>Checks other plugins for reserved commands</li>
+<li>Added available parameters to alias-system:</li>
+<ul>
+<li>&lt;paramX&gt; - The Xth commited parameter</li>
+<li>&lt;param?&gt; - An optional parameter</li>
+<li>&lt;param*&gt; - All commited parameters not assigned to a position</li>
+<li>&lt;player_name&gt; - Name of executing player</li>
+<li>&lt;player_nick&gt; - Displayname of executing player</li>
+<li>&lt;player_world&gt; - Worldname of executing player</li>
+<li>&lt;player_x&gt; - x-coordinate of executing player</li>
+<li>&lt;player_y&gt; - y-coordinate of executing player</li>
+<li>&lt;player_z&gt; - z-coordinate of executing player</li>
+<li>&lt;item_name&gt; - Name of item in hand of executing player</li>
+<li>&lt;item_id&gt; - ID of item in hand of executing player</li>
+<li>&lt;item_data&gt; - Data of item in hand of executing player</li>
+<li>&lt;waitX&gt; - Wait X ticks before executing command</li>
+</ul>
+<li>New commands in category player:</li>
+<ul>
+<li>alwaysfly > Let a player fly, without landing</li>
+<li>build > Let a player build, without interactions</li>
+<li>cleanchat > Cleans chat of a player</li>
+<li>enchanting > Opens enchanting interface for a player</li>
+<li>enderchest > Opens enderchest for a player</li>
+<li>fly > Let a player fly</li>
+<li>freeze > Freezes a player</li>
+<li>ip > Shows ip of a player</li>
+<li>item > Shows information about item in hand of player</li>
+<li>leveldown > Decrements a players level by one</li>
+<li>levelreset > Sets a players level to zero</li>
+<li>levelup > Increments a players level by one</li>
+<li>mute > Mutes a player</li>
+<li>starve > Starves a player</li>
+<li>workbench > Opens workbench for a player</li>
+</ul>
+<li>New command in category serverinfo:</li>
+<ul>
+<li>ram > Shows information about ram of server</li>
+</ul>
+<li>Added category give with commands:</li>
+<ul>
+<li>chest > Gives items filling an amount of chests</li>
+<li>item > Gives an amount of an item</li>
+<li>stack > Gives an amount of stacks of an item</li>
+</ul>
+<li>Added category sudo with commands:</li>
+<ul>
+<li>all > Make all players online execute a given command</li>
+<li>console > Executes a given command from console</li>
+<li>player > Make a given player execute a given command</li>
+<li>world > Make all players online on a given world execute a given command</li>
+</ul>
+<li>Added informations to category player, type info</li>
+<li>Several internal changes</li>
+</ul>
+<h3>1.6.1</h3>
+<ul>
+<li>Compiled for Craftbukkit 1.5.1-R0.2</li>
+</ul>
 <h3>1.6.0</h3>
 <ul>
 <li>Compiled for Craftbukkit 1.5.1-R0.1</li>

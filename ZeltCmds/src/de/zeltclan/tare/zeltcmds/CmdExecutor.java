@@ -1,10 +1,14 @@
 package de.zeltclan.tare.zeltcmds;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.server.ServerCommandEvent;
@@ -12,18 +16,15 @@ import org.bukkit.plugin.Plugin;
 
 import de.zeltclan.tare.bukkitutils.LogUtils;
 import de.zeltclan.tare.bukkitutils.MessageUtils;
-import de.zeltclan.tare.zeltcmds.cmds.CmdPortM2D;
-import de.zeltclan.tare.zeltcmds.cmds.CmdPortM2L;
-import de.zeltclan.tare.zeltcmds.cmds.CmdPortP2D;
-import de.zeltclan.tare.zeltcmds.cmds.CmdPortP2L;
+import de.zeltclan.tare.zeltcmds.enums.RequireListener;
 import de.zeltclan.tare.zeltcmds.listener.*;
+import de.zeltclan.tare.zeltcmds.runnable.DelayCommandRunnable;
 
 class CmdExecutor implements Listener {
 	
 	final private Plugin plugin;
 	
-	private Listener listenPort;
-	private Listener listenDeath;
+	final private HashMap<RequireListener, Listener> listenerMap;
 	
 	final private HashSet<String> cmdSet;
 	final private TreeMap<String, CmdParent> cmdMap;
@@ -42,9 +43,10 @@ class CmdExecutor implements Listener {
 		cmdSet.add("defaultgamemode");
 		cmdSet.add("deop");
 		cmdSet.add("difficulty");
+		cmdSet.add("effect");
 		cmdSet.add("enchant");
 		cmdSet.add("gamemode");
-		cmdSet.add("GameRule");
+		cmdSet.add("gameRule");
 		cmdSet.add("give");
 		cmdSet.add("help");
 		cmdSet.add("kick");
@@ -72,18 +74,32 @@ class CmdExecutor implements Listener {
 		cmdSet.add("weather");
 		cmdSet.add("whitelist");
 		cmdSet.add("xp");
+		cmdSet.add("?");
+		for (Plugin plugin : p_plugin.getServer().getPluginManager().getPlugins()) {
+			if (plugin.getDescription().getCommands() != null) {
+				cmdSet.addAll(plugin.getDescription().getCommands().keySet());
+			}
+		}
+		for (String command : p_plugin.getServer().getCommandAliases().keySet()) {
+			cmdSet.add(command);
+			for (String alias : p_plugin.getServer().getCommandAliases().get(command)) {
+				cmdSet.add(alias);
+			}
+		}
 		cmdMap = new TreeMap<String, CmdParent>();
 		aliasMap = new TreeMap<String, String>();
 		plugin = p_plugin;
-		listenPort = null;
-		listenDeath = null;
+		listenerMap = new HashMap<RequireListener, Listener>();
 		logCmd = p_logCmd;
 		logAlias = p_logAlias;
 		casesensitive = p_casesensitive;
 	}
 	
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent p_event) {
+		if (p_event.isCancelled()) {
+			return;
+		}
 		String event_message = p_event.getMessage();
 		String cmd = null;
 		String [] args = null;
@@ -98,27 +114,80 @@ class CmdExecutor implements Listener {
 		// Check for alias
 		if ((casesensitive && aliasMap.containsKey(cmd)) || (!casesensitive && aliasMap.containsKey(cmd.toLowerCase()))) {
 			event_message = aliasMap.get(cmd);
-			//Replace parameters
+			// Replace parameters
+			event_message = event_message.replace("<player_name>", p_event.getPlayer().getName());
+			event_message = event_message.replace("<player_nick>", p_event.getPlayer().getDisplayName());
+			event_message = event_message.replace("<player_x>", String.valueOf(p_event.getPlayer().getLocation().getBlockX()));
+			event_message = event_message.replace("<player_y>", String.valueOf(p_event.getPlayer().getLocation().getBlockY()));
+			event_message = event_message.replace("<player_z>", String.valueOf(p_event.getPlayer().getLocation().getBlockZ()));
+			event_message = event_message.replace("<player_world>", p_event.getPlayer().getWorld().getName());
+			event_message = event_message.replace("<item_id>", String.valueOf(p_event.getPlayer().getItemInHand().getTypeId()));
+			event_message = event_message.replace("<item_data>", String.valueOf(((int) p_event.getPlayer().getItemInHand().getData().getData() & 0xFF)));
+			event_message = event_message.replace("<item_name>", p_event.getPlayer().getItemInHand().getType().name());
+			for (int i = 0; i < args.length; i++) {
+				if (event_message.contains("<param" + (i+1) + ">")) {
+					event_message = event_message.replace("<param" + (i+1) + ">", args[i]);
+					args[i] = null;
+				}
+			}
+			if (event_message.matches(".*<param[0-9]+>.*")) {
+				MessageUtils.msg(p_event.getPlayer(), "[" + plugin.getName() + "] " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
+				p_event.setCancelled(true);
+				return;
+			}
 			int replaceindex = 0;
 			while (event_message.contains("<param>")) {
 				if (replaceindex < args.length) {
-					event_message = event_message.replaceFirst("<param>", args[replaceindex++]);
+					String arg = args[replaceindex++];
+					if (arg != null) {
+						event_message = event_message.replaceFirst("<param>", arg);
+					}
 				} else {
-					MessageUtils.msg(p_event.getPlayer(), ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
+					MessageUtils.msg(p_event.getPlayer(), "[" + plugin.getName() + "] " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
 					p_event.setCancelled(true);
 					return;
 				}
 			}
+			while (event_message.contains("<param?>")) {
+				if (replaceindex < args.length) {
+					String arg = args[replaceindex++];
+					if (arg != null) {
+						event_message = event_message.replaceFirst("<param\\?>", arg);
+					}
+				} else {
+					event_message = event_message.replace(" <param?> ", " ");
+					event_message = event_message.replaceAll("\\s?<param\\?>\\s?", "");
+				}
+			}
+			String temp = "";
 			for (int i = replaceindex; i < args.length; i++) {
-				event_message += " " + args[i];
+				final String arg = args[i];
+				if (arg != null) {
+					temp += arg + " ";
+				}
+			}
+			temp = temp.trim();
+			if (event_message.contains("<param*>")) {
+				event_message = event_message.replace("<param*>", temp);
+			} else {
+				event_message += " " + temp;
 			}
 			if (logAlias) {
-				LogUtils.info(ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("log_alias", new Object[] {p_event.getPlayer().getDisplayName(), p_event.getMessage(), event_message}));
+				LogUtils.info("[" + plugin.getName() + "] " + ZeltCmds.getLanguage().getString("log_alias", new Object[] {p_event.getPlayer().getDisplayName(), p_event.getMessage(), event_message}));
 			}
 			// Handle alias
 			String[] cmds = event_message.split("<cmd>");
 			for (int i = 0; i < cmds.length; i++) {
-				p_event.getPlayer().chat("/" + cmds[i].trim());
+				String cmdString = cmds[i].trim();
+				Pattern pattern = Pattern.compile("^<wait([0-9]+)>.*");
+				Matcher matcher = pattern.matcher(cmdString);
+				if (matcher.matches()) {
+					Long ticks = Long.parseLong(matcher.group(1));
+					final String waitCmdString = cmdString.replaceAll("^<wait[0-9]+>\\s?", "");
+					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new DelayCommandRunnable(p_event, waitCmdString), ticks);
+				} else {
+					p_event.getPlayer().chat("/" + cmdString);
+				}
 			}
 			p_event.setCancelled(true);
 			return;
@@ -135,13 +204,13 @@ class CmdExecutor implements Listener {
 		if ((casesensitive && cmdMap.containsKey(cmd)) || (!casesensitive && cmdMap.containsKey(cmd.toLowerCase()))) {
 			String logEntry = cmdMap.get(cmd).executePlayer(p_event.getPlayer(), cmd, args);
 			if (logCmd && logEntry != null) {
-				LogUtils.info(ZeltCmds.getLanguage().getString("prefix") + " " + logEntry);
+				LogUtils.info("[" + plugin.getName() + "] " + logEntry);
 			}
 			p_event.setCancelled(true);
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onServerCommand(ServerCommandEvent p_event) {
 		String event_message = p_event.getCommand();
 		String cmd = null;
@@ -158,23 +227,69 @@ class CmdExecutor implements Listener {
 		if ((casesensitive && aliasMap.containsKey(cmd)) || (!casesensitive && aliasMap.containsKey(cmd.toLowerCase()))) {
 			event_message = aliasMap.get(cmd);
 			//Replace parameters
+			for (int i = 0; i < args.length; i++) {
+				if (event_message.contains("<param" + (i+1) + ">")) {
+					event_message = event_message.replace("<param" + (i+1) + ">", args[i]);
+					args[i] = null;
+				}
+			}
+			if (event_message.matches(".*<param[0-9]+>.*")) {
+				LogUtils.warning("[" + plugin.getName() + "] " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
+				p_event.setCommand("zeltcmds dummy");
+				return;
+			}
 			int replaceindex = 0;
 			while (event_message.contains("<param>")) {
 				if (replaceindex < args.length) {
-					event_message = event_message.replaceFirst("<param>", args[replaceindex++]);
+					String arg = args[replaceindex++];
+					if (arg != null) {
+						event_message = event_message.replaceFirst("<param>", arg);
+					}
 				} else {
-					LogUtils.warning(ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
+					LogUtils.warning("[" + plugin.getName() + "] " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
 					p_event.setCommand("zeltcmds dummy");
 					return;
 				}
 			}
+			while (event_message.contains("<param?>")) {
+				if (replaceindex < args.length) {
+					String arg = args[replaceindex++];
+					if (arg != null) {
+						event_message = event_message.replaceFirst("<param?>", arg);
+					}
+				} else {
+					event_message = event_message.replace(" <param\\?> ", " ");
+					event_message = event_message.replaceAll("\\s?<param\\?>\\s?", "");
+				}
+			}
+			String temp = "";
 			for (int i = replaceindex; i < args.length; i++) {
-				event_message += " " + args[i];
+				final String arg = args[i];
+				if (arg != null) {
+					temp += arg + " ";
+				}
+			}
+			temp = temp.trim();
+			if (event_message.contains("<param*>")) {
+				event_message = event_message.replace("<param*>", temp);
+			} else {
+				event_message += " " + temp;
 			}
 			// Handle alias
 			String[] cmds = event_message.split("<cmd>");
 			for (int i = 0; i < cmds.length; i++) {
-				p_event.getSender().getServer().getPluginManager().callEvent(new ServerCommandEvent(p_event.getSender(), cmds[i].trim()));
+				String cmdString = cmds[i].trim();
+				Pattern pattern = Pattern.compile("^<wait([0-9]+)>.*");
+				Matcher matcher = pattern.matcher(cmdString);
+				if (matcher.matches()) {
+					Long ticks = Long.parseLong(matcher.group(1));
+					final String waitCmdString = cmdString.replaceAll("^<wait[0-9]+>\\s?", "");
+					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new DelayCommandRunnable(p_event, waitCmdString), ticks);
+				} else {
+					ServerCommandEvent sCommand = new ServerCommandEvent(p_event.getSender(), cmdString);
+					p_event.getSender().getServer().getPluginManager().callEvent(sCommand);
+					p_event.getSender().getServer().dispatchCommand(sCommand.getSender(), sCommand.getCommand());
+				}
 			}
 			p_event.setCommand("zeltcmds dummy");
 			return;
@@ -195,9 +310,7 @@ class CmdExecutor implements Listener {
 	}
 	
 	boolean checkEntry(String p_cmd) {
-		if (p_cmd.equalsIgnoreCase("zeltcmds")) {
-			return true;
-		} else if ((casesensitive && cmdSet.contains(p_cmd)) || (!casesensitive && cmdSet.contains(p_cmd.toLowerCase()))) {
+		if ((casesensitive && cmdSet.contains(p_cmd)) || (!casesensitive && cmdSet.contains(p_cmd.toLowerCase()))) {
 			return true;
 		} else if ((casesensitive && cmdMap.containsKey(p_cmd)) || (!casesensitive && cmdMap.containsKey(p_cmd.toLowerCase()))) {
 			return true;
@@ -212,18 +325,56 @@ class CmdExecutor implements Listener {
 	
 	void addCommand(String p_cmdString, CmdParent p_cmd) {
 		cmdMap.put(casesensitive ? p_cmdString : p_cmdString.toLowerCase(), p_cmd);
-		if ((listenPort == null) && ((p_cmd instanceof CmdPortM2L) || (p_cmd instanceof CmdPortP2L))) {
-			listenPort = new PortListener(plugin);
-			plugin.getServer().getPluginManager().registerEvents(listenPort, plugin);
-		}
-		if ((listenDeath == null) && ((p_cmd instanceof CmdPortM2D) || (p_cmd instanceof CmdPortP2D))) {
-			listenDeath = new DeathListener(plugin);
-			plugin.getServer().getPluginManager().registerEvents(listenDeath, plugin);
+		RequireListener reqListener = p_cmd.getListener();
+		if (!listenerMap.containsKey(reqListener)) {
+			final Listener listener;
+			switch (reqListener) {
+			case ALWAYSFLY:
+				listener = new AlwaysFlyListener();
+				break;
+			case BUILD:
+				listener = new BuildListener();
+				break;
+			case DEATH:
+				listener = new DeathListener(plugin);
+				break;
+			case FREEZE:
+				listener = new FreezeListener();
+				break;
+			case MUTE:
+				listener = new MuteListener();
+				break;
+			case PORT:
+				listener =  new PortListener(plugin);
+				break;
+			default:
+				listener = null;
+				break;
+			}
+			if (listener != null) {
+				listenerMap.put(reqListener, listener);
+				plugin.getServer().getPluginManager().registerEvents(listener, plugin);
+				
+			}
 		}
 	}
 
 	void removeCommand(String p_cmd) {
 		CmdParent cmd = cmdMap.remove(casesensitive ? p_cmd : p_cmd.toLowerCase());
+		RequireListener reqListener = cmd.getListener();
+		if (reqListener != RequireListener.NONE) {
+			boolean delete = true;
+			for (CmdParent otherCmd : cmdMap.values()) {
+				if (otherCmd.getListener().equals(reqListener)) {
+					delete = false;
+					break;
+				}
+			}
+			if (delete) {
+				Listener listener = listenerMap.remove(reqListener);
+				HandlerList.unregisterAll(listener);
+			}
+		}
 		cmd.removePermissions();
 	}
 	

@@ -11,13 +11,14 @@ import de.zeltclan.tare.bukkitutils.LocationUtils;
 import de.zeltclan.tare.bukkitutils.MessageUtils;
 import de.zeltclan.tare.zeltcmds.CmdParent;
 import de.zeltclan.tare.zeltcmds.ZeltCmds;
+import de.zeltclan.tare.zeltcmds.enums.RequireListener;
 
 public class CmdPortW2W extends CmdParent {
 
 	private final String msg;
 	
-	public CmdPortW2W(Permission p_perm, Permission p_permExt, String p_msg) {
-		super(ZeltCmds.getLanguage().getString("description_port_w2w"), p_perm, p_permExt);
+	public CmdPortW2W(Permission p_perm, Permission p_permExt, RequireListener p_listener, String p_msg) {
+		super(ZeltCmds.getLanguage().getString("description_port_w2w"), p_perm, p_permExt, p_listener);
 		msg = (p_msg.isEmpty() ? null : p_msg);
 	}
 	
@@ -26,32 +27,32 @@ public class CmdPortW2W extends CmdParent {
 		switch (p_args.length) {
 			case 0:
 			case 1:
-				MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
-				MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage_World_World", new Object[] {p_cmd}));
+				MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
+				MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_World_World", new Object[] {p_cmd}));
 				break;
 			case 2:
 				final World world = p_sender.getServer().getWorld(p_args[0]);
 				if (world == null) {
-					MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("world_not_found", new Object[] {p_args[0]}));
+					MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("world_not_found", new Object[] {p_args[0]}));
 					break;
 				}
 				final World target = p_sender.getServer().getWorld(p_args[1]);
 				if (target == null) {
-					MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("world_not_found", new Object[] {p_args[1]}));
+					MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("world_not_found", new Object[] {p_args[1]}));
 					break;
 				}
 				if (target.getSpawnLocation() == null) {
-					MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("no_spawn"));
+					MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("no_spawn"));
 					break;
 				}
 				final Location spawn = LocationUtils.getSafeLocation(target.getSpawnLocation());
 				if (spawn == null) {
-					MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("teleport_bad_location"));
+					MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("teleport_bad_location"));
 					break;
 				}
 				if (!spawn.getChunk().isLoaded()) {
 					if (!spawn.getChunk().load(true)) {
-						MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("chunk_not_load"));
+						MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("chunk_not_load"));
 						break;
 					}
 				}
@@ -65,8 +66,8 @@ public class CmdPortW2W extends CmdParent {
 				}
 				break;
 			default:
-				MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_too_many"));
-				MessageUtils.msg(p_sender, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage_World_World", new Object[] {p_cmd}));
+				MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_too_many"));
+				MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_World_World", new Object[] {p_cmd}));
 				break;
 		}
 	}
@@ -76,33 +77,33 @@ public class CmdPortW2W extends CmdParent {
 		switch (p_args.length) {
 			case 0:
 			case 1:
-				MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
-				MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage_World_World", new Object[] {"/" + p_cmd}));
+				MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
+				MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_World_World", new Object[] {"/" + p_cmd}));
 				break;
 			case 2:
 				if (this.checkPerm(p_player, false)) {
 					final World world = p_player.getServer().getWorld(p_args[0]);
 					if (world == null) {
-						MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("world_not_found", new Object[] {p_args[0]}));
+						MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("world_not_found", new Object[] {p_args[0]}));
 						break;
 					}
 					final World target = p_player.getServer().getWorld(p_args[1]);
 					if (target == null) {
-						MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("world_not_found", new Object[] {p_args[1]}));
+						MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("world_not_found", new Object[] {p_args[1]}));
 						break;
 					}
 					if (target.getSpawnLocation() == null) {
-						MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("no_spawn"));
+						MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("no_spawn"));
 						break;
 					}
 					final Location spawn = LocationUtils.getSafeLocation(target.getSpawnLocation());
 					if (spawn == null) {
-						MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("teleport_bad_location"));
+						MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("teleport_bad_location"));
 						break;
 					}
 					if (!spawn.getChunk().isLoaded()) {
 						if (!spawn.getChunk().load(true)) {
-							MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("chunk_not_load"));
+							MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("chunk_not_load"));
 							break;
 						}
 					}
@@ -118,8 +119,8 @@ public class CmdPortW2W extends CmdParent {
 				}
 				break;
 			default:
-				MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("arguments_too_many"));
-				MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("prefix") + " " + ZeltCmds.getLanguage().getString("usage_World_World", new Object[] {"/" + p_cmd}));
+				MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_too_many"));
+				MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_World_World", new Object[] {"/" + p_cmd}));
 				break;
 		}
 		return null;
