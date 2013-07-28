@@ -1,0 +1,16 @@
+name: ZeltCarts_Test
+main: de.zeltclan.tare.zeltcarts.test.ZeltCarts_Test
+version: 0.0.1
+description: Simple testplugin for ZeltCarts
+author: Tare
+depend: [ZeltCarts_Core]
+commands:
+   zeltcarts_test:
+      description: Everything needed for test
+      usage: Use /zeltcarts_test for help
+      permission: zeltcarts.test
+      permission-message: You don't have the permission for this command
+permissions:
+   zeltcarts.test:
+      description: Allow to use testing functions
+      default: op

@@ -1,0 +1,15 @@
+name: ZeltCarts_Core
+main: de.zeltclan.tare.zeltcarts.core.ZeltCarts_Core
+version: 0.0.1
+description: The core to modify minecarts behaviour
+author: Tare
+commands:
+   zeltcarts_core:
+      description: Administrate the aspects of ZeltCarts
+      usage: Use /zeltcarts_core for help
+      permission: zeltcarts.core
+      permission-message: You don't have the permission for this command
+permissions:
+   zeltcarts.core:
+      description: Allows to administrate ZeltCarts
+      default: op
