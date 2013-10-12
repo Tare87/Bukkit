@@ -1,9 +1,9 @@
-<h1>ZeltCmds v1.7.0 [CB 1.5.2-R1.0]</h1>
+<h1>ZeltCmds v1.8.0 [CB 1.6.2-R1.0]</h1>
 <img src="http://dev.bukkit.org/media/images/45/73/zeltcmds.png" title="ZeltCmds-Banner" alt="Banner von ZeltCmds" /><br />
 <a href="http://dev.bukkit.org/server-mods/zeltcmds/pages/main/">English site</a>
 <h3>Einleitung</h3>
 <p>ZeltCmds ist ein Befehlsplugin. Es hat keine feste Liste von Befehlen, nur einen Befehl zum verwalten des Plugins. Alles andere hängt von dir ab. Erstelle Befehle mit den Namen die du willst. Entferne Befehle die du nicht mehr brauchst. Dafür muss weder die Konfiguration neu geladen werden, noch der Server neu gestartet.</p>
-<p>Es gibt 12 Kategorien, welche insgesamt 96 verschiedene Typen von Befehlen beinhalten. Tab-Vervollständigung ist für den Verwaltungsbefehl umgesetzt.</p>
+<p>Es gibt 13 Kategorien, welche insgesamt 110 verschiedene Typen von Befehlen beinhalten. Tab-Vervollständigung ist für den Verwaltungsbefehl umgesetzt.</p>
 <p>Einfache Verwaltung von Permissions durch Verwendung der Defaultpermissions. Permissionnodes stehen bereit für die erweiterte Verwaltung von Permissions.</p>
 <p>Zusätzlich unterstützt ZeltCmds die Erstellung von Aliasen, welche nicht nur für plugineigene Befehle funktionieren. Aliase können in verschiedener Weise Parameter integrieren, mehrere Befehle abfertigen und die Ausführung verzögern.</p>
 <p>Sprachschema für en und de verfügbar.</p>
@@ -31,6 +31,8 @@
 <dd>Bringt jemand anders dazu einen Befehl auszuführen</dd>
 <dt>teleport</dt>
 <dd>Verschiedene Arten von Teleportbefehlen</dd>
+<dt>worldinfo</dt>
+<dd>Zeigt verschiedene weltbezogene Informationen</dd>
 <dt>worldtime</dt>
 <dd>Setzen die Zeit für bestimmte Welten</dd>
 <dt>worldweather</dt>
@@ -38,63 +40,30 @@
 </dl>
 <br />
 <h3>Änderungen der letzten Version</h3>
-<p>1.7.0<ul>
-<li>Kompiliert für Craftbukkit 1.5.2-R1.0</li>
-<li>Konfiguration für Update-Check separiert</li>
-<li>Berücksichtig andere Plugins bezüglich reservierter Befehle</li>
-<li>Verfügbare Parameter zum Aliassystem hinzugefügt:</li>
-<ul>
-<li>&lt;paramX&gt; - Der Xte übergebene Parameter</li>
-<li>&lt;param?&gt; - Ein optionaler Parameter</li>
-<li>&lt;param*&gt; - Alle übergebenen Parameter die noch keiner Position zugewiesen bekommen haben</li>
-<li>&lt;player_name&gt; - Name des ausführenden Spielers</li>
-<li>&lt;player_nick&gt; - Anzeigename des ausführenden Spielers</li>
-<li>&lt;player_world&gt; - Weltname des ausführenden Spielers</li>
-<li>&lt;player_x&gt; - x-Koordinate des ausführenden Spielers</li>
-<li>&lt;player_y&gt; - y-Koordinate des ausführenden Spielers</li>
-<li>&lt;player_z&gt; - z-Koordinate des ausführenden Spielers</li>
-<li>&lt;item_name&gt; - Name des Gegenstandes in der Hand des ausführenden Spielers</li>
-<li>&lt;item_id&gt; - ID des Gegenstandes in der Hand des ausführenden Spielers</li>
-<li>&lt;item_data&gt; - Data des Gegenstandes in der Hand des ausführenden Spielers</li>
-<li>&lt;waitX&gt; - Warte X Ticks vor der Ausführung des Befehls</li>
-</ul>
+<p>1.8.0<ul>
+<li>Kompiliert für Craftbukkit 1.6.2-R1.0</li>
 <li>Neue Befehle in Kategorie player:</li>
 <ul>
-<li>alwaysfly > Lässt einen Spieler fliegen, ohne landen</li>
-<li>build > Lässt einen Spieler bauen, ohne Interaktionen</li>
-<li>cleanchat > Säuber den Chat eines Spielers</li>
-<li>enchanting > Öffnet ein Enchantingfenster für einen Spieler</li>
-<li>enderchest > Öffnet die Enderchest für einen Spieler</li>
-<li>fly > Lässt einen Spieler fliegen</li>
-<li>freeze > Friert einen Spieler ein</li>
-<li>ip > Zeigt die IP eines Spielers</li>
-<li>item > Zeigt Informationen über das Item in der Hand des Spielers</li>
-<li>leveldown > Senkt das Level eines Spielers um eins</li>
-<li>levelreset > Setzt das Level eines Spielers auf null</li>
-<li>levelup > Erhöht das Level eines Spielers um eins</li>
-<li>mute > Lässt einen Spieler verstummen</li>
-<li>starve > Lässt einen Spieler hungern</li>
-<li>workbench > Öffnet eine Werkbank für einen Spieler</li>
+<li>hide > Versteckt einen Spieler vor anderen</li>
+<li>setflyspeed > Stellt die Fluggeschwindigkeit eines Spielers ein</li>
+<li>setmaxair > Stellt die maximale Luft eines Spielers ein</li>
+<li>setmaxhealth > Stellt das maximale Leben eines Spielers ein</li>
+<li>settimeabsolute > Stellt die absolute Zeit eines Spielers ein</li>
+<li>settimerelative > Stellt die relative Zeit eines Spielers ein</li>
+<li>setwalkspeed > Stellt die Laufgeschwindigkeit eines Spielers ein</li>
+<li>setweather > Stellt das Wetter eines Spielers ein</li>
+<li>weather > Zeigt das Wetter für einen Spieler an</li>
 </ul>
-<li>Neuer Befehl in Kategorie serverinfo:</li>
+<li>Neue Kategorie worldinfo mit Befehlen:</li>
 <ul>
-<li>ram > Zeigt Informationen über den RAM des Servers</li>
+<li>entity > Zeigt die Anzahl von Dingen einer Welt</li>
+<li>gamerule > Listet Gamerules auf für eine Welt</li>
+<li>info > Zeigt Informationen über eine Welt</li>
+<li>livingentity > Zeigt die Anzahl von Lebewesen einer Welt</li>
+<li>weather > Zeigt das Wetter einer Welt</li>
 </ul>
-<li>Neue Kategorie give mit Befehlen:</li>
-<ul>
-<li>chest > Gibt Items die eine Anzahl von Truhen füllen</li>
-<li>item > Gibt eine bestimmte Menge von einem Item</li>
-<li>stack > Gibt eine bestimmte Menge Stacks von einem Item</li>
-</ul>
-<li>Neue Kategorie sudo mit Befehlen:</li>
-<ul>
-<li>all > Lässt alle Onlinespieler einen gegebenen Befehl ausführen</li>
-<li>console > Führt einen gegebenen Befehl auf der Konsole aus</li>
-<li>player > Lässt einen gegebenen Spieler einen gegebenen Befehl ausführen</li>
-<li>world > Lässt alle Onlinespieler einer gegebenen Welt einen gegebenen Befehl ausführen</li>
-</ul>
-<li>Informationen zu Kategorie player, Typ info hinzugefügt</li>
 <li>Verschiedene interne Änderungen</li>
+<li>Kleine Fehlerkorrekturen</li>
 </ul></p>
 <p>Für Änderungen älterer Versionen, siehe <a href="http://dev.bukkit.org/server-mods/zeltcmds/pages/changelog_de-de-de/">Changelog</a></p>
 <br />

@@ -1,11 +1,11 @@
 package de.zeltclan.tare.zeltcmds.cmds;
 
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 
-import de.zeltclan.tare.bukkitutils.MessageUtils;
 import de.zeltclan.tare.zeltcmds.CmdParent;
 import de.zeltclan.tare.zeltcmds.ZeltCmds;
 import de.zeltclan.tare.zeltcmds.enums.RequireListener;
@@ -28,7 +28,7 @@ public class CmdLocation extends CmdParent {
 	
 	@Override
 	protected void executeConsole(CommandSender p_sender, String p_cmd, String[] p_args) {
-		MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("command_console_no_use"));
+		this.getPlugin().getLogger().warning(ZeltCmds.getLanguage().getString("command_console_no_use"));
 	}
 	
 	@Override
@@ -48,9 +48,9 @@ public class CmdLocation extends CmdParent {
 				if (this.checkPerm(p_sender, false)) {
 					p_sender.setBedSpawnLocation(p_sender.getLocation());
 					if (msg != null) {
-						MessageUtils.info(p_sender, msg);
+						p_sender.sendMessage(ChatColor.GREEN + msg);
 					}
-					return ZeltCmds.getLanguage().getString("log_bedspawn_self", new Object[] {p_sender.getDisplayName()});
+					return ZeltCmds.getLanguage().getString("log_bedspawn_self", new Object[] {p_sender.getName()});
 				}
 				break;
 			case 1:
@@ -60,17 +60,17 @@ public class CmdLocation extends CmdParent {
 						final Player target = off_target.getPlayer();
 						target.setBedSpawnLocation(p_sender.getLocation());
 						if (msg != null) {
-							MessageUtils.info(target, msg);
+							target.sendMessage(ChatColor.GREEN + msg);
 						}
-						return ZeltCmds.getLanguage().getString("log_bedspawn_player", new Object[] {p_sender.getDisplayName(), target.getDisplayName()});
+						return ZeltCmds.getLanguage().getString("log_bedspawn_player", new Object[] {p_sender.getName(), target.getName()});
 					} else {
-						MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString((off_target.getFirstPlayed() != 0 ? "player_offline" : "player_not_found"), new Object[] {p_args[0]}));
+						p_sender.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString((off_target.getFirstPlayed() != 0 ? "player_offline" : "player_not_found"), new Object[] {p_args[0]}));
 					}
 				}
 				break;
 			default:
-				MessageUtils.warning(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_too_many"));
-				MessageUtils.warning(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_player", new Object[] {"/" + p_cmd}));
+				p_sender.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_too_many"));
+				p_sender.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_player", new Object[] {"/" + p_cmd}));
 				break;
 		}
 		return null;
@@ -82,12 +82,12 @@ public class CmdLocation extends CmdParent {
 				case 0:
 					p_sender.getWorld().setSpawnLocation(p_sender.getLocation().getBlockX(), p_sender.getLocation().getBlockY(), p_sender.getLocation().getBlockZ());
 					if (msg != null) {
-						MessageUtils.info(p_sender, msg);
+						p_sender.sendMessage(ChatColor.GREEN + msg);
 					}
-					return ZeltCmds.getLanguage().getString("log_spawn", new Object[] {p_sender.getDisplayName(), p_sender.getWorld().getName()});
+					return ZeltCmds.getLanguage().getString("log_spawn", new Object[] {p_sender.getName(), p_sender.getWorld().getName()});
 				default:
-					MessageUtils.warning(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_too_many"));
-					MessageUtils.warning(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage", new Object[] {"/" + p_cmd}));
+					p_sender.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_too_many"));
+					p_sender.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage", new Object[] {"/" + p_cmd}));
 					break;
 			}
 		}

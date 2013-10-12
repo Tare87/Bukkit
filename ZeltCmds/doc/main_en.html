@@ -1,9 +1,9 @@
-<h1>ZeltCmds v1.7.0 [CB 1.5.2-R1.0]</h1>
+<h1>ZeltCmds v1.8.0 [CB 1.6.2-R1.0]</h1>
 <img src="http://dev.bukkit.org/media/images/45/73/zeltcmds.png" title="ZeltCmds-Banner" alt="Banner of ZeltCmds" /><br />
 <a href="http://dev.bukkit.org/server-mods/zeltcmds/pages/main_de-de-de/">Deutsche Seite</a>
 <h3>Introduction</h3>
 <p>ZeltCmds is a commandplugin. It has no hardcoded list of commands, but the one command to manage the plugin. Everything else is up to you. Create commands with the name you want. Delete commands you don't need anymore. Changing commands need no restart or reload.</p>
-<p>There are 12 categories, containing 96 different types of commands in total. Tab-Completion is implemented for managing command.</p>
+<p>There are 13 categories, containing 110 different types of commands in total. Tab-Completion is implemented for managing command.</p>
 <p>Simple management of permissions by using defaultpermissions. Permissionnodes are provided as well for advanced management.</p>
 <p>In addition, ZeltCmds supports aliases, which not only work with plugin related commands. Aliases can integrate parameter in various ways, handles multiple commands and can wait before execution</p>
 <p>Localization for en and de avaiable.</p>
@@ -31,6 +31,8 @@
 <dd>Make someone else execute a command</dd>
 <dt>teleport</dt>
 <dd>Several types of teleports</dd>
+<dt>worldinfo</dt>
+<dd>Gives worldrelated informations</dd>
 <dt>worldtime</dt>
 <dd>Sets time for a world</dd>
 <dt>worldweather</dt>
@@ -38,63 +40,30 @@
 </dl>
 <br />
 <h3>Changes of last version</h3>
-<p>1.7.0<ul>
-<li>Compiled for Craftbukkit 1.5.2-R1.0</li>
-<li>Separated configuration for update-check</li>
-<li>Checks other plugins for reserved commands</li>
-<li>Added available parameters to alias-system:</li>
-<ul>
-<li>&lt;paramX&gt; - The Xth commited parameter</li>
-<li>&lt;param?&gt; - An optional parameter</li>
-<li>&lt;param*&gt; - All commited parameters not assigned to a position</li>
-<li>&lt;player_name&gt; - Name of executing player</li>
-<li>&lt;player_nick&gt; - Displayname of executing player</li>
-<li>&lt;player_world&gt; - Worldname of executing player</li>
-<li>&lt;player_x&gt; - x-coordinate of executing player</li>
-<li>&lt;player_y&gt; - y-coordinate of executing player</li>
-<li>&lt;player_z&gt; - z-coordinate of executing player</li>
-<li>&lt;item_name&gt; - Name of item in hand of executing player</li>
-<li>&lt;item_id&gt; - ID of item in hand of executing player</li>
-<li>&lt;item_data&gt; - Data of item in hand of executing player</li>
-<li>&lt;waitX&gt; - Wait X ticks before executing command</li>
-</ul>
+<p>1.8.0<ul>
+<li>Compiled for Craftbukkit 1.6.2-R1.0</li>
 <li>New commands in category player:</li>
 <ul>
-<li>alwaysfly > Let a player fly, without landing</li>
-<li>build > Let a player build, without interactions</li>
-<li>cleanchat > Cleans chat of a player</li>
-<li>enchanting > Opens enchanting interface for a player</li>
-<li>enderchest > Opens enderchest for a player</li>
-<li>fly > Let a player fly</li>
-<li>freeze > Freezes a player</li>
-<li>ip > Shows ip of a player</li>
-<li>item > Shows information about item in hand of player</li>
-<li>leveldown > Decrements a players level by one</li>
-<li>levelreset > Sets a players level to zero</li>
-<li>levelup > Increments a players level by one</li>
-<li>mute > Mutes a player</li>
-<li>starve > Starves a player</li>
-<li>workbench > Opens workbench for a player</li>
+<li>hide > Hides a player from others</li>
+<li>setflyspeed > Sets or resets flying speed of a player</li>
+<li>setmaxair > Sets or resets maximum air of a player</li>
+<li>setmaxhealth > Sets or resets maximum health of a player</li>
+<li>settimeabsolute > Sets or resets absolute time of a player</li>
+<li>settimerelative > Sets or resets relative time of a player</li>
+<li>setwalkspeed > Sets or resets walking speed of a player</li>
+<li>setweather > Sets or resets weather of a player</li>
+<li>weather > Shows the weather of a player</li>
 </ul>
-<li>New command in category serverinfo:</li>
+<li>Added category worldinfo with commands:</li>
 <ul>
-<li>ram > Shows information about ram of server</li>
+<li>entity > Lists the count of entities of a world</li>
+<li>gamerule > Lists the gamerules of a world</li>
+<li>info > Shows informations about a world</li>
+<li>livingentity > Lists the count of living entities of a world</li>
+<li>weather > Shows weather of a world</li>
 </ul>
-<li>Added category give with commands:</li>
-<ul>
-<li>chest > Gives items filling an amount of chests</li>
-<li>item > Gives an amount of an item</li>
-<li>stack > Gives an amount of stacks of an item</li>
-</ul>
-<li>Added category sudo with commands:</li>
-<ul>
-<li>all > Make all players online execute a given command</li>
-<li>console > Executes a given command from console</li>
-<li>player > Make a given player execute a given command</li>
-<li>world > Make all players online on a given world execute a given command</li>
-</ul>
-<li>Added informations to category player, type info</li>
 <li>Several internal changes</li>
+<li>Minor bugfixes</li>
 </ul></p>
 <p>For changes of older versions, see <a href="http://dev.bukkit.org/server-mods/zeltcmds/pages/changelog/">changelog</a></p>
 <br />

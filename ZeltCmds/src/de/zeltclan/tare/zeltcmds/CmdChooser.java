@@ -11,10 +11,12 @@ import de.zeltclan.tare.zeltcmds.cmds.CmdPlayerInfo;
 import de.zeltclan.tare.zeltcmds.cmds.CmdLocation;
 import de.zeltclan.tare.zeltcmds.cmds.CmdMode;
 import de.zeltclan.tare.zeltcmds.cmds.CmdPlayer;
+import de.zeltclan.tare.zeltcmds.cmds.CmdPlayerSet;
 import de.zeltclan.tare.zeltcmds.cmds.CmdPlayerToggle;
 import de.zeltclan.tare.zeltcmds.cmds.CmdServerInfo;
 import de.zeltclan.tare.zeltcmds.cmds.CmdServerWeather;
 import de.zeltclan.tare.zeltcmds.cmds.CmdSpawn;
+import de.zeltclan.tare.zeltcmds.cmds.CmdWorldInfo;
 import de.zeltclan.tare.zeltcmds.cmds.CmdWorldWeather;
 import de.zeltclan.tare.zeltcmds.enums.*;
 
@@ -31,6 +33,7 @@ class CmdChooser {
 		categoryMap.put("teleport" ,Category.PORT);
 		categoryMap.put("port" ,Category.PORT);
 		categoryMap.put("serverinfo" ,Category.SERVERINFO);
+		categoryMap.put("sinfo" ,Category.SERVERINFO);
 		categoryMap.put("servertime" ,Category.SERVERTIME);
 		categoryMap.put("stime" ,Category.SERVERTIME);
 		categoryMap.put("serverweather" ,Category.SERVERWEATHER);
@@ -38,6 +41,8 @@ class CmdChooser {
 		categoryMap.put("set" ,Category.SET);
 		categoryMap.put("spawn" ,Category.SPAWN);
 		categoryMap.put("sudo" ,Category.SUDO);
+		categoryMap.put("worldinfo" ,Category.WORLDINFO);
+		categoryMap.put("winfo" ,Category.WORLDINFO);
 		categoryMap.put("worldtime" ,Category.WORLDTIME);
 		categoryMap.put("wtime" ,Category.WORLDTIME);
 		categoryMap.put("time" ,Category.WORLDTIME);
@@ -87,6 +92,7 @@ class CmdChooser {
 		// Category.PLAYER
 		final TreeMap<String,Type> playerMap = new TreeMap<String,Type>();
 		playerMap.put("alwaysfly", CmdPlayerToggle.Types.ALWAYSFLY);
+		playerMap.put("anvil", CmdPlayer.Types.ANVIL);
 		playerMap.put("build", CmdPlayerToggle.Types.BUILD);
 		playerMap.put("cleanchat", CmdPlayer.Types.CLEANCHAT);
 		playerMap.put("clean", CmdPlayer.Types.CLEANCHAT);
@@ -103,6 +109,7 @@ class CmdChooser {
 		playerMap.put("fly", CmdPlayerToggle.Types.FLY);
 		playerMap.put("freeze", CmdPlayerToggle.Types.FREEZE);
 		playerMap.put("heal", CmdPlayer.Types.HEAL);
+		playerMap.put("hide", CmdPlayerToggle.Types.HIDE);
 		playerMap.put("info", CmdPlayerInfo.Types.INFO);
 		playerMap.put("ip", CmdPlayerInfo.Types.IP);
 		playerMap.put("item", CmdPlayerInfo.Types.ITEM);
@@ -117,8 +124,22 @@ class CmdChooser {
 		playerMap.put("position", CmdPlayerInfo.Types.POSITION);
 		playerMap.put("pos", CmdPlayerInfo.Types.POSITION);
 		playerMap.put("seen", CmdPlayerInfo.Types.SEEN);
+		playerMap.put("setflyspeed", CmdPlayerSet.Types.SETFLYSPEED);
+		playerMap.put("setfly", CmdPlayerSet.Types.SETFLYSPEED);
+		playerMap.put("setmaxair", CmdPlayerSet.Types.SETMAXAIR);
+		playerMap.put("setair", CmdPlayerSet.Types.SETMAXAIR);
+		playerMap.put("setmaxhealth", CmdPlayerSet.Types.SETMAXHEALTH);
+		playerMap.put("sethealth", CmdPlayerSet.Types.SETMAXHEALTH);
+		playerMap.put("setabsolutetime", CmdPlayerSet.Types.SETTIMEABSOLUTE);
+		playerMap.put("settimeabsolute", CmdPlayerSet.Types.SETTIMEABSOLUTE);
+		playerMap.put("setrelativetime", CmdPlayerSet.Types.SETTIMERELATIVE);
+		playerMap.put("settimerelative", CmdPlayerSet.Types.SETTIMERELATIVE);
+		playerMap.put("setwalkspeed", CmdPlayerSet.Types.SETWALKSPEED);
+		playerMap.put("setwalk", CmdPlayerSet.Types.SETWALKSPEED);
+		playerMap.put("setweather", CmdPlayerSet.Types.SETWEATHER);
 		playerMap.put("starve", CmdPlayer.Types.STARVE);
 		playerMap.put("time", CmdPlayerInfo.Types.TIME);
+		playerMap.put("weather", CmdPlayerInfo.Types.WEATHER);
 		playerMap.put("workbench", CmdPlayer.Types.WORKBENCH);
 		typeMap.put(Category.PLAYER, playerMap);
 		// Category.PORT
@@ -199,6 +220,14 @@ class CmdChooser {
 		sudoMap.put("player", Sudo.PLAYER);
 		sudoMap.put("world", Sudo.WORLD);
 		typeMap.put(Category.SUDO, sudoMap);
+		// Category.WORLDINFO
+		final TreeMap<String,Type> worldinfoMap = new TreeMap<String,Type>();
+		worldinfoMap.put("entity", CmdWorldInfo.Types.ENTITY);
+		worldinfoMap.put("gamerule", CmdWorldInfo.Types.GAMERULE);
+		worldinfoMap.put("info", CmdWorldInfo.Types.INFO);
+		worldinfoMap.put("livingentity", CmdWorldInfo.Types.LIVINGENTITY);
+		worldinfoMap.put("weather", CmdWorldInfo.Types.WEATHER);
+		typeMap.put(Category.WORLDINFO, worldinfoMap);
 		// Category.WORLDTIME
 		typeMap.put(Category.WORLDTIME, null);
 		// Category.WORLDWEATHER
@@ -260,6 +289,7 @@ class CmdChooser {
 				return MessageType.MESSAGE;
 			}
 		case SERVERINFO:
+		case WORLDINFO:
 			return MessageType.NOMESSAGE;
 		case SUDO:
 			if (p_type.equals(Sudo.CONSOLE)) {
@@ -275,15 +305,9 @@ class CmdChooser {
 	static PermissionExtension getPermissionExtension(Category p_category, Type p_type) {
 		switch (p_category) {
 		case GIVE:
-			return PermissionExtension.PLAYER;
 		case MODE:
-			return PermissionExtension.PLAYER;
 		case PLAYER:
-			if (p_type instanceof CmdPlayer.Types || p_type instanceof CmdPlayerToggle.Types) {
-				return PermissionExtension.PLAYER;
-			} else {
-				return PermissionExtension.NOEXTENSION;
-			}
+			return PermissionExtension.PLAYER;
 		case SET:
 			if (p_type instanceof CmdLocation.Types && p_type == CmdLocation.Types.BEDSPAWN) {
 				return PermissionExtension.PLAYER;
@@ -296,8 +320,8 @@ class CmdChooser {
 			} else {
 				return PermissionExtension.NOEXTENSION;
 			}
+		case WORLDINFO:
 		case WORLDTIME:
-			return PermissionExtension.WORLD;
 		case WORLDWEATHER:
 			return PermissionExtension.WORLD;
 		default:
@@ -316,6 +340,8 @@ class CmdChooser {
 					return RequireListener.BUILD;
 				case FREEZE:
 					return RequireListener.FREEZE;
+				case HIDE:
+					return RequireListener.HIDE;
 				case MUTE:
 					return RequireListener.MUTE;
 				default:

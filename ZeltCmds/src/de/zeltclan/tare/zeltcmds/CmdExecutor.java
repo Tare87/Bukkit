@@ -6,6 +6,7 @@ import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
@@ -14,8 +15,6 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.plugin.Plugin;
 
-import de.zeltclan.tare.bukkitutils.LogUtils;
-import de.zeltclan.tare.bukkitutils.MessageUtils;
 import de.zeltclan.tare.zeltcmds.enums.RequireListener;
 import de.zeltclan.tare.zeltcmds.listener.*;
 import de.zeltclan.tare.zeltcmds.runnable.DelayCommandRunnable;
@@ -131,7 +130,7 @@ class CmdExecutor implements Listener {
 				}
 			}
 			if (event_message.matches(".*<param[0-9]+>.*")) {
-				MessageUtils.msg(p_event.getPlayer(), "[" + plugin.getName() + "] " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
+				p_event.getPlayer().sendMessage(ChatColor.GREEN + "[" + plugin.getName() + "] " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
 				p_event.setCancelled(true);
 				return;
 			}
@@ -143,7 +142,7 @@ class CmdExecutor implements Listener {
 						event_message = event_message.replaceFirst("<param>", arg);
 					}
 				} else {
-					MessageUtils.msg(p_event.getPlayer(), "[" + plugin.getName() + "] " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
+					p_event.getPlayer().sendMessage(ChatColor.GREEN + "[" + plugin.getName() + "] " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
 					p_event.setCancelled(true);
 					return;
 				}
@@ -173,7 +172,7 @@ class CmdExecutor implements Listener {
 				event_message += " " + temp;
 			}
 			if (logAlias) {
-				LogUtils.info("[" + plugin.getName() + "] " + ZeltCmds.getLanguage().getString("log_alias", new Object[] {p_event.getPlayer().getDisplayName(), p_event.getMessage(), event_message}));
+				plugin.getLogger().info(ZeltCmds.getLanguage().getString("log_alias", new Object[] {p_event.getPlayer().getDisplayName(), p_event.getMessage(), event_message}));
 			}
 			// Handle alias
 			String[] cmds = event_message.split("<cmd>");
@@ -204,7 +203,7 @@ class CmdExecutor implements Listener {
 		if ((casesensitive && cmdMap.containsKey(cmd)) || (!casesensitive && cmdMap.containsKey(cmd.toLowerCase()))) {
 			String logEntry = cmdMap.get(cmd).executePlayer(p_event.getPlayer(), cmd, args);
 			if (logCmd && logEntry != null) {
-				LogUtils.info("[" + plugin.getName() + "] " + logEntry);
+				plugin.getLogger().info(logEntry);
 			}
 			p_event.setCancelled(true);
 		}
@@ -234,7 +233,7 @@ class CmdExecutor implements Listener {
 				}
 			}
 			if (event_message.matches(".*<param[0-9]+>.*")) {
-				LogUtils.warning("[" + plugin.getName() + "] " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
+				plugin.getLogger().warning(ZeltCmds.getLanguage().getString("arguments_not_enough"));
 				p_event.setCommand("zeltcmds dummy");
 				return;
 			}
@@ -246,7 +245,7 @@ class CmdExecutor implements Listener {
 						event_message = event_message.replaceFirst("<param>", arg);
 					}
 				} else {
-					LogUtils.warning("[" + plugin.getName() + "] " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
+					plugin.getLogger().warning(ZeltCmds.getLanguage().getString("arguments_not_enough"));
 					p_event.setCommand("zeltcmds dummy");
 					return;
 				}
@@ -340,6 +339,9 @@ class CmdExecutor implements Listener {
 				break;
 			case FREEZE:
 				listener = new FreezeListener();
+				break;
+			case HIDE:
+				listener = new HideListener();
 				break;
 			case MUTE:
 				listener = new MuteListener();

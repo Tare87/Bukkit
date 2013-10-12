@@ -1,5 +1,6 @@
 package de.zeltclan.tare.zeltcmds.cmds;
 
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -7,7 +8,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.permissions.Permission;
 
-import de.zeltclan.tare.bukkitutils.MessageUtils;
 import de.zeltclan.tare.zeltcmds.CmdParent;
 import de.zeltclan.tare.zeltcmds.ZeltCmds;
 import de.zeltclan.tare.zeltcmds.enums.RequireListener;
@@ -16,7 +16,7 @@ import de.zeltclan.tare.zeltcmds.enums.Type;
 public final class CmdPlayerToggle extends CmdParent {
 
 	public static enum Types implements Type {
-		ALWAYSFLY, BUILD, FLY, FREEZE, MUTE;
+		ALWAYSFLY, BUILD, FLY, FREEZE, HIDE, MUTE;
 	}
 
 	private static enum Results {
@@ -48,8 +48,8 @@ public final class CmdPlayerToggle extends CmdParent {
 	protected void executeConsole(CommandSender p_sender, String p_cmd, String[] p_args) {
 		switch (p_args.length) {
 		case 0:
-			MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
-			MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_Player", new Object[] {p_cmd}));
+			this.getPlugin().getLogger().warning(ZeltCmds.getLanguage().getString("arguments_not_enough"));
+			this.getPlugin().getLogger().warning(ZeltCmds.getLanguage().getString("usage_Player", new Object[] {p_cmd}));
 			break;
 		case 1:
 			final OfflinePlayer off_player = p_sender.getServer().getOfflinePlayer(p_args[0]);
@@ -58,26 +58,26 @@ public final class CmdPlayerToggle extends CmdParent {
 				Results result = this.action(player);
 				switch (result) {
 				case ERROR:
-					MessageUtils.warning(player, ZeltCmds.getLanguage().getString("playertoggle_error"));
+					this.getPlugin().getLogger().warning(ZeltCmds.getLanguage().getString("playertoggle_error"));
 					break;
 				case OFF:
 					if (msg != null && msg[1] != null) {
-						MessageUtils.info(player, msg[1]);
+						player.sendMessage(ChatColor.GREEN + msg[1]);
 					}
 					break;
 				case ON:
 					if (msg != null && msg[0] != null) {
-						MessageUtils.info(player, msg[0]);
+						player.sendMessage(ChatColor.GREEN + msg[0]);
 					}
 					break;
 				}
 			} else {
-				MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString((off_player.getFirstPlayed() != 0 ? "player_offline" : "player_not_found"), new Object[] {p_args[0]}));
+				this.getPlugin().getLogger().warning(ZeltCmds.getLanguage().getString((off_player.getFirstPlayed() != 0 ? "player_offline" : "player_not_found"), new Object[] {p_args[0]}));
 			}
 			break;
 		default:
-			MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_too_many"));
-			MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_Player", new Object[] {p_cmd}));
+			this.getPlugin().getLogger().warning(ZeltCmds.getLanguage().getString("arguments_too_many"));
+			this.getPlugin().getLogger().warning(ZeltCmds.getLanguage().getString("usage_Player", new Object[] {p_cmd}));
 			break;
 		}
 	}
@@ -90,20 +90,20 @@ public final class CmdPlayerToggle extends CmdParent {
 					Results result = this.action(p_player);
 					switch (result) {
 					case ERROR:
-						MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("playertoggle_error"));
+						p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("playertoggle_error"));
 						break;
 					case OFF:
 						if (msg != null && msg[1] != null) {
-							MessageUtils.info(p_player, msg[1]);
+							p_player.sendMessage(ChatColor.GREEN + msg[1]);
 						}
 						break;
 					case ON:
 						if (msg != null && msg[0] != null) {
-							MessageUtils.info(p_player, msg[0]);
+							p_player.sendMessage(ChatColor.GREEN + msg[0]);
 						}
 						break;
 					}
-					return ZeltCmds.getLanguage().getString("log_playertoggle_self", new Object[] {type.name(), result.name(), p_player.getDisplayName()});
+					return ZeltCmds.getLanguage().getString("log_playertoggle_self", new Object[] {type.name(), result.name(), p_player.getName()});
 				}
 				break;
 			case 1:
@@ -114,28 +114,28 @@ public final class CmdPlayerToggle extends CmdParent {
 						Results result = this.action(player);
 						switch (result) {
 						case ERROR:
-							MessageUtils.warning(p_player, ZeltCmds.getLanguage().getString("playertoggle_error"));
+							p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("playertoggle_error"));
 							break;
 						case OFF:
 							if (msg != null) {
-								MessageUtils.info(p_player, msg[1]);
+								player.sendMessage(ChatColor.GREEN + msg[1]);
 							}
 							break;
 						case ON:
 							if (msg != null) {
-								MessageUtils.info(p_player, msg[0]);
+								player.sendMessage(ChatColor.GREEN + msg[0]);
 							}
 							break;
 						}
-						return "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("log_playertoggle_player", new Object[] {type.name(), result.name(), p_player.getDisplayName(), player.getDisplayName()});
+						return ZeltCmds.getLanguage().getString("log_playertoggle_player", new Object[] {type.name(), result.name(), p_player.getName(), player.getName()});
 					} else {
-						MessageUtils.msg(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString((off_player.getFirstPlayed() != 0 ? "player_offline" : "player_not_found"), new Object[] {p_args[0]}));
+						p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString((off_player.getFirstPlayed() != 0 ? "player_offline" : "player_not_found"), new Object[] {p_args[0]}));
 					}
 				}
 				break;
 			default:
-				MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_too_many"));
-				MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_player", new Object[] {"/" + p_cmd}));
+				p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_too_many"));
+				p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_player", new Object[] {"/" + p_cmd}));
 				break;
 		}
 		return null;
@@ -176,6 +176,24 @@ public final class CmdPlayerToggle extends CmdParent {
 				return Results.OFF;
 			} else {
 				p_player.setMetadata("ZeltCmds_Player_Freeze", new FixedMetadataValue(this.getPlugin(), "true"));
+				return Results.ON;
+			}
+		case HIDE:
+			if (p_player.hasMetadata("ZeltCmds_Player_Hide")) {
+				p_player.removeMetadata("ZeltCmds_Player_Hide", this.getPlugin());
+				for (Player player : p_player.getServer().getOnlinePlayers()) {
+					if (!player.equals(p_player)) {
+						player.hidePlayer(p_player);
+					}
+				}
+				return Results.OFF;
+			} else {
+				p_player.setMetadata("ZeltCmds_Player_Hide", new FixedMetadataValue(this.getPlugin(), "true"));
+				for (Player player : p_player.getServer().getOnlinePlayers()) {
+					if (!player.equals(p_player)) {
+						player.showPlayer(p_player);
+					}
+				}
 				return Results.ON;
 			}
 		case MUTE:

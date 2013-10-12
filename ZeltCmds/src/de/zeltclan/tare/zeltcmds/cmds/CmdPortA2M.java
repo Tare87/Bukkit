@@ -1,11 +1,11 @@
 package de.zeltclan.tare.zeltcmds.cmds;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.permissions.Permission;
 
-import de.zeltclan.tare.bukkitutils.MessageUtils;
 import de.zeltclan.tare.zeltcmds.CmdParent;
 import de.zeltclan.tare.zeltcmds.ZeltCmds;
 import de.zeltclan.tare.zeltcmds.enums.RequireListener;
@@ -21,7 +21,7 @@ public class CmdPortA2M extends CmdParent {
 	
 	@Override
 	protected void executeConsole(CommandSender p_sender, String p_cmd, String[] p_args) {
-		MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("command_console_no_use"));
+		this.getPlugin().getLogger().warning(ZeltCmds.getLanguage().getString("command_console_no_use"));
 	}
 
 	@Override
@@ -34,16 +34,16 @@ public class CmdPortA2M extends CmdParent {
 						if (player != target) {
 							player.teleport(target, TeleportCause.COMMAND);
 							if (msg != null) {
-								MessageUtils.info(player, msg);
+								player.sendMessage(ChatColor.GREEN + msg);
 							}
 						}
 					}
-					return ZeltCmds.getLanguage().getString("log_port_a2m", new Object[] {p_player.getDisplayName()});
+					return ZeltCmds.getLanguage().getString("log_port_a2m", new Object[] {p_player.getName()});
 				}
 				break;
 			default:
-				MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_too_many"));
-				MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage", new Object[] {"/" + p_cmd}));
+				p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_too_many"));
+				p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage", new Object[] {"/" + p_cmd}));
 				break;
 		}
 		return null;

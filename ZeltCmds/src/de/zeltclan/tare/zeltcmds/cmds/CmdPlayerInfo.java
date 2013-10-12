@@ -2,15 +2,17 @@ package de.zeltclan.tare.zeltcmds.cmds;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.WeatherType;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.Permission;
 
-import de.zeltclan.tare.bukkitutils.MessageUtils;
 import de.zeltclan.tare.zeltcmds.CmdParent;
 import de.zeltclan.tare.zeltcmds.ZeltCmds;
 import de.zeltclan.tare.zeltcmds.enums.RequireListener;
@@ -19,12 +21,12 @@ import de.zeltclan.tare.zeltcmds.enums.Type;
 public final class CmdPlayerInfo extends CmdParent {
 
 	public static enum Types implements Type {
-		DIRECTION, INFO, IP, ITEM, POSITION, SEEN, TIME;
+		DIRECTION, INFO, IP, ITEM, POSITION, SEEN, TIME, WEATHER;
 	}
 	private final Types type;
 	
 	public CmdPlayerInfo(Types p_type, Permission p_perm, Permission p_permExt, RequireListener p_listener) {
-		super(ZeltCmds.getLanguage().getString("description_info_" + p_type.name().toLowerCase()), p_perm, p_permExt, p_listener);
+		super(ZeltCmds.getLanguage().getString("description_playerinfo_" + p_type.name().toLowerCase()), p_perm, p_permExt, p_listener);
 		type = p_type;
 	}
 
@@ -32,54 +34,50 @@ public final class CmdPlayerInfo extends CmdParent {
 	protected void executeConsole(CommandSender p_sender, String p_cmd, String[] p_args) {
 		switch (p_args.length) {
 		case 0:
-			MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
-			MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_Player", new Object[] {p_cmd}));
+			this.getPlugin().getLogger().warning(ZeltCmds.getLanguage().getString("arguments_not_enough"));
+			this.getPlugin().getLogger().warning(ZeltCmds.getLanguage().getString("usage_Player", new Object[] {p_cmd}));
 			break;
 		case 1:
-			final String[] info = this.getInformation(p_sender.getServer().getOfflinePlayer(p_args[0]));
-			for (String msg : info) {
-				MessageUtils.msg(p_sender, msg);
+			for (String msg : this.getInformation(p_sender.getServer().getOfflinePlayer(p_args[0]))) {
+				this.getPlugin().getLogger().info(msg);
 			}
 			break;
 		default:
-			MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_too_many"));
-			MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_Player", new Object[] {p_cmd}));
+			this.getPlugin().getLogger().warning(ZeltCmds.getLanguage().getString("arguments_too_many"));
+			this.getPlugin().getLogger().warning(ZeltCmds.getLanguage().getString("usage_Player", new Object[] {p_cmd}));
 			break;
 		}
 	}
 
 	@Override
 	protected String executePlayer(Player p_player, String p_cmd, String[] p_args) {
-		final String[] info;
 		switch (p_args.length) {
 			case 0:
 				if (this.checkPerm(p_player, false)) {
-					info = this.getInformation(p_player);
-					for (String msg : info) {
-						MessageUtils.msg(p_player, msg);
+					for (String msg : this.getInformation(p_player)) {
+						p_player.sendMessage(ChatColor.GREEN + msg);
 					}
-					return (ZeltCmds.getLanguage().getString("log_info_self", new Object[] {type.name(), p_player.getDisplayName()}));
+					return ZeltCmds.getLanguage().getString("log_playerinfo_self", new Object[] {type.name(), p_player.getName()});
 				}
 				break;
 			case 1:
-				if (this.checkPerm(p_player, false)) {
-					info = this.getInformation(p_player.getServer().getOfflinePlayer(p_args[0]));
-					for (String msg : info) {
-						MessageUtils.msg(p_player, msg);
+				if (this.checkPerm(p_player, true)) {
+					for (String msg : this.getInformation(p_player.getServer().getOfflinePlayer(p_args[0]))) {
+						p_player.sendMessage(ChatColor.GREEN + msg);
 					}
-					return (ZeltCmds.getLanguage().getString("log_info_player", new Object[] {type.name(), p_player.getDisplayName(), p_args[0]}));
+					return ZeltCmds.getLanguage().getString("log_playerinfo_player", new Object[] {type.name(), p_player.getName(), p_args[0]});
 				}
 				break;
 			default:
-				MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_too_many"));
-				MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_player", new Object[] {"/" + p_cmd}));
+				p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_too_many"));
+				p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_player", new Object[] {"/" + p_cmd}));
 				break;
 		}
 		return null;
 	}
 	
-	private String[] getInformation (OfflinePlayer p_player) {
-		ArrayList<String> result = new ArrayList<String>();
+	private List<String> getInformation (OfflinePlayer p_player) {
+		List<String> result = new ArrayList<String>();
 		switch (type) {
 		case DIRECTION:
 			if (p_player.isOnline()) {
@@ -115,6 +113,7 @@ public final class CmdPlayerInfo extends CmdParent {
 				if (p_player.isOnline()) {
 					result.add(ZeltCmds.getLanguage().getString("info_isonline"));
 					final Player player = p_player.getPlayer();
+					result.add(ZeltCmds.getLanguage().getString("info_display", new Object[] {player.getDisplayName()}));
 					result.add(ZeltCmds.getLanguage().getString("info_location", new Object[] {player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ(), player.getWorld().getName()}));
 					result.add(ZeltCmds.getLanguage().getString("info_mode", new Object[] {player.getGameMode().name()}));
 					if (player.getAllowFlight()) {
@@ -131,6 +130,11 @@ public final class CmdPlayerInfo extends CmdParent {
 						result.add(ZeltCmds.getLanguage().getString("info_sneak"));
 					} else {
 						result.add(ZeltCmds.getLanguage().getString("info_no_sneak"));
+					}
+					if (player.isSprinting()) {
+						result.add(ZeltCmds.getLanguage().getString("info_sprint"));
+					} else {
+						result.add(ZeltCmds.getLanguage().getString("info_no_sprint"));
 					}
 					String[] metaList = {"Mute", "Freeze", "AlwaysFly", "Build"};
 					for (String meta : metaList) { 
@@ -212,17 +216,43 @@ public final class CmdPlayerInfo extends CmdParent {
 			break;
 		case TIME:
 			if (p_player.isOnline()) {
-				long time = p_player.getPlayer().getWorld().getTime();
-				time = time - (time >= 18000 ? 18000 : -6000);
-				String hour = Integer.toString((int)(time / 1000));
-				time %= 1000;
-				String minute = Integer.toString((int)(1.000 * time / 1000 * 60));
-				result.add(ZeltCmds.getLanguage().getString("info_time", new Object[] {hour.length() < 2 ? "0" + hour : hour, minute.length() < 2 ? "0" + minute : minute}));
+				if (p_player.getPlayer().isPlayerTimeRelative()) {
+					long time = p_player.getPlayer().getPlayerTime();
+					time = time - (time >= 18000 ? 18000 : -6000);
+					String hour = Integer.toString((int)(time / 1000));
+					time %= 1000;
+					String minute = Integer.toString((int)(1.000 * time / 1000 * 60));
+					result.add(ZeltCmds.getLanguage().getString("info_time_" + ((p_player.getPlayer().getPlayerTimeOffset() == 0) ? "server" : "relative"), new Object[] {hour.length() < 2 ? "0" + hour : hour, minute.length() < 2 ? "0" + minute : minute}));
+				} else {
+					long time = p_player.getPlayer().getPlayerTimeOffset();
+					time = time - (time >= 18000 ? 18000 : -6000);
+					String hour = Integer.toString((int)(time / 1000));
+					time %= 1000;
+					String minute = Integer.toString((int)(1.000 * time / 1000 * 60));
+					result.add(ZeltCmds.getLanguage().getString("info_time_absolute", new Object[] {hour.length() < 2 ? "0" + hour : hour, minute.length() < 2 ? "0" + minute : minute}));
+				}
+			} else {
+				result.add(ZeltCmds.getLanguage().getString(p_player.getFirstPlayed() != 0 ? "info_isoffline" : "info_unknown")); 
+			}
+			break;
+		case WEATHER:
+			if (p_player.isOnline()) {
+				WeatherType weather = p_player.getPlayer().getPlayerWeather();
+				if (weather == null) {
+					result.add(ZeltCmds.getLanguage().getString("info_weather_server", new Object[] {p_player.getPlayer().getWorld().hasStorm() ? "downfall" : "clear"}));
+				} else {
+					result.add(ZeltCmds.getLanguage().getString("info_weather_player", new Object[] {weather.name().toLowerCase()}));
+				}
+				if (p_player.getPlayer().getWorld().isThundering()) {
+					result.add(ZeltCmds.getLanguage().getString("info_weather_thunder"));
+				} else {
+					result.add(ZeltCmds.getLanguage().getString("info_weather_no_thunder"));
+				}
 			} else {
 				result.add(ZeltCmds.getLanguage().getString(p_player.getFirstPlayed() != 0 ? "info_isoffline" : "info_unknown")); 
 			}
 			break;
 		}
-		return result.toArray(new String[result.size()]);
+		return result;
 	}
 }

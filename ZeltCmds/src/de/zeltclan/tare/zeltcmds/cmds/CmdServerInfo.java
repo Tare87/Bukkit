@@ -1,8 +1,10 @@
 package de.zeltclan.tare.zeltcmds.cmds;
 
+import java.util.List;
 import java.util.ArrayList;
 import java.util.TreeSet;
 
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.World;
@@ -10,7 +12,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 
-import de.zeltclan.tare.bukkitutils.MessageUtils;
 import de.zeltclan.tare.zeltcmds.CmdParent;
 import de.zeltclan.tare.zeltcmds.ZeltCmds;
 import de.zeltclan.tare.zeltcmds.enums.RequireListener;
@@ -32,76 +33,68 @@ public class CmdServerInfo extends CmdParent {
 	protected void executeConsole(CommandSender p_sender, String p_cmd, String[] p_args) {
 		switch (p_args.length) {
 		case 0:
-			final String[] info = this.getInformation(p_sender.getServer());
-			for (String msg : info) {
-				MessageUtils.msg(p_sender, msg);
+			for (String msg : this.getInformation(p_sender.getServer())) {
+				this.getPlugin().getLogger().info(msg);
 			}
 			break;
 		default:
-			MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_too_many"));
-			MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage", new Object[] {p_cmd}));
+			this.getPlugin().getLogger().warning(ZeltCmds.getLanguage().getString("arguments_too_many"));
+			this.getPlugin().getLogger().info(ZeltCmds.getLanguage().getString("usage", new Object[] {p_cmd}));
 			break;
 		}
 	}
 
 	@Override
 	protected String executePlayer(Player p_player, String p_cmd, String[] p_args) {
-		final String[] info;
 		switch (p_args.length) {
 			case 0:
 				if (this.checkPerm(p_player, false)) {
-					info = this.getInformation(p_player.getServer());
-					for (String msg : info) {
-						MessageUtils.msg(p_player, msg);
+					for (String msg : this.getInformation(p_player.getServer())) {
+						p_player.sendMessage(ChatColor.GREEN + msg);
 					}
-					return (ZeltCmds.getLanguage().getString("log_serverinfo", new Object[] {type.name(), p_player.getDisplayName()}));
+					return ZeltCmds.getLanguage().getString("log_serverinfo", new Object[] {type.name(), p_player.getDisplayName()});
 				}
 				break;
 			default:
-				MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_too_many"));
-				MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage", new Object[] {"/" + p_cmd}));
+				p_player.sendMessage(ChatColor.RED + ZeltCmds.getLanguage().getString("arguments_too_many"));
+				p_player.sendMessage(ChatColor.RED + ZeltCmds.getLanguage().getString("usage", new Object[] {"/" + p_cmd}));
 				break;
 		}
 		return null;
 	}
 	
-	private String[] getInformation (Server p_server) {
-		ArrayList<String> result = new ArrayList<String>();
-		TreeSet<String> temp = new TreeSet<String>();
-		String line = new String();
+	private List<String> getInformation (Server p_server) {
+		List<String> result = new ArrayList<String>();
 		switch (type) {
 		case BLACKLIST:
-			temp.clear();
-			line = "";
+			TreeSet<String> set_ban_player = new TreeSet<String>();
 			for (OfflinePlayer player : p_server.getBannedPlayers()) {
-				temp.add(player.getName());
+				set_ban_player.add(player.getName());
 			}
-			int size_ban_player = temp.size();
-			if (temp.size() > 0) {
-				line = temp.pollFirst();
+			int size_ban_player = set_ban_player.size();
+			StringBuilder line_ban_player = new StringBuilder();
+			if (set_ban_player.size() > 0) {
+				line_ban_player.append(set_ban_player.pollFirst());
 				String name = new String();
-				while ((name = temp.pollFirst()) != null) {
-					line += ", " + name;
+				while ((name = set_ban_player.pollFirst()) != null) {
+					line_ban_player.append(", " + name);
 				}
 			}
-			String line_ban_player = line;
-			temp.clear();
-			line = "";
-			temp.addAll(p_server.getIPBans());
-			int size_ban_ip = temp.size();
-			if (temp.size() > 0) {
-				line = temp.pollFirst();
+			TreeSet<String> set_ban_ip = new TreeSet<String>(p_server.getIPBans());
+			int size_ban_ip = set_ban_ip.size();
+			StringBuilder line_ban_ip = new StringBuilder();
+			if (set_ban_ip.size() > 0) {
+				line_ban_ip.append(set_ban_ip.pollFirst());
 				String name = new String();
-				while ((name = temp.pollFirst()) != null) {
-					line += ", " + name;
+				while ((name = set_ban_ip.pollFirst()) != null) {
+					line_ban_ip.append(", " + name);
 				}
 			}
-			String line_ban_ip = line;
 			result.add(ZeltCmds.getLanguage().getString("serverinfo_blacklist", new Object[] {(size_ban_player + size_ban_ip)}));
 			result.add(ZeltCmds.getLanguage().getString("serverinfo_player", new Object[] {size_ban_player}));
-			result.add(line_ban_player);
+			result.add(line_ban_player.toString());
 			result.add(ZeltCmds.getLanguage().getString("serverinfo_black_ip", new Object[] {size_ban_ip}));
-			result.add(line_ban_ip);
+			result.add(line_ban_ip.toString());
 			break;
 		case INFO:
 			result.add(ZeltCmds.getLanguage().getString("serverinfo_name", new Object[] {p_server.getServerName()}));
@@ -119,51 +112,44 @@ public class CmdServerInfo extends CmdParent {
 			result.add(ZeltCmds.getLanguage().getString("serverinfo_waterlimit", new Object[] {p_server.getWaterAnimalSpawnLimit()}));
 			break;
 		case ONLINELIST:
-			temp.clear();
-			line = "";
+			TreeSet<String> set_online_op = new TreeSet<String>();
+			TreeSet<String> set_online_player = new TreeSet<String>();
 			for (Player player : p_server.getOnlinePlayers()) {
 				if (player.isOp()) {
-					temp.add(player.getName());
+					set_online_op.add(player.getName());
+				} else {
+					set_online_player.add(player.getName());
 				}
 			}
-			int size_op = temp.size();
-			if (temp.size() > 0) {
-				line = temp.pollFirst();
+			int size_online_op = set_online_op.size();
+			StringBuilder line_online_op = new StringBuilder();
+			if (set_online_op.size() > 0) {
+				line_online_op.append(set_online_op.pollFirst());
 				String name = new String();
-				while ((name = temp.pollFirst()) != null) {
-					line += ", " + name;
+				while ((name = set_online_op.pollFirst()) != null) {
+					line_online_op.append(", " + name);
 				}
 			}
-			String line_op = line;
-			temp.clear();
-			line = "";
-			for (Player player : p_server.getOnlinePlayers()) {
-				if (!player.isOp()) {
-					temp.add(player.getName());
-				}
-			}
-			int size_player = temp.size();
-			if (temp.size() > 0) {
-				line = temp.pollFirst();
+			int size_online_player = set_online_player.size();
+			StringBuilder line_online_player = new StringBuilder();
+			if (set_online_player.size() > 0) {
+				line_online_player.append(set_online_player.pollFirst());
 				String name = new String();
-				while ((name = temp.pollFirst()) != null) {
-					line += ", " + name;
+				while ((name = set_online_player.pollFirst()) != null) {
+					line_online_player.append(", " + name);
 				}
 			}
-			String line_player = line;
-			result.add(ZeltCmds.getLanguage().getString("serverinfo_onlinelist", new Object[] {size_op + size_player}));
-			result.add(ZeltCmds.getLanguage().getString("serverinfo_op", new Object[] {size_op}));
-			result.add(line_op);
-			result.add(ZeltCmds.getLanguage().getString("serverinfo_player", new Object[] {size_player}));
-			result.add(line_player);
+			result.add(ZeltCmds.getLanguage().getString("serverinfo_onlinelist", new Object[] {size_online_op + size_online_player}));
+			result.add(ZeltCmds.getLanguage().getString("serverinfo_op", new Object[] {size_online_op}));
+			result.add(line_online_op.toString());
+			result.add(ZeltCmds.getLanguage().getString("serverinfo_player", new Object[] {size_online_player}));
+			result.add(line_online_player.toString());
 			break;
 		case OPLIST:
-			temp.clear();
 			for (OfflinePlayer player : p_server.getOperators()) {
-				temp.add(player.getName() + ": " + (player.isOnline() ? "Online" : "Offline"));
+				result.add(player.getName() + ": " + (player.isOnline() ? "Online" : "Offline"));
 			}
-			result.add(ZeltCmds.getLanguage().getString("serverinfo_oplist", new Object[] {temp.size()}));
-			result.addAll(temp);
+			result.add(0, ZeltCmds.getLanguage().getString("serverinfo_oplist", new Object[] {result.size()}));
 			break;
 		case RAM:
 			final Runtime runtime = Runtime.getRuntime();
@@ -178,39 +164,39 @@ public class CmdServerInfo extends CmdParent {
 			result.add(ZeltCmds.getLanguage().getString("serverinfo_memory_max", new Object[] {maxMem}));
 			break;
 		case WHITELIST:
-			temp.clear();
-			line = "";
+			TreeSet<String> set_white_player = new TreeSet<String>();
 			for (OfflinePlayer player : p_server.getWhitelistedPlayers()) {
-				temp.add(player.getName());
+				set_white_player.add(player.getName());
 			}
-			result.add(ZeltCmds.getLanguage().getString("serverinfo_whitelist", new Object[] {temp.size()}));
-			if (temp.size() > 0) {
-				line = temp.pollFirst();
+			result.add(ZeltCmds.getLanguage().getString("serverinfo_whitelist", new Object[] {set_white_player.size()}));
+			StringBuilder line_white_player = new StringBuilder();
+			if (set_white_player.size() > 0) {
+				line_white_player.append(set_white_player.pollFirst());
 				String name = new String();
-				while ((name = temp.pollFirst()) != null) {
-					line += ", " + name;
+				while ((name = set_white_player.pollFirst()) != null) {
+					line_white_player.append(", " + name);
 				}
 			}
-			result.add(line);
+			result.add(line_white_player.toString());
 			break;
 		case WORLDLIST:
-			temp.clear();
-			line = "";
+			TreeSet<String> set_world = new TreeSet<String>();
 			for (World world : p_server.getWorlds()) {
-				temp.add(world.getName());
+				set_world.add(world.getName());
 			}
-			result.add(ZeltCmds.getLanguage().getString("serverinfo_worldlist", new Object[] {temp.size()}));
-			if (temp.size() > 0) {
-				line = temp.pollFirst();
+			result.add(ZeltCmds.getLanguage().getString("serverinfo_worldlist", new Object[] {set_world.size()}));
+			StringBuilder line_world = new StringBuilder();
+			if (set_world.size() > 0) {
+				line_world.append(set_world.pollFirst());
 				String name = new String();
-				while ((name = temp.pollFirst()) != null) {
-					line += ", " + name;
+				while ((name = set_world.pollFirst()) != null) {
+					line_world.append(", " + name);
 				}
 			}
-			result.add(line);
+			result.add(line_world.toString());
 			break;
 		}
-		return result.toArray(new String[result.size()]);
+		return result;
 	}
 
 }

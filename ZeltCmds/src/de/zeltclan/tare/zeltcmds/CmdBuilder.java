@@ -37,6 +37,8 @@ public class CmdBuilder {
 				return new CmdPlayerInfo(((CmdPlayerInfo.Types)p_type), permission, permissionExtended, p_listener);
 			} else if (p_type instanceof CmdPlayer.Types) {
 				return new CmdPlayer(((CmdPlayer.Types)p_type), permission, permissionExtended, p_listener, p_msg);
+			} else if (p_type instanceof CmdPlayerSet.Types) {
+				return new CmdPlayerSet(((CmdPlayerSet.Types)p_type), permission, permissionExtended, p_listener, p_msg);
 			} else if (p_type instanceof CmdPlayerToggle.Types) {
 				return new CmdPlayerToggle(((CmdPlayerToggle.Types)p_type), permission, permissionExtended, p_listener, p_msg);
 			}
@@ -133,6 +135,8 @@ public class CmdBuilder {
 				return new CmdSudoWorld(permission, permissionExtended, p_listener, p_msg);
 			}
 			break;
+		case WORLDINFO:
+			return new CmdWorldInfo(((CmdWorldInfo.Types)p_type), permission, permissionExtended, p_listener);
 		case WORLDWEATHER:
 			return new CmdWorldWeather(((CmdWorldWeather.Types)p_type), permission, permissionExtended, p_listener, p_msg);
 		default:

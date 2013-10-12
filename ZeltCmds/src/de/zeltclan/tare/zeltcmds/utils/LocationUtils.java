@@ -1,4 +1,4 @@
-package de.zeltclan.tare.bukkitutils;
+package de.zeltclan.tare.zeltcmds.utils;
 
 import java.util.HashSet;
 
@@ -201,9 +201,5 @@ public class LocationUtils {
 		p_location.setY(p_location.getBlockY() + 0.2);
 		p_location.setZ(p_location.getBlockZ() + 0.5);
 		return p_location;
-	}
-	
-	public static boolean isSameBlock(Location p_loc1, Location p_loc2) {
-		return (p_loc1.getWorld().equals(p_loc2.getWorld()) && p_loc1.getBlockX() == p_loc2.getBlockX() && p_loc1.getBlockY() == p_loc2.getBlockY() && p_loc1.getBlockZ() == p_loc2.getBlockZ());
 	}
 }

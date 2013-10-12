@@ -1,11 +1,11 @@
 package de.zeltclan.tare.zeltcmds.cmds;
 
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 
-import de.zeltclan.tare.bukkitutils.MessageUtils;
 import de.zeltclan.tare.zeltcmds.CmdParent;
 import de.zeltclan.tare.zeltcmds.ZeltCmds;
 import de.zeltclan.tare.zeltcmds.enums.RequireListener;
@@ -24,23 +24,23 @@ public class CmdSudoPlayer extends CmdParent {
 		switch (p_args.length) {
 		case 0:
 		case 1:
-			MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
-			MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_Player_Cmd", new Object[] {p_cmd}));
+			this.getPlugin().getLogger().warning(ZeltCmds.getLanguage().getString("arguments_not_enough"));
+			this.getPlugin().getLogger().warning(ZeltCmds.getLanguage().getString("usage_Player_Cmd", new Object[] {p_cmd}));
 			break;
 		default:
 			final OfflinePlayer off_player = p_sender.getServer().getOfflinePlayer(p_args[0]);
 			if (!off_player.isOnline()) {
-				MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString((off_player.getFirstPlayed() != 0 ? "player_offline" : "player_not_found"), new Object[] {p_args[0]}));
+				this.getPlugin().getLogger().warning(ZeltCmds.getLanguage().getString((off_player.getFirstPlayed() != 0 ? "player_offline" : "player_not_found"), new Object[] {p_args[0]}));
 				break;
 			}
 			final Player player = off_player.getPlayer();
-			String cmd = "/";
+			StringBuilder cmdBuilder = new StringBuilder("/");
 			for (int i = 1; i < p_args.length; i++) {
-				cmd += p_args[i] + " ";
+				cmdBuilder.append(p_args[i] + " ");
 			}
-			cmd = cmd.trim();
+			String cmd = cmdBuilder.toString().trim();
 			if (msg != null) {
-				MessageUtils.info(player, msg);
+				player.sendMessage(ChatColor.GREEN + msg);
 			}
 			player.chat(cmd);
 			break;
@@ -52,23 +52,23 @@ public class CmdSudoPlayer extends CmdParent {
 		switch (p_args.length) {
 			case 0:
 			case 1:
-				MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
-				MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_Player_Cmd", new Object[] {"/" + p_cmd}));
+				p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
+				p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_Player_Cmd", new Object[] {"/" + p_cmd}));
 				break;
 			default:
 				final OfflinePlayer off_player = p_player.getServer().getOfflinePlayer(p_args[0]);
 				if (!off_player.isOnline()) {
-					MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString((off_player.getFirstPlayed() != 0 ? "player_offline" : "player_not_found"), new Object[] {p_args[0]}));
+					p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString((off_player.getFirstPlayed() != 0 ? "player_offline" : "player_not_found"), new Object[] {p_args[0]}));
 					break;
 				}
 				final Player player = off_player.getPlayer();
-				String cmd = "/";
+				StringBuilder cmdBuilder = new StringBuilder("/");
 				for (int i = 1; i < p_args.length; i++) {
-					cmd += p_args[i] + " ";
+					cmdBuilder.append(p_args[i] + " ");
 				}
-				cmd = cmd.trim();
+				String cmd = cmdBuilder.toString().trim();
 				if (msg != null) {
-					MessageUtils.info(player, msg);
+					player.sendMessage(ChatColor.GREEN + msg);
 				}
 				player.chat(cmd);
 				return ZeltCmds.getLanguage().getString("log_sudo_player", new Object[] {p_player.getDisplayName(), cmd, player.getDisplayName()});

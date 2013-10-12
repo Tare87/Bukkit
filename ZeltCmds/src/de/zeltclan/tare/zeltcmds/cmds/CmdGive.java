@@ -1,17 +1,17 @@
 package de.zeltclan.tare.zeltcmds.cmds;
 
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.Permission;
 
-import de.zeltclan.tare.bukkitutils.ItemUtils;
-import de.zeltclan.tare.bukkitutils.MessageUtils;
 import de.zeltclan.tare.zeltcmds.CmdParent;
 import de.zeltclan.tare.zeltcmds.ZeltCmds;
 import de.zeltclan.tare.zeltcmds.enums.RequireListener;
 import de.zeltclan.tare.zeltcmds.enums.Type;
+import de.zeltclan.tare.zeltcmds.utils.ItemUtils;
 
 public final class CmdGive extends CmdParent {
 
@@ -33,8 +33,8 @@ public final class CmdGive extends CmdParent {
 		case 0:
 		case 1:
 		case 2:
-			MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
-			MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_Player_Item_Amount", new Object[] {p_cmd}));
+			this.getPlugin().getLogger().warning(ZeltCmds.getLanguage().getString("arguments_not_enough"));
+			this.getPlugin().getLogger().warning(ZeltCmds.getLanguage().getString("usage_Player_Item_Amount", new Object[] {p_cmd}));
 			break;
 		case 3:
 			final OfflinePlayer off_player = p_sender.getServer().getOfflinePlayer(p_args[0]);
@@ -46,7 +46,7 @@ public final class CmdGive extends CmdParent {
 					try {
 						amount = Integer.parseInt(p_args[2]);
 					} catch (NumberFormatException e) {
-						MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("not_number", new Object[] {p_args[2]}));
+						this.getPlugin().getLogger().warning(ZeltCmds.getLanguage().getString("not_integer", new Object[] {p_args[2]}));
 						break;
 					}
 					switch (type) {
@@ -67,18 +67,18 @@ public final class CmdGive extends CmdParent {
 					item.setAmount(amount);
 					player.getWorld().dropItemNaturally(player.getLocation(), item);
 					if (msg != null) {
-						MessageUtils.info(player, msg);
+						player.sendMessage(ChatColor.GREEN + msg);
 					}
 				} else {
-					MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("item_not_found", new Object[] {p_args[1]}));
+					this.getPlugin().getLogger().warning(ZeltCmds.getLanguage().getString("item_not_found", new Object[] {p_args[1]}));
 				}
 			} else {
-				MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString((off_player.getFirstPlayed() != 0 ? "player_offline" : "player_not_found"), new Object[] {p_args[0]}));
+				this.getPlugin().getLogger().warning(ZeltCmds.getLanguage().getString((off_player.getFirstPlayed() != 0 ? "player_offline" : "player_not_found"), new Object[] {p_args[0]}));
 			}
 			break;
 		default:
-			MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_too_many"));
-			MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_Player_Item_Amount", new Object[] {p_cmd}));
+			this.getPlugin().getLogger().warning(ZeltCmds.getLanguage().getString("arguments_too_many"));
+			this.getPlugin().getLogger().warning(ZeltCmds.getLanguage().getString("usage_Player_Item_Amount", new Object[] {p_cmd}));
 			break;
 		}
 	}
@@ -88,8 +88,8 @@ public final class CmdGive extends CmdParent {
 		switch (p_args.length) {
 			case 0:
 			case 1:
-				MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
-				MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_player_Item_Amount", new Object[] {"/" + p_cmd}));
+				p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
+				p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_player_Item_Amount", new Object[] {"/" + p_cmd}));
 				break;
 			case 2:
 				if (this.checkPerm(p_player, false)) {
@@ -99,7 +99,7 @@ public final class CmdGive extends CmdParent {
 						try {
 							amount = Integer.parseInt(p_args[1]);
 						} catch (NumberFormatException e) {
-							MessageUtils.msg(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("not_number", new Object[] {p_args[2]}));
+							p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("not_integer", new Object[] {p_args[2]}));
 							break;
 						}
 						switch (type) {
@@ -120,12 +120,12 @@ public final class CmdGive extends CmdParent {
 						item.setAmount(amount);
 						p_player.getWorld().dropItemNaturally(p_player.getLocation(), item);
 						if (msg != null) {
-							MessageUtils.info(p_player, msg);
+							p_player.sendMessage(ChatColor.GREEN + msg);
 						}
 					} else {
-						MessageUtils.msg(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("item_not_found", new Object[] {p_args[1]}));
+						p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("item_not_found", new Object[] {p_args[1]}));
 					}
-					return (ZeltCmds.getLanguage().getString("log_give_self", new Object[] {type.name(), p_player.getDisplayName(),p_args[1], p_args[0]}));
+					return ZeltCmds.getLanguage().getString("log_give_self", new Object[] {type.name(), p_player.getName(),p_args[1], p_args[0]});
 				}
 				break;
 			case 3:
@@ -139,7 +139,7 @@ public final class CmdGive extends CmdParent {
 							try {
 								amount = Integer.parseInt(p_args[2]);
 							} catch (NumberFormatException e) {
-								MessageUtils.msg(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("not_number", new Object[] {p_args[2]}));
+								p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("not_integer", new Object[] {p_args[2]}));
 								break;
 							}
 							switch (type) {
@@ -160,20 +160,20 @@ public final class CmdGive extends CmdParent {
 							item.setAmount(amount);
 							player.getWorld().dropItemNaturally(player.getLocation(), item);
 							if (msg != null) {
-								MessageUtils.info(player, msg);
+								player.sendMessage(ChatColor.GREEN + msg);
 							}
 						} else {
-							MessageUtils.msg(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("item_not_found", new Object[] {p_args[1]}));
+							p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("item_not_found", new Object[] {p_args[1]}));
 						}
 					} else {
-						MessageUtils.msg(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString((off_player.getFirstPlayed() != 0 ? "player_offline" : "player_not_found"), new Object[] {p_args[0]}));
+						p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString((off_player.getFirstPlayed() != 0 ? "player_offline" : "player_not_found"), new Object[] {p_args[0]}));
 					}
-					return (ZeltCmds.getLanguage().getString("log_give_player", new Object[] {type.name(), p_player.getDisplayName(), p_args[0], p_args[2], p_args[1]}));
+					return ZeltCmds.getLanguage().getString("log_give_player", new Object[] {type.name(), p_player.getName(), p_args[0], p_args[2], p_args[1]});
 				}
 				break;
 			default:
-				MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_too_many"));
-				MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_player_Item_Amount", new Object[] {"/" + p_cmd}));
+				p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_too_many"));
+				p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_player_Item_Amount", new Object[] {"/" + p_cmd}));
 				break;
 		}
 		return null;

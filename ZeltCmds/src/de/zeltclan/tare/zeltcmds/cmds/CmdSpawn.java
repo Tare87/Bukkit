@@ -1,5 +1,6 @@
 package de.zeltclan.tare.zeltcmds.cmds;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -7,7 +8,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 
-import de.zeltclan.tare.bukkitutils.MessageUtils;
 import de.zeltclan.tare.zeltcmds.CmdParent;
 import de.zeltclan.tare.zeltcmds.ZeltCmds;
 import de.zeltclan.tare.zeltcmds.enums.RequireListener;
@@ -32,40 +32,43 @@ public class CmdSpawn extends CmdParent {
 	protected void executeConsole(CommandSender p_sender, String p_cmd, String[] p_args) {
 		switch (type) {
 		case CURSOR:
-			MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("command_console_no_use"));
+			this.getPlugin().getLogger().warning(ZeltCmds.getLanguage().getString("command_console_no_use"));
 			break;
 		default:
 			switch (p_args.length) {
 			case 0:
 			case 1:
-				MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
-				MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_Mob_Player", new Object[] {p_cmd}));
+				this.getPlugin().getLogger().warning(ZeltCmds.getLanguage().getString("arguments_not_enough"));
+				this.getPlugin().getLogger().warning(ZeltCmds.getLanguage().getString("usage_Mob_Player", new Object[] {p_cmd}));
 				break;
 			case 2:
 				final EntityType entityType = EntityType.fromName(p_args[0]);
 				if (entityType == null) {
-					MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("entity_not_known", new Object[] {p_args[0]}));
+					this.getPlugin().getLogger().warning(ZeltCmds.getLanguage().getString("entity_not_known", new Object[] {p_args[0]}));
 					break;
 				}
 				if (!entityType.isAlive()) {
-					MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("entity_not_alive", new Object[] {entityType.name()}));
+					this.getPlugin().getLogger().warning(ZeltCmds.getLanguage().getString("entity_not_alive", new Object[] {entityType.name()}));
 					break;
 				}
 				if (!entityType.isSpawnable()) {
-					MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("spawn_deny", new Object[] {entityType.name()}));
+					this.getPlugin().getLogger().warning(ZeltCmds.getLanguage().getString("spawn_deny", new Object[] {entityType.name()}));
 					break;
 				}
 				final OfflinePlayer off_player = p_sender.getServer().getOfflinePlayer(p_args[1]);
 				if (off_player.isOnline()) {
 					final Location location = off_player.getPlayer().getLocation();
 					location.getWorld().spawn(location, entityType.getEntityClass());
+					if (msg != null) {
+						off_player.getPlayer().sendMessage(ChatColor.GREEN + msg);
+					}
 				} else {
-					MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString((off_player.getFirstPlayed() != 0 ? "player_offline" : "player_not_found"), new Object[] {p_args[0]}));
+					this.getPlugin().getLogger().warning(ZeltCmds.getLanguage().getString((off_player.getFirstPlayed() != 0 ? "player_offline" : "player_not_found"), new Object[] {p_args[0]}));
 				}
 				break;
 			default:
-				MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_too_many"));
-				MessageUtils.msg(p_sender, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_Mob_Player", new Object[] {p_cmd}));
+				this.getPlugin().getLogger().warning(ZeltCmds.getLanguage().getString("arguments_too_many"));
+				this.getPlugin().getLogger().warning(ZeltCmds.getLanguage().getString("usage_Mob_Player", new Object[] {p_cmd}));
 				break;
 			}
 		}
@@ -77,21 +80,21 @@ public class CmdSpawn extends CmdParent {
 		case CURSOR:
 			switch (p_args.length) {
 			case 0:
-				MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
-				MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_Mob", new Object[] {"/" + p_cmd}));
+				p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
+				p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_Mob", new Object[] {"/" + p_cmd}));
 				break;
 			case 1:
 				final EntityType entityType = EntityType.fromName(p_args[0]);
 				if (entityType == null) {
-					MessageUtils.msg(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("entity_not_known", new Object[] {p_args[0]}));
+					p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("entity_not_known", new Object[] {p_args[0]}));
 					break;
 				}
 				if (!entityType.isAlive()) {
-					MessageUtils.msg(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("entity_not_alive", new Object[] {entityType.name()}));
+					p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("entity_not_alive", new Object[] {entityType.name()}));
 					break;
 				}
 				if (!entityType.isSpawnable()) {
-					MessageUtils.msg(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("spawn_deny", new Object[] {entityType.name()}));
+					p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("spawn_deny", new Object[] {entityType.name()}));
 					break;
 				}
 				final Location location = p_player.getTargetBlock(null, 100).getLocation();
@@ -99,61 +102,61 @@ public class CmdSpawn extends CmdParent {
 					location.setY(location.getY()+1);
 					location.getWorld().spawn(location, entityType.getEntityClass());
 					if (msg != null) {
-						MessageUtils.info(p_player, msg);
+						p_player.sendMessage(ChatColor.GREEN + msg);
 					}
-					return "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("log_spawn_cursor", new Object[] {p_player.getDisplayName(), entityType.name()});
+					return ZeltCmds.getLanguage().getString("log_spawn_cursor", new Object[] {p_player.getDisplayName(), entityType.name()});
 				} else {
-					MessageUtils.msg(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("spawn_bad_location"));
+					p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("spawn_bad_location"));
 				}
 				break;
 			default:
-				MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_too_many"));
-				MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_Mob", new Object[] {"/" + p_cmd}));
+				p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_too_many"));
+				p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_Mob", new Object[] {"/" + p_cmd}));
 				break;
 			}
 			break;
 		default:
 			switch (p_args.length) {
 			case 0:
-				MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
-				MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_Mob_player", new Object[] {p_cmd}));
+				p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_not_enough"));
+				p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_Mob_player", new Object[] {p_cmd}));
 				break;
 			case 1:
 				if (this.checkPerm(p_player, false)) {
 					final EntityType entityType = EntityType.fromName(p_args[0]);
 					if (entityType == null) {
-						MessageUtils.msg(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("entity_not_known", new Object[] {p_args[0]}));
+						p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("entity_not_known", new Object[] {p_args[0]}));
 						break;
 					}
 					if (!entityType.isAlive()) {
-						MessageUtils.msg(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("entity_not_alive", new Object[] {entityType.name()}));
+						p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("entity_not_alive", new Object[] {entityType.name()}));
 						break;
 					}
 					if (!entityType.isSpawnable()) {
-						MessageUtils.msg(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("spawn_deny", new Object[] {entityType.name()}));
+						p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("spawn_deny", new Object[] {entityType.name()}));
 						break;
 					}
 					final Location location = p_player.getLocation();
 					location.getWorld().spawn(location, entityType.getEntityClass());
 					if (msg != null) {
-						MessageUtils.info(p_player, msg);
+						p_player.sendMessage(ChatColor.GREEN + msg);
 					}
-					return "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("log_spawn_self", new Object[] {p_player.getDisplayName(), entityType.name()});
+					return ZeltCmds.getLanguage().getString("log_spawn_self", new Object[] {p_player.getDisplayName(), entityType.name()});
 				}
 				break;
 			case 2:
 				if (this.checkPerm(p_player, true)) {
 					final EntityType entityType = EntityType.fromName(p_args[0]);
 					if (entityType == null) {
-						MessageUtils.msg(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("entity_not_known", new Object[] {p_args[0]}));
+						p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("entity_not_known", new Object[] {p_args[0]}));
 						break;
 					}
 					if (!entityType.isAlive()) {
-						MessageUtils.msg(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("entity_not_alive", new Object[] {entityType.name()}));
+						p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("entity_not_alive", new Object[] {entityType.name()}));
 						break;
 					}
 					if (!entityType.isSpawnable()) {
-						MessageUtils.msg(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("spawn_deny", new Object[] {entityType.name()}));
+						p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("spawn_deny", new Object[] {entityType.name()}));
 						break;
 					}
 					final OfflinePlayer off_player = p_player.getServer().getOfflinePlayer(p_args[1]);
@@ -161,17 +164,17 @@ public class CmdSpawn extends CmdParent {
 						final Location location = off_player.getPlayer().getLocation();
 						location.getWorld().spawn(location, entityType.getEntityClass());
 						if (msg != null) {
-							MessageUtils.info(off_player.getPlayer(), msg);
+							off_player.getPlayer().sendMessage(ChatColor.GREEN + msg);
 						}
-						return "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("log_spawn_player", new Object[] {p_player.getDisplayName(), off_player.getPlayer().getDisplayName(), entityType.name()});
+						return ZeltCmds.getLanguage().getString("log_spawn_player", new Object[] {p_player.getDisplayName(), off_player.getPlayer().getDisplayName(), entityType.name()});
 					} else {
-						MessageUtils.msg(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString((off_player.getFirstPlayed() != 0 ? "player_offline" : "player_not_found"), new Object[] {p_args[0]}));
+						p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString((off_player.getFirstPlayed() != 0 ? "player_offline" : "player_not_found"), new Object[] {p_args[0]}));
 					}
 				}
 				break;
 			default:
-				MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_too_many"));
-				MessageUtils.warning(p_player, "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_Mob_player", new Object[] {p_cmd}));
+				p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("arguments_too_many"));
+				p_player.sendMessage(ChatColor.RED + "[" + this.getPlugin().getName() + "] " + ZeltCmds.getLanguage().getString("usage_Mob_player", new Object[] {p_cmd}));
 				break;
 			}
 		}
